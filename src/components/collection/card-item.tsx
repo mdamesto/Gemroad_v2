@@ -2,6 +2,7 @@
 
 import styled, { keyframes, css } from "styled-components";
 import { RARITY_COLORS, RARITY_LABELS, type Rarity } from "@/lib/constants";
+import { CardPlaceholder } from "@/components/shared/card-placeholder";
 import type { Card } from "@/types/cards";
 
 const shimmer = keyframes`
@@ -205,7 +206,7 @@ export function CardItem({ data, onClick }: CardItemProps) {
         {hasImage && owned ? (
           <img src={card.image_url} alt={card.name} loading="lazy" />
         ) : (
-          <>&#9876;</>
+          <CardPlaceholder rarity={card.rarity} size={48} />
         )}
       </ImageArea>
 

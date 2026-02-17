@@ -3,6 +3,7 @@
 import styled, { keyframes, css } from "styled-components";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
 import { RarityBadge } from "@/components/shared/rarity-badge";
+import { CardPlaceholder } from "@/components/shared/card-placeholder";
 import type { Card } from "@/types/cards";
 
 const shimmer = keyframes`
@@ -114,7 +115,13 @@ export function CardDisplay({ card, quantity, onClick }: CardDisplayProps) {
       onClick={onClick}
     >
       {quantity && quantity > 1 && <QuantityBadge>x{quantity}</QuantityBadge>}
-      <CardImage>&#9876;</CardImage>
+      <CardImage>
+        {card.image_url ? (
+          <img src={card.image_url} alt={card.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <CardPlaceholder rarity={card.rarity} size={56} />
+        )}
+      </CardImage>
       <CardBody>
         <RarityBadge rarity={card.rarity} />
         <CardName>{card.name}</CardName>

@@ -9,6 +9,7 @@ import {
   type Rarity,
   type FactionConst,
 } from "@/lib/constants";
+import { CardPlaceholder } from "@/components/shared/card-placeholder";
 import type { CollectionCardData } from "./card-item";
 
 const fadeIn = keyframes`
@@ -183,7 +184,7 @@ export function CardModal({ data, onClose }: CardModalProps) {
           {hasImage && owned ? (
             <img src={card.image_url} alt={card.name} />
           ) : (
-            <>&#9876;</>
+            <CardPlaceholder rarity={card.rarity} size={80} />
           )}
         </ImageArea>
 
