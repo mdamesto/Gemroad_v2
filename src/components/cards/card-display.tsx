@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
 import { RarityBadge } from "@/components/shared/rarity-badge";
@@ -108,6 +109,9 @@ interface CardDisplayProps {
 }
 
 export function CardDisplay({ card, quantity, onClick }: CardDisplayProps) {
+  const [imgError, setImgError] = useState(false);
+  const showImage = !!card.image_url && !imgError;
+
   return (
     <CardWrapper
       $rarity={card.rarity}
@@ -116,8 +120,8 @@ export function CardDisplay({ card, quantity, onClick }: CardDisplayProps) {
     >
       {quantity && quantity > 1 && <QuantityBadge>x{quantity}</QuantityBadge>}
       <CardImage>
-        {card.image_url ? (
-          <img src={card.image_url} alt={card.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {showImage ? (
+          <img src={card.image_url} alt={card.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={() => setImgError(true)} />
         ) : (
           <CardPlaceholder rarity={card.rarity} size={56} />
         )}

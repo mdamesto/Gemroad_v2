@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import {
   RARITY_COLORS,
@@ -176,13 +177,15 @@ interface CardModalProps {
 export function CardModal({ data, onClose }: CardModalProps) {
   const { card, quantity, owned } = data;
   const hasImage = !!card.image_url && card.image_url !== "";
+  const [imgError, setImgError] = useState(false);
+  const showImage = hasImage && owned && !imgError;
 
   return (
     <Overlay onClick={onClose}>
       <Card $rarity={card.rarity} onClick={(e) => e.stopPropagation()}>
-        <ImageArea $hasImage={hasImage && owned}>
-          {hasImage && owned ? (
-            <img src={card.image_url} alt={card.name} />
+        <ImageArea $hasImage={showImage}>
+          {showImage ? (
+            <img src={card.image_url} alt={card.name} onError={() => setImgError(true)} />
           ) : (
             <CardPlaceholder rarity={card.rarity} size={80} />
           )}
