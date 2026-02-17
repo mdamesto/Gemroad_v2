@@ -142,12 +142,12 @@ export function Navbar() {
 
       {user && (
         <NavLinks>
-          <NavLink href="/collection">Collection</NavLink>
-          <NavLink href="/boosters">Boosters</NavLink>
-          <NavLink href="/series">Séries</NavLink>
-          <NavLink href="/achievements">Achievements</NavLink>
-          <NavLink href="/progression">Progression</NavLink>
-          <NavLink href="/shop">Boutique</NavLink>
+          <NavLink href="/collection" prefetch={false}>Collection</NavLink>
+          <NavLink href="/boosters" prefetch={false}>Boosters</NavLink>
+          <NavLink href="/series" prefetch={false}>Séries</NavLink>
+          <NavLink href="/achievements" prefetch={false}>Achievements</NavLink>
+          <NavLink href="/progression" prefetch={false}>Progression</NavLink>
+          <NavLink href="/shop" prefetch={false}>Boutique</NavLink>
         </NavLinks>
       )}
 

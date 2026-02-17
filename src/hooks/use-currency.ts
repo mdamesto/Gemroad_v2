@@ -15,23 +15,29 @@ export function useCurrency(userId: string | undefined) {
       return;
     }
 
-    async function fetchBalance() {
-      const { data } = await supabase
-        .from("profiles")
-        .select("gems_balance")
-        .eq("id", userId!)
-        .single();
+    let cancelled = false;
 
-      if (data) {
-        setBalance(data.gems_balance);
+    async function fetchBalance() {
+      try {
+        const { data } = await supabase
+          .from("profiles")
+          .select("gems_balance")
+          .eq("id", userId!)
+          .single();
+
+        if (!cancelled && data) {
+          setBalance(data.gems_balance);
+        }
+      } catch {
+        // Silently fail - balance stays at 0
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     }
 
     fetchBalance();
 
     const channel = supabase
-      .channel("gems-balance")
+      .channel(`gems-balance-${userId}`)
       .on(
         "postgres_changes",
         {
@@ -41,24 +47,31 @@ export function useCurrency(userId: string | undefined) {
           filter: `id=eq.${userId}`,
         },
         (payload: { new: Record<string, unknown> }) => {
-          setBalance((payload.new as { gems_balance: number }).gems_balance);
+          if (!cancelled) {
+            setBalance((payload.new as { gems_balance: number }).gems_balance);
+          }
         }
       )
       .subscribe();
 
     return () => {
+      cancelled = true;
       supabase.removeChannel(channel);
     };
   }, [userId]);
 
   const refresh = useCallback(async () => {
     if (!userId) return;
-    const { data } = await supabase
-      .from("profiles")
-      .select("gems_balance")
-      .eq("id", userId)
-      .single();
-    if (data) setBalance(data.gems_balance);
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("gems_balance")
+        .eq("id", userId)
+        .single();
+      if (data) setBalance(data.gems_balance);
+    } catch {
+      // Silently fail
+    }
   }, [userId]);
 
   return { balance, loading, refresh };

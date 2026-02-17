@@ -78,25 +78,25 @@ export function Sidebar() {
       <Panel $open={sidebarOpen}>
         <CloseButton onClick={close}>&times;</CloseButton>
         <SidebarNav>
-          <SidebarLink href="/collection" onClick={close}>
+          <SidebarLink href="/collection" prefetch={false} onClick={close}>
             Collection
           </SidebarLink>
-          <SidebarLink href="/boosters" onClick={close}>
+          <SidebarLink href="/boosters" prefetch={false} onClick={close}>
             Boosters
           </SidebarLink>
-          <SidebarLink href="/series" onClick={close}>
+          <SidebarLink href="/series" prefetch={false} onClick={close}>
             Séries
           </SidebarLink>
-          <SidebarLink href="/achievements" onClick={close}>
+          <SidebarLink href="/achievements" prefetch={false} onClick={close}>
             Achievements
           </SidebarLink>
-          <SidebarLink href="/progression" onClick={close}>
+          <SidebarLink href="/progression" prefetch={false} onClick={close}>
             Progression
           </SidebarLink>
-          <SidebarLink href="/shop" onClick={close}>
+          <SidebarLink href="/shop" prefetch={false} onClick={close}>
             Boutique
           </SidebarLink>
-          <SidebarLink href="/profile" onClick={close}>
+          <SidebarLink href="/profile" prefetch={false} onClick={close}>
             Profil
           </SidebarLink>
         </SidebarNav>
