@@ -1,0 +1,25 @@
+-- Update card image URLs to use SVG placeholders
+UPDATE cards SET image_url = '/images/cards/eclaireur-neon.svg' WHERE name = 'Éclaireur Néon';
+UPDATE cards SET image_url = '/images/cards/sentinelle-rouillee.svg' WHERE name = 'Sentinelle Rouillée';
+UPDATE cards SET image_url = '/images/cards/chasseur-fragments.svg' WHERE name = 'Chasseur de Fragments';
+UPDATE cards SET image_url = '/images/cards/marchande-ombres.svg' WHERE name = 'Marchande d''Ombres';
+UPDATE cards SET image_url = '/images/cards/golem-cables.svg' WHERE name = 'Golem de Câbles';
+UPDATE cards SET image_url = '/images/cards/spectre-holographique.svg' WHERE name = 'Spectre Holographique';
+UPDATE cards SET image_url = '/images/cards/archonte-neon.svg' WHERE name = 'Archonte du Néon';
+UPDATE cards SET image_url = '/images/cards/titan-chrome.svg' WHERE name = 'Titan Chrome';
+UPDATE cards SET image_url = '/images/cards/nomade-cendres.svg' WHERE name = 'Nomade des Cendres';
+UPDATE cards SET image_url = '/images/cards/scorpion-mutant.svg' WHERE name = 'Scorpion Mutant';
+UPDATE cards SET image_url = '/images/cards/prophete-sable.svg' WHERE name = 'Prophète du Sable';
+UPDATE cards SET image_url = '/images/cards/colosse-rouille.svg' WHERE name = 'Colosse de Rouille';
+UPDATE cards SET image_url = '/images/cards/reine-tempetes.svg' WHERE name = 'Reine des Tempêtes';
+UPDATE cards SET image_url = '/images/cards/leviathan-enseveli.svg' WHERE name = 'Léviathan Enseveli';
+UPDATE cards SET image_url = '/images/cards/plongeur-aveugle.svg' WHERE name = 'Plongeur Aveugle';
+UPDATE cards SET image_url = '/images/cards/meduse-radioactive.svg' WHERE name = 'Méduse Radioactive';
+UPDATE cards SET image_url = '/images/cards/pirate-recifs.svg' WHERE name = 'Pirate des Récifs';
+UPDATE cards SET image_url = '/images/cards/sirene-corrompue.svg' WHERE name = 'Sirène Corrompue';
+UPDATE cards SET image_url = '/images/cards/requin-blinde.svg' WHERE name = 'Requin Blindé';
+UPDATE cards SET image_url = '/images/cards/kraken-petrole.svg' WHERE name = 'Kraken de Pétrole';
+UPDATE cards SET image_url = '/images/cards/amiral-fantome.svg' WHERE name = 'Amiral Fantôme';
+UPDATE cards SET image_url = '/images/cards/hydre-abyssale.svg' WHERE name = 'Hydre Abyssale';
+UPDATE cards SET image_url = '/images/cards/poseidon-corrompu.svg' WHERE name = 'Poseidon Corrompu';
+UPDATE cards SET image_url = '/images/cards/abomination-abysses.svg' WHERE name = 'Abomination des Abysses';
