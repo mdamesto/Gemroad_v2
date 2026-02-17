@@ -1,10 +1,34 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
+import React from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/game";
 import type { User } from "@supabase/supabase-js";
 
+// ─── Context ──────────────────────────────────────────────────────
+interface AuthState {
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  refreshProfile: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthState>({
+  user: null,
+  profile: null,
+  loading: true,
+  refreshProfile: async () => {},
+});
+
+// ─── Provider ─────────────────────────────────────────────────────
 const supabase = createClient();
 
 async function fetchProfile(userId: string): Promise<Profile | null> {
@@ -20,52 +44,48 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
   }
 }
 
-export function useUser() {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
+
+  const refreshProfile = useCallback(async () => {
+    if (!user) return;
+    const p = await fetchProfile(user.id);
+    if (p) setProfile(p);
+  }, [user]);
 
   useEffect(() => {
-    // Prevent double-init in StrictMode
-    if (initialized.current) return;
-    initialized.current = true;
-
     let cancelled = false;
 
-    async function init() {
-      try {
-        const { data, error } = await supabase.auth.getSession();
+    // Initial session check
+    supabase.auth.getSession().then(async ({ data, error }: { data: { session: { user: User } | null }; error: Error | null }) => {
+      if (cancelled) return;
 
-        if (cancelled) return;
-
-        if (error || !data.session) {
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-
-        const currentUser = data.session.user;
-        setUser(currentUser);
-
-        const p = await fetchProfile(currentUser.id);
-        if (!cancelled) {
-          setProfile(p);
-          setLoading(false);
-        }
-      } catch {
-        if (!cancelled) {
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
-        }
+      if (error || !data.session) {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
       }
-    }
 
-    init();
+      const currentUser = data.session.user;
+      setUser(currentUser);
 
-    // Listen for auth changes (login, logout, token refresh)
+      const p = await fetchProfile(currentUser.id);
+      if (!cancelled) {
+        setProfile(p);
+        setLoading(false);
+      }
+    }).catch(() => {
+      if (!cancelled) {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+      }
+    });
+
+    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event: string, session: { user: User } | null) => {
@@ -90,5 +110,14 @@ export function useUser() {
     };
   }, []);
 
-  return { user, profile, loading };
+  return React.createElement(
+    AuthContext.Provider,
+    { value: { user, profile, loading, refreshProfile } },
+    children
+  );
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────
+export function useUser() {
+  return useContext(AuthContext);
 }

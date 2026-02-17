@@ -1,6 +1,7 @@
 "use client";
 
 import styled from "styled-components";
+import { AuthProvider } from "@/hooks/use-user";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Footer } from "@/components/layout/footer";
@@ -18,12 +19,14 @@ const Main = styled.main`
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AppWrapper>
-      <Navbar />
-      <Sidebar />
-      <Main>{children}</Main>
-      <Footer />
-      <BoosterAnimation />
-    </AppWrapper>
+    <AuthProvider>
+      <AppWrapper>
+        <Navbar />
+        <Sidebar />
+        <Main>{children}</Main>
+        <Footer />
+        <BoosterAnimation />
+      </AppWrapper>
+    </AuthProvider>
   );
 }
