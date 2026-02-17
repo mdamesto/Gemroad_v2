@@ -95,7 +95,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
 `;
 
@@ -108,8 +108,8 @@ const StatsRow = styled.div`
 `;
 
 const StatCard = styled.div<{ $highlight?: boolean }>`
-  background: #12121a;
-  border: 1px solid ${(p) => (p.$highlight ? "#f4a26140" : "#2a2a35")};
+  background: #0f172a;
+  border: 1px solid ${(p) => (p.$highlight ? "#dbb45d40" : "#1e293b")};
   border-radius: 14px;
   padding: 20px 24px;
   display: flex;
@@ -120,7 +120,7 @@ const StatCard = styled.div<{ $highlight?: boolean }>`
   ${(p) =>
     p.$highlight &&
     css`
-    box-shadow: 0 0 20px #f4a26110;
+    box-shadow: 0 0 20px #dbb45d10;
   `}
 `;
 
@@ -144,12 +144,12 @@ const StatInfo = styled.div`
 const StatValue = styled.div<{ $color?: string }>`
   font-size: 1.4rem;
   font-weight: 800;
-  color: ${(p) => p.$color || "#e5e5e5"};
+  color: ${(p) => p.$color || "#e5e7eb"};
 `;
 
 const StatLabel = styled.div`
   font-size: 0.78rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-top: 2px;
 `;
 
@@ -163,12 +163,12 @@ const XpLabels = styled.div`
   justify-content: space-between;
   margin-bottom: 6px;
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const XpTrack = styled.div`
   height: 10px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 5px;
   overflow: hidden;
 `;
@@ -176,7 +176,7 @@ const XpTrack = styled.div`
 const XpFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, #e63946, #f4a261);
+  background: linear-gradient(90deg, #38BDF8, #dbb45d);
   border-radius: 5px;
   transition: width 0.5s ease-out;
 `;
@@ -189,7 +189,7 @@ const TreesContainer = styled.div`
 `;
 
 const TreeCard = styled.div<{ $color: string }>`
-  background: #12121a;
+  background: #0f172a;
   border: 1px solid ${(p) => p.$color}30;
   border-radius: 16px;
   overflow: hidden;
@@ -227,7 +227,7 @@ const TreeName = styled.h2`
 
 const TreeDesc = styled.p`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const TreeProgress = styled.div<{ $color: string }>`
@@ -255,7 +255,7 @@ const TierRow = styled.div`
 const TierLabel = styled.div`
   font-size: 0.7rem;
   font-weight: 700;
-  color: #555566;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   width: 48px;
@@ -287,7 +287,7 @@ const ConnectorLine = styled.div<{ $color: string; $active: boolean }>`
   width: 2px;
   height: 20px;
   margin-left: 32px;
-  background: ${(p) => (p.$active ? p.$color : "#2a2a35")};
+  background: ${(p) => (p.$active ? p.$color : "#1e293b")};
   border-radius: 1px;
   transition: background 0.3s;
 `;
@@ -312,12 +312,12 @@ const Node = styled.button<{
         ? p.$color
         : p.$available
           ? `${p.$color}80`
-          : "#2a2a35"};
+          : "#1e293b"};
   background: ${(p) =>
     p.$unlocked
       ? `${p.$color}20`
       : p.$available
-        ? "#1a1a25"
+        ? "#1e293b"
         : "#0d0d14"};
   display: flex;
   align-items: center;
@@ -367,8 +367,8 @@ const NodeCostBadge = styled.span<{ $color: string; $affordable: boolean }>`
   position: absolute;
   bottom: -6px;
   right: -6px;
-  background: ${(p) => (p.$affordable ? p.$color : "#2a2a35")};
-  color: ${(p) => (p.$affordable ? "#fff" : "#555566")};
+  background: ${(p) => (p.$affordable ? p.$color : "#1e293b")};
+  color: ${(p) => (p.$affordable ? "#fff" : "#475569")};
   font-size: 0.65rem;
   font-weight: 800;
   padding: 2px 6px;
@@ -399,7 +399,7 @@ const TooltipContainer = styled.div<{ $visible: boolean; $color: string }>`
   bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1a1a25;
+  background: #1e293b;
   border: 1px solid ${(p) => p.$color}40;
   border-radius: 12px;
   padding: 14px 18px;
@@ -431,7 +431,7 @@ const TooltipName = styled.div`
 
 const TooltipDesc = styled.div`
   font-size: 0.78rem;
-  color: #8888aa;
+  color: #94a3b8;
   line-height: 1.4;
   margin-bottom: 8px;
 `;
@@ -470,7 +470,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalCard = styled.div<{ $color: string }>`
-  background: #12121a;
+  background: #0f172a;
   border: 1px solid ${(p) => p.$color}40;
   border-radius: 16px;
   padding: 32px;
@@ -493,7 +493,7 @@ const ModalTitle = styled.h3`
 
 const ModalDesc = styled.p`
   font-size: 0.85rem;
-  color: #8888aa;
+  color: #94a3b8;
   line-height: 1.5;
   margin-bottom: 8px;
 `;
@@ -532,14 +532,14 @@ const SuccessBanner = styled.div<{ $color: string }>`
 const SuccessText = styled.span`
   font-size: 0.9rem;
   font-weight: 600;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 // ─── Loading ──────────────────────────────────────────────────────
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 // ─── Component ────────────────────────────────────────────────────
@@ -550,7 +550,7 @@ export default function ProgressionPage() {
   const [loading, setLoading] = useState(true);
   const [hoveredTalent, setHoveredTalent] = useState<string | null>(null);
   const [confirmTalent, setConfirmTalent] = useState<TalentWithStatus | null>(null);
-  const [confirmTreeColor, setConfirmTreeColor] = useState("#e63946");
+  const [confirmTreeColor, setConfirmTreeColor] = useState("#38BDF8");
   const [unlocking, setUnlocking] = useState(false);
   const [justUnlockedId, setJustUnlockedId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<{
@@ -691,9 +691,9 @@ export default function ProgressionPage() {
       {/* Stats Row */}
       <StatsRow>
         <StatCard>
-          <StatIconBox $color="#e63946">⚔</StatIconBox>
+          <StatIconBox $color="#38BDF8">⚔</StatIconBox>
           <StatInfo>
-            <StatValue $color="#e63946">Niveau {profile.level}</StatValue>
+            <StatValue $color="#38BDF8">Niveau {profile.level}</StatValue>
             <StatLabel>
               {profile.xp} XP total
             </StatLabel>
@@ -701,9 +701,9 @@ export default function ProgressionPage() {
         </StatCard>
 
         <StatCard $highlight={talentPoints > 0}>
-          <StatIconBox $color="#f4a261">🧠</StatIconBox>
+          <StatIconBox $color="#dbb45d">🧠</StatIconBox>
           <StatInfo>
-            <StatValue $color={talentPoints > 0 ? "#f4a261" : "#e5e5e5"}>
+            <StatValue $color={talentPoints > 0 ? "#dbb45d" : "#e5e7eb"}>
               {talentPoints}
             </StatValue>
             <StatLabel>
@@ -744,7 +744,7 @@ export default function ProgressionPage() {
       <TreesContainer>
         {trees.map((tree) => {
           const factionKey = tree.faction as FactionConst;
-          const color = FACTION_COLORS[factionKey] || "#e63946";
+          const color = FACTION_COLORS[factionKey] || "#38BDF8";
           const treeUnlocked = tree.talents.filter((t) => t.unlocked).length;
 
           // Group talents by tier
@@ -841,7 +841,7 @@ export default function ProgressionPage() {
                                 <TooltipTag $color={color}>
                                   Tier {talent.tier}
                                 </TooltipTag>
-                                <TooltipTag $color="#f4a261">
+                                <TooltipTag $color="#dbb45d">
                                   Coût: {talent.cost}
                                 </TooltipTag>
                               </TooltipMeta>
@@ -851,7 +851,7 @@ export default function ProgressionPage() {
                                     ? "#2a9d8f"
                                     : talent.available
                                       ? color
-                                      : "#555566"
+                                      : "#475569"
                                 }
                               >
                                 {talent.unlocked

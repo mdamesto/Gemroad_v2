@@ -8,11 +8,11 @@ const Container = styled.div`
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: #1a1a25;
-  border: 1px solid #f4a26140;
+  background: #1e293b;
+  border: 1px solid #dbb45d40;
   border-radius: 9999px;
   font-weight: 600;
-  color: #f4a261;
+  color: #dbb45d;
   font-size: 0.9rem;
 `;
 

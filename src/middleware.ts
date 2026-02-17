@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const publicRoutes = ["/", "/login", "/register"];
-const authRoutes = ["/login", "/register"];
+const publicRoutes = ["/", "/login", "/register", "/auth/callback", "/auth/transition"];
+const authRoutes = ["/", "/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
   // If user is NOT logged in and tries to access a protected route, redirect to /login
   if (!user && !publicRoutes.includes(pathname) && !pathname.startsWith("/api")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
@@ -57,6 +57,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|mov)$).*)",
   ],
 };

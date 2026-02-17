@@ -15,7 +15,7 @@ const CardWrapper = styled.div<{ $rarity: Rarity; $clickable?: boolean }>`
   width: 220px;
   border-radius: 12px;
   overflow: hidden;
-  background: #12121a;
+  background: #0f172a;
   border: 2px solid ${(p) => RARITY_COLORS[p.$rarity]}60;
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: ${(p) => (p.$clickable ? "pointer" : "default")};
@@ -45,11 +45,11 @@ const CardWrapper = styled.div<{ $rarity: Rarity; $clickable?: boolean }>`
 const CardImage = styled.div`
   width: 100%;
   height: 180px;
-  background: #1a1a25;
+  background: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 3rem;
 `;
 
@@ -61,13 +61,13 @@ const CardName = styled.h3`
   margin: 0 0 6px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 const CardDescription = styled.p`
   margin: 0 0 8px;
   font-size: 0.75rem;
-  color: #8888aa;
+  color: #94a3b8;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -84,15 +84,15 @@ const CardStats = styled.div`
 const Stat = styled.span<{ $type: "attack" | "defense" }>`
   font-size: 0.8rem;
   font-weight: 600;
-  color: ${(p) => (p.$type === "attack" ? "#E63946" : "#60A5FA")};
+  color: ${(p) => (p.$type === "attack" ? "#38BDF8" : "#60A5FA")};
 `;
 
 const QuantityBadge = styled.span`
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #0a0a0fcc;
-  color: #e5e5e5;
+  background: #020617cc;
+  color: #e5e7eb;
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 0.75rem;

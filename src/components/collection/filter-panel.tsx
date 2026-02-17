@@ -18,7 +18,7 @@ const Bar = styled.div`
   position: sticky;
   top: 64px;
   z-index: 10;
-  background: #0a0a0fee;
+  background: #020617ee;
   backdrop-filter: blur(10px);
   padding: 16px 0;
   margin-bottom: 24px;
@@ -36,7 +36,7 @@ const Row = styled.div`
 
 const Label = styled.span`
   font-size: 0.75rem;
-  color: #555566;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   min-width: 60px;
@@ -47,24 +47,24 @@ const Pill = styled.button<{ $active: boolean; $color?: string }>`
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid ${(p) => (p.$active ? p.$color || "#e63946" : "#2a2a35")};
-  background: ${(p) => (p.$active ? (p.$color || "#e63946") + "20" : "transparent")};
-  color: ${(p) => (p.$active ? p.$color || "#e63946" : "#8888aa")};
+  border: 1px solid ${(p) => (p.$active ? p.$color || "#38BDF8" : "#1e293b")};
+  background: ${(p) => (p.$active ? (p.$color || "#38BDF8") + "20" : "transparent")};
+  color: ${(p) => (p.$active ? p.$color || "#38BDF8" : "#94a3b8")};
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    border-color: ${(p) => p.$color || "#e63946"};
-    color: ${(p) => p.$color || "#e63946"};
+    border-color: ${(p) => p.$color || "#38BDF8"};
+    color: ${(p) => p.$color || "#38BDF8"};
   }
 `;
 
 const SearchInput = styled.input`
   padding: 8px 14px;
-  background: #1a1a25;
-  border: 1px solid #2a2a35;
+  background: #1e293b;
+  border: 1px solid #1e293b;
   border-radius: 8px;
-  color: #e5e5e5;
+  color: #e5e7eb;
   font-size: 0.85rem;
   outline: none;
   width: 100%;
@@ -72,17 +72,17 @@ const SearchInput = styled.input`
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: #e63946;
+    border-color: #38BDF8;
   }
 
   &::placeholder {
-    color: #555566;
+    color: #475569;
   }
 `;
 
 const ToggleLabel = styled.label`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -90,7 +90,7 @@ const ToggleLabel = styled.label`
 `;
 
 const Checkbox = styled.input`
-  accent-color: #e63946;
+  accent-color: #38BDF8;
   cursor: pointer;
 `;
 

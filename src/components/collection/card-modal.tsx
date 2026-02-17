@@ -35,7 +35,7 @@ const Overlay = styled.div`
 `;
 
 const Card = styled.div<{ $rarity: Rarity }>`
-  background: #12121a;
+  background: #0f172a;
   border: 1px solid ${(p) => RARITY_COLORS[p.$rarity]}40;
   border-radius: 20px;
   max-width: 480px;
@@ -49,13 +49,13 @@ const Card = styled.div<{ $rarity: Rarity }>`
 const ImageArea = styled.div<{ $hasImage: boolean }>`
   width: 100%;
   height: 260px;
-  background: #1a1a25;
+  background: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 
-  ${(p) => !p.$hasImage && `color: #333344; font-size: 5rem;`}
+  ${(p) => !p.$hasImage && `color: #334155; font-size: 5rem;`}
 
   img {
     width: 100%;
@@ -91,9 +91,9 @@ const RarityTag = styled.span<{ $color: string }>`
 
 const MetaTag = styled.span`
   font-size: 0.75rem;
-  color: #8888aa;
+  color: #94a3b8;
   padding: 3px 10px;
-  border: 1px solid #2a2a35;
+  border: 1px solid #1e293b;
   border-radius: 9999px;
 `;
 
@@ -104,20 +104,20 @@ const Name = styled.h2`
 `;
 
 const Description = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 16px;
 `;
 
 const Lore = styled.p`
-  color: #555566;
+  color: #475569;
   font-size: 0.8rem;
   line-height: 1.5;
   font-style: italic;
   margin-bottom: 16px;
   padding-left: 12px;
-  border-left: 2px solid #2a2a35;
+  border-left: 2px solid #1e293b;
 `;
 
 const Stats = styled.div`
@@ -135,35 +135,35 @@ const Stat = styled.div<{ $color: string }>`
 const StatLabel = styled.span`
   font-size: 0.7rem;
   font-weight: 500;
-  color: #8888aa;
+  color: #94a3b8;
   margin-left: 4px;
 `;
 
 const Quantity = styled.div`
   font-size: 0.85rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 20px;
 
   strong {
-    color: #e5e5e5;
+    color: #e5e7eb;
   }
 `;
 
 const CloseBtn = styled.button`
   width: 100%;
   padding: 12px;
-  background: #1a1a25;
-  border: 1px solid #2a2a35;
+  background: #1e293b;
+  border: 1px solid #1e293b;
   border-radius: 8px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: #2a2a35;
-    color: #e5e5e5;
+    background: #1e293b;
+    color: #e5e7eb;
   }
 `;
 
@@ -211,7 +211,7 @@ export function CardModal({ data, onClose }: CardModalProps) {
           {owned && (card.attack !== null || card.defense !== null) && (
             <Stats>
               {card.attack !== null && (
-                <Stat $color="#E63946">
+                <Stat $color="#EF4444">
                   {card.attack}
                   <StatLabel>ATK</StatLabel>
                 </Stat>

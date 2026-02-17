@@ -27,7 +27,7 @@ const SectionTitle = styled.h2`
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 const Section = styled.section`
@@ -41,15 +41,15 @@ const BoosterGrid = styled.div`
 `;
 
 const BoosterCard = styled.div`
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 16px;
   padding: 24px;
   text-align: center;
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: #e6394640;
+    border-color: #38BDF840;
   }
 `;
 
@@ -65,14 +65,14 @@ const BoosterName = styled.h3`
 `;
 
 const BoosterDesc = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   margin-bottom: 16px;
   line-height: 1.4;
 `;
 
 const Price = styled.div`
-  color: #f4a261;
+  color: #dbb45d;
   font-weight: 700;
   margin-bottom: 16px;
   font-size: 1.1rem;
@@ -85,8 +85,8 @@ const UnopenedList = styled.div`
 `;
 
 const UnopenedBooster = styled.div`
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -94,7 +94,7 @@ const UnopenedBooster = styled.div`
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: #f4a261;
+    border-color: #dbb45d;
   }
 `;
 
@@ -104,18 +104,18 @@ const UnopenedIcon = styled.div`
 `;
 
 const EmptyState = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.9rem;
 `;
 
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const FreeCard = styled.div`
-  background: linear-gradient(135deg, #0f1a12, #12121a);
+  background: linear-gradient(135deg, #0f1a12, #0f172a);
   border: 1px solid #34d39940;
   border-radius: 16px;
   padding: 24px;
@@ -135,12 +135,12 @@ const FreeInfo = styled.div`
 const FreeTitle = styled.h3`
   font-size: 1.05rem;
   font-weight: 700;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 const FreeSubtitle = styled.p`
   font-size: 0.82rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const FreeBadge = styled.span`

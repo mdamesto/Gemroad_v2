@@ -19,7 +19,7 @@ const Empty = styled.div`
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 1.1rem;
 `;
 

@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { Cinzel } from "next/font/google";
 import "./globals.css";
 import { StyledComponentsRegistry } from "@/lib/styled-registry";
-import { ClientLayout } from "./client-layout";
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cinzel",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "GemRoad - TCG Post-Apocalyptique",
@@ -15,10 +22,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={cinzel.variable}>
       <body>
         <StyledComponentsRegistry>
-          <ClientLayout>{children}</ClientLayout>
+          {children}
         </StyledComponentsRegistry>
       </body>
     </html>

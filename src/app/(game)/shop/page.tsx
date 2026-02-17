@@ -21,7 +21,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 32px;
   font-size: 0.9rem;
 `;
@@ -33,8 +33,8 @@ const Grid = styled.div`
 `;
 
 const ProductCard = styled.div`
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 16px;
   padding: 32px;
   text-align: center;
@@ -43,7 +43,7 @@ const ProductCard = styled.div`
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: #f4a26140;
+    border-color: #dbb45d40;
   }
 `;
 
@@ -51,7 +51,7 @@ const PopularBadge = styled.div`
   position: absolute;
   top: 12px;
   right: -28px;
-  background: #e63946;
+  background: #38BDF8;
   color: white;
   font-size: 0.7rem;
   font-weight: 700;
@@ -71,7 +71,7 @@ const ProductName = styled.h3`
 `;
 
 const ProductDesc = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   margin-bottom: 20px;
   line-height: 1.5;
@@ -80,20 +80,20 @@ const ProductDesc = styled.p`
 const PriceTag = styled.div`
   font-size: 1.5rem;
   font-weight: 800;
-  color: #f4a261;
+  color: #dbb45d;
   margin-bottom: 8px;
 `;
 
 const GemPrice = styled.div`
   font-size: 0.85rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 20px;
 `;
 
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 export default function ShopPage() {

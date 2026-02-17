@@ -20,8 +20,8 @@ const Title = styled.h1`
 `;
 
 const ProfileCard = styled.div`
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 16px;
   padding: 32px;
   margin-bottom: 24px;
@@ -34,7 +34,7 @@ const Username = styled.h2`
 `;
 
 const Email = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.9rem;
   margin-bottom: 20px;
 `;
@@ -46,7 +46,7 @@ const StatsGrid = styled.div`
 `;
 
 const StatBox = styled.div`
-  background: #1a1a25;
+  background: #1e293b;
   border-radius: 12px;
   padding: 16px;
   text-align: center;
@@ -55,12 +55,12 @@ const StatBox = styled.div`
 const StatValue = styled.div<{ $color?: string }>`
   font-size: 1.5rem;
   font-weight: 800;
-  color: ${(p) => p.$color || "#e5e5e5"};
+  color: ${(p) => p.$color || "#e5e7eb"};
 `;
 
 const StatLabel = styled.div`
   font-size: 0.75rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-top: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -75,13 +75,13 @@ const LevelLabel = styled.div`
   justify-content: space-between;
   font-size: 0.85rem;
   margin-bottom: 8px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const ProgressBar = styled.div`
   width: 100%;
   height: 8px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -89,7 +89,7 @@ const ProgressBar = styled.div`
 const ProgressFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: #e63946;
+  background: #38BDF8;
   border-radius: 4px;
 `;
 
@@ -110,26 +110,26 @@ const TransactionItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 8px;
   font-size: 0.85rem;
 `;
 
 const TransactionAmount = styled.span<{ $positive: boolean }>`
   font-weight: 700;
-  color: ${(p) => (p.$positive ? "#2a9d8f" : "#e63946")};
+  color: ${(p) => (p.$positive ? "#2a9d8f" : "#38BDF8")};
 `;
 
 const TransactionDate = styled.span`
-  color: #555566;
+  color: #475569;
   font-size: 0.75rem;
 `;
 
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 interface Transaction {
@@ -222,11 +222,11 @@ export default function ProfilePage() {
 
         <StatsGrid>
           <StatBox>
-            <StatValue $color="#f4a261">{balance}</StatValue>
+            <StatValue $color="#dbb45d">{balance}</StatValue>
             <StatLabel>Gems</StatLabel>
           </StatBox>
           <StatBox>
-            <StatValue $color="#e63946">{profile.level}</StatValue>
+            <StatValue $color="#38BDF8">{profile.level}</StatValue>
             <StatLabel>Niveau</StatLabel>
           </StatBox>
           <StatBox>
@@ -263,7 +263,7 @@ export default function ProfilePage() {
       <ProfileCard>
         <SectionTitle>Dernières transactions</SectionTitle>
         {transactions.length === 0 ? (
-          <p style={{ color: "#8888aa", fontSize: "0.9rem" }}>
+          <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
             Aucune transaction
           </p>
         ) : (

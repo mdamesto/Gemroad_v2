@@ -22,12 +22,12 @@ interface SeriesWithProgress extends Series {
 
 // ─── Gem Icons par reward_type ─────────────────────────────────────
 const GEM_ICONS: Record<string, { icon: string; color: string; label: string }> = {
-  ruby: { icon: "♦", color: "#E63946", label: "Rubis" },
+  ruby: { icon: "♦", color: "#EF4444", label: "Rubis" },
   emerald: { icon: "♦", color: "#2A9D8F", label: "Émeraude" },
   sapphire: { icon: "♦", color: "#60A5FA", label: "Saphir" },
   amethyst: { icon: "♦", color: "#A78BFA", label: "Améthyste" },
   topaz: { icon: "♦", color: "#FBBF24", label: "Topaze" },
-  gems: { icon: "◆", color: "#F4A261", label: "Gemmes" },
+  gems: { icon: "◆", color: "#DBB45D", label: "Gemmes" },
 };
 
 function getGemInfo(rewardType: string) {
@@ -68,7 +68,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
 `;
 
@@ -87,13 +87,13 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid ${(p) => (p.$active ? "#e63946" : "#2a2a35")};
-  background: ${(p) => (p.$active ? "#e6394620" : "transparent")};
-  color: ${(p) => (p.$active ? "#e63946" : "#8888aa")};
+  border: 1px solid ${(p) => (p.$active ? "#38BDF8" : "#1e293b")};
+  background: ${(p) => (p.$active ? "#38BDF820" : "transparent")};
+  color: ${(p) => (p.$active ? "#38BDF8" : "#94a3b8")};
 
   &:hover {
-    border-color: #e6394660;
-    color: #e5e5e5;
+    border-color: #38BDF860;
+    color: #e5e7eb;
   }
 `;
 
@@ -113,15 +113,15 @@ const Grid = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
   grid-column: 1 / -1;
 `;
 
 // ─── Series Card ──────────────────────────────────────────────────
 const CardContainer = styled.div<{ $completed: boolean }>`
-  background: #12121a;
-  border: 1px solid ${(p) => (p.$completed ? "#FBBF2440" : "#2a2a35")};
+  background: #0f172a;
+  border: 1px solid ${(p) => (p.$completed ? "#FBBF2440" : "#1e293b")};
   border-radius: 16px;
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -136,14 +136,14 @@ const CardContainer = styled.div<{ $completed: boolean }>`
       content: '';
       display: block;
       height: 3px;
-      background: linear-gradient(90deg, transparent, #FBBF24, #F4A261, #FBBF24, transparent);
+      background: linear-gradient(90deg, transparent, #FBBF24, #DBB45D, #FBBF24, transparent);
       background-size: 200% 100%;
       animation: ${goldShimmer} 3s infinite;
     }
   `}
 
   &:hover {
-    border-color: ${(p) => (p.$completed ? "#FBBF2460" : "#e6394640")};
+    border-color: ${(p) => (p.$completed ? "#FBBF2460" : "#38BDF840")};
   }
 `;
 
@@ -197,13 +197,13 @@ const InProgressBadge = styled.span`
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #e63946;
-  background: #e6394620;
-  border: 1px solid #e6394640;
+  color: #38BDF8;
+  background: #38BDF820;
+  border: 1px solid #38BDF840;
 `;
 
 const SeriesDesc = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   margin-bottom: 16px;
   line-height: 1.4;
@@ -217,7 +217,7 @@ const ProgressBarContainer = styled.div`
 const ProgressTrack = styled.div`
   width: 100%;
   height: 8px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -227,9 +227,9 @@ const ProgressFill = styled.div<{ $percent: number; $completed: boolean }>`
   width: ${(p) => p.$percent}%;
   background: ${(p) =>
     p.$completed
-      ? "linear-gradient(90deg, #FBBF24, #F4A261)"
+      ? "linear-gradient(90deg, #FBBF24, #DBB45D)"
       : p.$percent > 0
-        ? "linear-gradient(90deg, #e63946, #E6394690)"
+        ? "linear-gradient(90deg, #38BDF8, #38BDF890)"
         : "transparent"};
   border-radius: 4px;
   transition: width 0.5s ease-out;
@@ -244,13 +244,13 @@ const ProgressInfo = styled.div`
 
 const ProgressText = styled.span`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const ProgressPercent = styled.span<{ $completed: boolean }>`
   font-size: 0.8rem;
   font-weight: 700;
-  color: ${(p) => (p.$completed ? "#FBBF24" : "#e5e5e5")};
+  color: ${(p) => (p.$completed ? "#FBBF24" : "#e5e7eb")};
 `;
 
 // ─── Reward Section ───────────────────────────────────────────────
@@ -275,7 +275,7 @@ const GemIcon = styled.span<{ $color: string }>`
 
 const RewardLabel = styled.div`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const RewardValue = styled.div<{ $color: string }>`
@@ -300,16 +300,16 @@ const ExpandToggle = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px;
-  border-top: 1px solid #2a2a35;
+  border-top: 1px solid #1e293b;
   cursor: pointer;
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
   transition: color 0.2s, background 0.2s;
   gap: 6px;
 
   &:hover {
-    color: #e5e5e5;
-    background: #1a1a25;
+    color: #e5e7eb;
+    background: #1e293b;
   }
 `;
 
@@ -323,7 +323,7 @@ const Arrow = styled.span<{ $expanded: boolean }>`
 const ExpandedContent = styled.div`
   animation: ${expandIn} 0.3s ease-out;
   overflow: hidden;
-  border-top: 1px solid #2a2a35;
+  border-top: 1px solid #1e293b;
 `;
 
 const CardList = styled.div`
@@ -339,9 +339,9 @@ const MiniCard = styled.div<{ $owned: boolean; $rarity: Rarity }>`
   gap: 10px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: ${(p) => (p.$owned ? "#1a1a25" : "#0a0a0f")};
+  background: ${(p) => (p.$owned ? "#1e293b" : "#020617")};
   border: 1px solid ${(p) =>
-    p.$owned ? `${RARITY_COLORS[p.$rarity]}40` : "#2a2a3540"};
+    p.$owned ? `${RARITY_COLORS[p.$rarity]}40` : "#1e293b40"};
   opacity: ${(p) => (p.$owned ? 1 : 0.5)};
   transition: opacity 0.2s;
 `;
@@ -371,7 +371,7 @@ const MiniCardRarity = styled.div<{ $color: string }>`
 
 const StatusIcon = styled.span<{ $owned: boolean }>`
   font-size: 0.85rem;
-  color: ${(p) => (p.$owned ? "#2A9D8F" : "#8888aa")};
+  color: ${(p) => (p.$owned ? "#2A9D8F" : "#94a3b8")};
   flex-shrink: 0;
 `;
 
@@ -379,14 +379,14 @@ const ViewDetailLink = styled(Link)`
   display: block;
   text-align: center;
   padding: 12px;
-  border-top: 1px solid #2a2a3540;
+  border-top: 1px solid #1e293b40;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #e63946;
+  color: #38BDF8;
   transition: background 0.2s;
 
   &:hover {
-    background: #e6394610;
+    background: #38BDF810;
   }
 `;
 
@@ -394,7 +394,7 @@ const ViewDetailLink = styled(Link)`
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 // ─── Component ────────────────────────────────────────────────────

@@ -27,18 +27,18 @@ const Title = styled.h1`
 `;
 
 const Stats = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.9rem;
 
   strong {
-    color: #e5e5e5;
+    color: #e5e7eb;
   }
 `;
 
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 // Cards obtained in the last 24 hours are considered "new"

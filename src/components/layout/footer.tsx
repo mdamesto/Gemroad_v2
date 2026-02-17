@@ -5,9 +5,9 @@ import styled from "styled-components";
 const FooterWrapper = styled.footer`
   padding: 24px;
   text-align: center;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.8rem;
-  border-top: 1px solid #2a2a35;
+  border-top: 1px solid #1e293b;
   margin-top: auto;
 `;
 

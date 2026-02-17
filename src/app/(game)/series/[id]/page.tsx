@@ -26,7 +26,7 @@ const Title = styled.h1`
 `;
 
 const Description = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
   margin-bottom: 20px;
   line-height: 1.5;
@@ -36,7 +36,7 @@ const ProgressBar = styled.div`
   width: 100%;
   max-width: 400px;
   height: 10px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -45,20 +45,20 @@ const ProgressBar = styled.div`
 const ProgressFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: #e63946;
+  background: #38BDF8;
   border-radius: 5px;
   transition: width 0.3s;
 `;
 
 const ProgressText = styled.p`
   font-size: 0.85rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 20px;
 `;
 
 const RewardSection = styled.div`
-  background: #12121a;
-  border: 1px solid #f4a26140;
+  background: #0f172a;
+  border: 1px solid #dbb45d40;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 32px;
@@ -68,13 +68,13 @@ const RewardSection = styled.div`
 const RewardTitle = styled.h3`
   font-size: 1rem;
   font-weight: 700;
-  color: #f4a261;
+  color: #dbb45d;
   margin-bottom: 8px;
 `;
 
 const RewardDesc = styled.p`
   font-size: 0.9rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 16px;
 `;
 
@@ -87,7 +87,7 @@ const SectionTitle = styled.h2`
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 export default function SeriesDetailPage() {

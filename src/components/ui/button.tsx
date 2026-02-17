@@ -7,36 +7,36 @@ type Size = "sm" | "md" | "lg";
 
 const variants = {
   primary: css`
-    background: #e63946;
+    background: #38BDF8;
     color: white;
     border: none;
     &:hover:not(:disabled) {
-      background: #c62d38;
+      background: #0EA5E9;
     }
   `,
   secondary: css`
-    background: #1a1a25;
-    color: #e5e5e5;
-    border: 1px solid #2a2a35;
+    background: #1e293b;
+    color: #e5e7eb;
+    border: 1px solid #1e293b;
     &:hover:not(:disabled) {
-      background: #2a2a35;
+      background: #1e293b;
     }
   `,
   ghost: css`
     background: transparent;
-    color: #8888aa;
+    color: #94a3b8;
     border: none;
     &:hover:not(:disabled) {
-      color: #e5e5e5;
-      background: #1a1a25;
+      color: #e5e7eb;
+      background: #1e293b;
     }
   `,
   danger: css`
     background: transparent;
-    color: #e63946;
-    border: 1px solid #e6394640;
+    color: #38BDF8;
+    border: 1px solid #38BDF840;
     &:hover:not(:disabled) {
-      background: #e6394620;
+      background: #38BDF820;
     }
   `,
 };

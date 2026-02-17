@@ -21,8 +21,8 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
   max-width: 200px;
   border-radius: 12px;
   overflow: hidden;
-  background: #12121a;
-  border: 2px solid ${(p) => (p.$owned ? RARITY_COLORS[p.$rarity] + "60" : "#1a1a25")};
+  background: #0f172a;
+  border: 2px solid ${(p) => (p.$owned ? RARITY_COLORS[p.$rarity] + "60" : "#1e293b")};
   transition: transform 0.25s, box-shadow 0.25s;
   cursor: pointer;
   opacity: ${(p) => (p.$owned ? 1 : 0.45)};
@@ -89,7 +89,7 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
 const ImageArea = styled.div<{ $hasImage: boolean }>`
   width: 100%;
   height: 160px;
-  background: #1a1a25;
+  background: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +98,7 @@ const ImageArea = styled.div<{ $hasImage: boolean }>`
   ${(p) =>
     !p.$hasImage &&
     css`
-      color: #333344;
+      color: #334155;
       font-size: 2.8rem;
     `}
 
@@ -117,7 +117,7 @@ const Name = styled.h3`
   margin: 4px 0 0;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #e5e5e5;
+  color: #e5e7eb;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -147,8 +147,8 @@ const BadgeContainer = styled.div`
 `;
 
 const CountBadge = styled.span`
-  background: #0a0a0fcc;
-  color: #e5e5e5;
+  background: #020617cc;
+  color: #e5e7eb;
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 0.7rem;
@@ -157,7 +157,7 @@ const CountBadge = styled.span`
 `;
 
 const NewBadge = styled.span`
-  background: linear-gradient(135deg, #e63946, #ff6b6b);
+  background: linear-gradient(135deg, #38BDF8, #ff6b6b);
   color: #fff;
   padding: 2px 8px;
   border-radius: 9999px;
@@ -169,8 +169,8 @@ const NewBadge = styled.span`
 `;
 
 const LockIcon = styled.div`
-  background: #0a0a0fcc;
-  color: #555566;
+  background: #020617cc;
+  color: #475569;
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 0.7rem;

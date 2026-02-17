@@ -26,8 +26,8 @@ const Panel = styled.aside<{ $open: boolean }>`
     right: 0;
     width: 280px;
     height: 100%;
-    background: #12121a;
-    border-left: 1px solid #2a2a35;
+    background: #0f172a;
+    border-left: 1px solid #1e293b;
     z-index: 70;
     transform: translateX(${(p) => (p.$open ? "0" : "100%")});
     transition: transform 0.3s ease;
@@ -41,7 +41,7 @@ const CloseButton = styled.button`
   right: 16px;
   background: none;
   border: none;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 1.5rem;
   cursor: pointer;
 `;
@@ -49,14 +49,14 @@ const CloseButton = styled.button`
 const SidebarLink = styled(Link)`
   display: block;
   padding: 14px 16px;
-  color: #e5e5e5;
+  color: #e5e7eb;
   text-decoration: none;
   font-size: 1rem;
   border-radius: 8px;
   transition: background 0.2s;
 
   &:hover {
-    background: #1a1a25;
+    background: #1e293b;
   }
 `;
 

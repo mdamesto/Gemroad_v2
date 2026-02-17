@@ -75,7 +75,7 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
 `;
 
@@ -88,8 +88,8 @@ const StatsBar = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 12px;
   padding: 16px 24px;
   display: flex;
@@ -113,26 +113,26 @@ const StatInfo = styled.div``;
 const StatValue = styled.div`
   font-size: 1.3rem;
   font-weight: 800;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 const StatLabel = styled.div`
   font-size: 0.75rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 const OverallProgress = styled.div`
   flex: 1;
   min-width: 280px;
-  background: #12121a;
-  border: 1px solid #2a2a35;
+  background: #0f172a;
+  border: 1px solid #1e293b;
   border-radius: 12px;
   padding: 16px 24px;
 `;
 
 const OverallLabel = styled.div`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
@@ -141,7 +141,7 @@ const OverallLabel = styled.div`
 const OverallTrack = styled.div`
   width: 100%;
   height: 10px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 5px;
   overflow: hidden;
 `;
@@ -169,13 +169,13 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid ${(p) => (p.$active ? "#e63946" : "#2a2a35")};
-  background: ${(p) => (p.$active ? "#e6394620" : "transparent")};
-  color: ${(p) => (p.$active ? "#e63946" : "#8888aa")};
+  border: 1px solid ${(p) => (p.$active ? "#38BDF8" : "#1e293b")};
+  background: ${(p) => (p.$active ? "#38BDF820" : "transparent")};
+  color: ${(p) => (p.$active ? "#38BDF8" : "#94a3b8")};
 
   &:hover {
-    border-color: #e6394660;
-    color: #e5e5e5;
+    border-color: #38BDF860;
+    color: #e5e7eb;
   }
 `;
 
@@ -195,7 +195,7 @@ const Grid = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.95rem;
   grid-column: 1 / -1;
 `;
@@ -203,8 +203,8 @@ const EmptyState = styled.div`
 // ─── Achievement Card ─────────────────────────────────────────────
 const Card = styled.div<{ $unlocked: boolean; $justClaimed: boolean }>`
   position: relative;
-  background: #12121a;
-  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f40" : "#2a2a35")};
+  background: #0f172a;
+  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f40" : "#1e293b")};
   border-radius: 14px;
   padding: 20px;
   transition: all 0.3s;
@@ -223,7 +223,7 @@ const Card = styled.div<{ $unlocked: boolean; $justClaimed: boolean }>`
   `}
 
   &:hover {
-    border-color: ${(p) => (p.$unlocked ? "#2a9d8f60" : "#2a2a3580")};
+    border-color: ${(p) => (p.$unlocked ? "#2a9d8f60" : "#1e293b80")};
     transform: translateY(-2px);
   }
 `;
@@ -256,8 +256,8 @@ const IconContainer = styled.div<{ $unlocked: boolean }>`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: ${(p) => (p.$unlocked ? "#2a9d8f15" : "#1a1a25")};
-  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f30" : "#2a2a35")};
+  background: ${(p) => (p.$unlocked ? "#2a9d8f15" : "#1e293b")};
+  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f30" : "#1e293b")};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -281,12 +281,12 @@ const CardName = styled.h3`
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 2px;
-  color: #e5e5e5;
+  color: #e5e7eb;
 `;
 
 const CardCondition = styled.div`
   font-size: 0.75rem;
-  color: #666680;
+  color: #64748b;
   font-style: italic;
 `;
 
@@ -314,19 +314,19 @@ const StatusBadge = styled.span<{ $status: "locked" | "unlocked" | "claimed" }>`
       `
       : p.$status === "unlocked"
         ? css`
-        background: #f4a26120;
-        color: #f4a261;
-        border: 1px solid #f4a26140;
+        background: #dbb45d20;
+        color: #dbb45d;
+        border: 1px solid #dbb45d40;
       `
         : css`
-        background: #1a1a25;
-        color: #555566;
-        border: 1px solid #2a2a35;
+        background: #1e293b;
+        color: #475569;
+        border: 1px solid #1e293b;
       `}
 `;
 
 const CardDescription = styled.p`
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   margin-bottom: 14px;
   line-height: 1.5;
@@ -340,7 +340,7 @@ const ProgressSection = styled.div`
 const ProgressTrack = styled.div`
   width: 100%;
   height: 6px;
-  background: #2a2a35;
+  background: #1e293b;
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -349,14 +349,14 @@ const ProgressTrack = styled.div`
 const ProgressFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, #e63946, #e6394690);
+  background: linear-gradient(90deg, #38BDF8, #38BDF890);
   border-radius: 3px;
   transition: width 0.5s ease-out;
 `;
 
 const ProgressLabel = styled.div`
   font-size: 0.72rem;
-  color: #666680;
+  color: #64748b;
   display: flex;
   justify-content: space-between;
 `;
@@ -386,9 +386,9 @@ const RewardTag = styled.div<{ $type: "gems" | "xp" }>`
   ${(p) =>
     p.$type === "gems"
       ? css`
-        background: #f4a26115;
-        color: #f4a261;
-        border: 1px solid #f4a26130;
+        background: #dbb45d15;
+        color: #dbb45d;
+        border: 1px solid #dbb45d30;
       `
       : css`
         background: #60a5fa15;
@@ -415,7 +415,7 @@ const ClaimSuccessOverlay = styled.div`
 `;
 
 const ClaimSuccessText = styled.div`
-  background: #12121a;
+  background: #0f172a;
   border: 1px solid #2a9d8f40;
   border-radius: 12px;
   padding: 12px 24px;
@@ -431,7 +431,7 @@ const ClaimSuccessTitle = styled.div`
 
 const ClaimSuccessRewards = styled.div`
   font-size: 0.8rem;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 // ─── Tooltip ──────────────────────────────────────────────────────
@@ -450,12 +450,12 @@ const Tooltip = styled.div`
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: #1a1a25;
-  border: 1px solid #2a2a35;
+  background: #1e293b;
+  border: 1px solid #1e293b;
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 0.78rem;
-  color: #e5e5e5;
+  color: #e5e7eb;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
@@ -470,7 +470,7 @@ const Tooltip = styled.div`
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #2a2a35;
+    border-top-color: #1e293b;
   }
 `;
 
@@ -478,7 +478,7 @@ const Tooltip = styled.div`
 const Loading = styled.div`
   text-align: center;
   padding: 60px;
-  color: #8888aa;
+  color: #94a3b8;
 `;
 
 // ─── Condition type labels ────────────────────────────────────────
@@ -678,7 +678,7 @@ export default function AchievementsPage() {
         <StatCard>
           <StatIcon>◆</StatIcon>
           <StatInfo>
-            <StatValue style={{ color: "#f4a261" }}>
+            <StatValue style={{ color: "#dbb45d" }}>
               {formatGems(totalGems)}
             </StatValue>
             <StatLabel>Gemmes récoltées</StatLabel>
@@ -696,7 +696,7 @@ export default function AchievementsPage() {
         <OverallProgress>
           <OverallLabel>
             <span>Progression globale</span>
-            <span style={{ fontWeight: 700, color: "#e5e5e5" }}>
+            <span style={{ fontWeight: 700, color: "#e5e7eb" }}>
               {Math.round(overallPercent)}%
             </span>
           </OverallLabel>

@@ -18,21 +18,22 @@ const Nav = styled.nav`
   justify-content: space-between;
   padding: 0 24px;
   height: 64px;
-  background: #0a0a0fee;
-  border-bottom: 1px solid #2a2a35;
+  background: #020617ee;
+  border-bottom: 1px solid #1e293b;
   backdrop-filter: blur(10px);
 `;
 
 const Logo = styled(Link)`
+  font-family: var(--font-cinzel), "Cinzel", serif;
   font-size: 1.4rem;
-  font-weight: 800;
-  color: #e63946;
+  font-weight: 700;
   text-decoration: none;
-  letter-spacing: -0.5px;
+  letter-spacing: 0.04em;
 
-  span {
-    color: #f4a261;
-  }
+  background: linear-gradient(90deg, #c5ccd5, #ffffff 45%, #f8f3da 58%, #dbb45d);
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.15));
 `;
 
 const NavLinks = styled.div`
@@ -47,7 +48,7 @@ const NavLinks = styled.div`
 
 const NavLink = styled(Link)`
   padding: 8px 14px;
-  color: #8888aa;
+  color: #94a3b8;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -55,8 +56,8 @@ const NavLink = styled(Link)`
   transition: color 0.2s, background 0.2s;
 
   &:hover {
-    color: #e5e5e5;
-    background: #1a1a25;
+    color: #e5e7eb;
+    background: #1e293b;
   }
 `;
 
@@ -70,7 +71,7 @@ const MenuButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: #e5e5e5;
+  color: #e5e7eb;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
@@ -82,7 +83,7 @@ const MenuButton = styled.button`
 
 const AuthButton = styled(Link)`
   padding: 8px 20px;
-  background: #e63946;
+  background: #38BDF8;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -91,34 +92,34 @@ const AuthButton = styled(Link)`
   transition: background 0.2s;
 
   &:hover {
-    background: #c62d38;
+    background: #0EA5E9;
   }
 `;
 
 const LogoutButton = styled.button`
   padding: 8px 14px;
   background: none;
-  border: 1px solid #2a2a35;
-  color: #8888aa;
+  border: 1px solid #1e293b;
+  color: #94a3b8;
   border-radius: 8px;
   font-size: 0.85rem;
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
 
   &:hover {
-    color: #e5e5e5;
-    border-color: #e5e5e5;
+    color: #e5e7eb;
+    border-color: #e5e7eb;
   }
 `;
 
 const Username = styled(Link)`
-  color: #e5e5e5;
+  color: #e5e7eb;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9rem;
 
   &:hover {
-    color: #f4a261;
+    color: #dbb45d;
   }
 `;
 
@@ -137,7 +138,7 @@ export function Navbar() {
   return (
     <Nav>
       <Logo href="/">
-        Gem<span>Road</span>
+        GemRoad
       </Logo>
 
       {user && (
@@ -160,7 +161,7 @@ export function Navbar() {
             <MenuButton onClick={toggleSidebar}>&#9776;</MenuButton>
           </>
         ) : (
-          <AuthButton href="/login">Connexion</AuthButton>
+          <AuthButton href="/">Connexion</AuthButton>
         )}
       </NavRight>
     </Nav>

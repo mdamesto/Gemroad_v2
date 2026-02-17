@@ -35,13 +35,13 @@ const CardReveal = styled.div`
 
 const Counter = styled.div`
   margin-top: 24px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.9rem;
 `;
 
 const ClickHint = styled.div`
   margin-top: 16px;
-  color: #8888aa;
+  color: #94a3b8;
   font-size: 0.85rem;
   animation: ${fadeIn} 0.5s ease 0.5s both;
 `;
@@ -65,7 +65,7 @@ const CloseButton = styled.button`
   margin-bottom: 20px;
   flex-shrink: 0;
   padding: 12px 32px;
-  background: #e63946;
+  background: #38BDF8;
   border: none;
   border-radius: 8px;
   color: white;
@@ -75,7 +75,7 @@ const CloseButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: #c62d38;
+    background: #0EA5E9;
   }
 `;
 
