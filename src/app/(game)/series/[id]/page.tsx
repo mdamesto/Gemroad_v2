@@ -4,95 +4,104 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styled from "styled-components";
 import { useUser } from "@/hooks/use-user";
+import { useToastStore } from "@/stores/toast-store";
 import { createClient } from "@/lib/supabase/client";
 import { CardGrid } from "@/components/cards/card-grid";
-import { Button } from "@/components/ui/button";
+import { GlowButton } from "@/components/ui/glow-button";
+import { PageHeader } from "@/components/ui/page-header";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { BackButton } from "@/components/ui/back-button";
+import { theme } from "@/lib/theme";
+import { fadeInUp } from "@/lib/animations";
 import type { Card, Series } from "@/types/cards";
 
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 0 24px 40px;
 `;
 
-const Header = styled.div`
-  margin-bottom: 32px;
+const ContentArea = styled.div`
+  animation: ${fadeInUp} 0.5s ease-out 0.2s both;
 `;
 
-const Title = styled.h1`
-  font-size: 2rem;
+const ProgressRingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`;
+
+const ProgressRingSvg = styled.svg`
+  width: 80px;
+  height: 80px;
+  transform: rotate(-90deg);
+`;
+
+const ProgressPercent = styled.span`
+  font-size: 1.1rem;
   font-weight: 800;
-  margin-bottom: 8px;
-`;
-
-const Description = styled.p`
-  color: #94a3b8;
-  font-size: 0.95rem;
-  margin-bottom: 20px;
-  line-height: 1.5;
-`;
-
-const ProgressBar = styled.div`
-  width: 100%;
-  max-width: 400px;
-  height: 10px;
-  background: #1e293b;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 8px;
-`;
-
-const ProgressFill = styled.div<{ $percent: number }>`
-  height: 100%;
-  width: ${(p) => p.$percent}%;
-  background: #38BDF8;
-  border-radius: 5px;
-  transition: width 0.3s;
+  color: ${theme.colors.text};
 `;
 
 const ProgressText = styled.p`
   font-size: 0.85rem;
-  color: #94a3b8;
-  margin-bottom: 20px;
+  color: ${theme.colors.textMuted};
+  text-align: center;
+  margin-top: 4px;
 `;
 
-const RewardSection = styled.div`
-  background: #0f172a;
-  border: 1px solid #dbb45d40;
-  border-radius: 12px;
-  padding: 20px;
+const RewardSection = styled(GlassCard)`
   margin-bottom: 32px;
   max-width: 500px;
+  border-color: ${theme.colors.accent}30;
 `;
 
 const RewardTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
   font-size: 1rem;
   font-weight: 700;
-  color: #dbb45d;
+  color: ${theme.colors.accent};
   margin-bottom: 8px;
 `;
 
 const RewardDesc = styled.p`
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   margin-bottom: 16px;
 `;
 
 const SectionTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 20px;
+  color: ${theme.colors.text};
 `;
 
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
+const StatusTag = styled.span<{ $variant: "success" | "muted" }>`
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: ${theme.radii.full};
+  font-size: 0.8rem;
+  font-weight: 600;
+  ${(p) =>
+    p.$variant === "success"
+      ? `background: ${theme.colors.success}20; color: ${theme.colors.success}; border: 1px solid ${theme.colors.success}40;`
+      : `background: ${theme.colors.border}; color: ${theme.colors.textMuted}; border: 1px solid ${theme.colors.border};`}
 `;
+
+const TrophyIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M10 22V9" /><path d="M14 22V9" /><rect x="6" y="2" width="12" height="7" rx="1" />
+  </svg>
+);
 
 export default function SeriesDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useUser();
+  const addToast = useToastStore((s) => s.addToast);
   const [series, setSeries] = useState<Series | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [ownedCardIds, setOwnedCardIds] = useState<Set<string>>(new Set());
@@ -159,58 +168,75 @@ export default function SeriesDetailPage() {
 
     if (res.ok) {
       setRewardClaimed(true);
+      addToast("Récompense de série réclamée !", "success");
+    } else {
+      addToast("Erreur lors de la réclamation", "error");
     }
     setClaiming(false);
   };
 
-  if (loading) return <Loading>Chargement...</Loading>;
-  if (!series) return <Loading>Série non trouvée</Loading>;
+  if (loading) return <LoadingState text="Chargement de la série..." />;
+  if (!series) return <LoadingState text="Série non trouvée" />;
 
   const collectedCount = cards.filter((c) => ownedCardIds.has(c.id)).length;
   const percent = Math.min((collectedCount / series.total_cards) * 100, 100);
+  const circumference = 2 * Math.PI * 32;
+  const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
     <Page>
-      <Header>
-        <Title>{series.name}</Title>
-        <Description>{series.description}</Description>
+      <BackButton />
+      <PageHeader title={series.name} subtitle={series.description || undefined}>
+        <ProgressRingContainer>
+          <ProgressRingSvg viewBox="0 0 72 72">
+            <circle cx="36" cy="36" r="32" fill="none" stroke={theme.colors.border} strokeWidth="4" />
+            <circle
+              cx="36" cy="36" r="32"
+              fill="none"
+              stroke={completed ? theme.colors.accent : theme.colors.primary}
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              style={{ transition: "stroke-dashoffset 0.8s ease" }}
+            />
+          </ProgressRingSvg>
+          <div>
+            <ProgressPercent>{Math.round(percent)}%</ProgressPercent>
+            <ProgressText>
+              {collectedCount} / {series.total_cards} cartes
+            </ProgressText>
+          </div>
+        </ProgressRingContainer>
+      </PageHeader>
 
-        <ProgressBar>
-          <ProgressFill $percent={percent} />
-        </ProgressBar>
-        <ProgressText>
-          {collectedCount} / {series.total_cards} cartes collectées (
-          {Math.round(percent)}%)
-        </ProgressText>
-      </Header>
+      <ContentArea>
+        <RewardSection>
+          <RewardTitle>Récompense de série</RewardTitle>
+          <RewardDesc>{series.reward_desc || series.reward_type}</RewardDesc>
+          {completed && !rewardClaimed && (
+            <GlowButton
+              $variant="accent"
+              onClick={handleClaim}
+              disabled={claiming}
+              loading={claiming}
+              icon={TrophyIcon}
+            >
+              Réclamer la récompense
+            </GlowButton>
+          )}
+          {rewardClaimed && <StatusTag $variant="success">Récompense réclamée</StatusTag>}
+          {!completed && <StatusTag $variant="muted">Série incomplète</StatusTag>}
+        </RewardSection>
 
-      <RewardSection>
-        <RewardTitle>Récompense de série</RewardTitle>
-        <RewardDesc>{series.reward_desc || series.reward_type}</RewardDesc>
-        {completed && !rewardClaimed && (
-          <Button onClick={handleClaim} disabled={claiming}>
-            {claiming ? "Réclamation..." : "Réclamer la récompense"}
-          </Button>
-        )}
-        {rewardClaimed && (
-          <Button $variant="ghost" disabled>
-            Récompense réclamée
-          </Button>
-        )}
-        {!completed && (
-          <Button $variant="ghost" disabled>
-            Série incomplète
-          </Button>
-        )}
-      </RewardSection>
-
-      <SectionTitle>Cartes de la série</SectionTitle>
-      <CardGrid
-        cards={cards.map((card) => ({
-          card,
-          quantity: ownedCardIds.has(card.id) ? 1 : 0,
-        }))}
-      />
+        <SectionTitle>Cartes de la série</SectionTitle>
+        <CardGrid
+          cards={cards.map((card) => ({
+            card,
+            quantity: ownedCardIds.has(card.id) ? 1 : 0,
+          }))}
+        />
+      </ContentArea>
     </Page>
   );
 }

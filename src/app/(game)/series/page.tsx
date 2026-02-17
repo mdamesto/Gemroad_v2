@@ -7,7 +7,10 @@ import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
 import { RarityBadge } from "@/components/shared/rarity-badge";
-import { Button } from "@/components/ui/button";
+import { GlowButton } from "@/components/ui/glow-button";
+import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { theme } from "@/lib/theme";
 import type { Card, Series } from "@/types/cards";
 import type { UserSeriesProgress } from "@/types/game";
 
@@ -54,22 +57,7 @@ const expandIn = keyframes`
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: 32px;
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-`;
-
-const Subtitle = styled.p`
-  color: #94a3b8;
-  font-size: 0.95rem;
+  padding: 0 24px 40px;
 `;
 
 // ─── Filtres ──────────────────────────────────────────────────────
@@ -86,14 +74,15 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid ${(p) => (p.$active ? "#38BDF8" : "#1e293b")};
-  background: ${(p) => (p.$active ? "#38BDF820" : "transparent")};
-  color: ${(p) => (p.$active ? "#38BDF8" : "#94a3b8")};
+  transition: all 0.25s ease;
+  border: 1px solid ${(p) => (p.$active ? theme.colors.primary : theme.colors.border)};
+  background: ${(p) => (p.$active ? `${theme.colors.primary}20` : "transparent")};
+  color: ${(p) => (p.$active ? theme.colors.primary : theme.colors.textMuted)};
 
   &:hover {
-    border-color: #38BDF860;
-    color: #e5e7eb;
+    border-color: ${theme.colors.primary}60;
+    color: ${theme.colors.text};
+    transform: translateY(-1px);
   }
 `;
 
@@ -120,8 +109,10 @@ const EmptyState = styled.div`
 
 // ─── Series Card ──────────────────────────────────────────────────
 const CardContainer = styled.div<{ $completed: boolean }>`
-  background: #0f172a;
-  border: 1px solid ${(p) => (p.$completed ? "#FBBF2440" : "#1e293b")};
+  background: ${theme.colors.glassBg};
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid ${(p) => (p.$completed ? "#FBBF2440" : theme.colors.glassBorder)};
   border-radius: 16px;
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -390,12 +381,7 @@ const ViewDetailLink = styled(Link)`
   }
 `;
 
-// ─── Loading ──────────────────────────────────────────────────────
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-`;
+// (LoadingState imported from skeleton-loader)
 
 // ─── Component ────────────────────────────────────────────────────
 export default function SeriesPage() {
@@ -535,7 +521,7 @@ export default function SeriesPage() {
   };
 
   // ─── Render ─────────────────────────────────────────────────────
-  if (loading) return <Loading>Chargement des séries...</Loading>;
+  if (loading) return <LoadingState text="Chargement des séries..." />;
 
   const filters: { key: FilterType; label: string }[] = [
     { key: "all", label: "Toutes" },
@@ -546,13 +532,10 @@ export default function SeriesPage() {
 
   return (
     <Page>
-      <PageHeader>
-        <Title>Séries</Title>
-        <Subtitle>
-          Complète des séries de cartes pour obtenir des pierres précieuses et
-          des récompenses exclusives.
-        </Subtitle>
-      </PageHeader>
+      <PageHeaderUI
+        title="Séries"
+        subtitle="Complète des séries de cartes pour obtenir des pierres précieuses et des récompenses exclusives."
+      />
 
       <FilterBar>
         {filters.map((f) => (
@@ -626,8 +609,9 @@ export default function SeriesPage() {
                 </RewardInfo>
 
                 {isCompleted && !rewardClaimed && (
-                  <Button
+                  <GlowButton
                     $size="sm"
+                    $variant="accent"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClaim(series.id);
@@ -637,7 +621,7 @@ export default function SeriesPage() {
                     {claimingId === series.id
                       ? "Réclamation..."
                       : "Réclamer"}
-                  </Button>
+                  </GlowButton>
                 )}
                 {rewardClaimed && <ClaimedTag>✓ Réclamée</ClaimedTag>}
               </RewardRow>

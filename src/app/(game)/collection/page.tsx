@@ -7,41 +7,71 @@ import { createClient } from "@/lib/supabase/client";
 import { FilterPanel, type FilterState } from "@/components/collection/filter-panel";
 import { CollectionGrid } from "@/components/collection/collection-grid";
 import { CardModal } from "@/components/collection/card-modal";
+import { PageHeader } from "@/components/ui/page-header";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { theme } from "@/lib/theme";
+import { fadeInUp } from "@/lib/animations";
 import type { CollectionCardData } from "@/components/collection/card-item";
 import type { Card } from "@/types/cards";
 
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 0 24px 40px;
 `;
 
-const Header = styled.div`
-  margin-bottom: 24px;
+const StatsRow = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
-const Title = styled.h1`
-  font-size: 2rem;
+const StatCard = styled(GlassCard)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 24px;
+  min-width: 120px;
+`;
+
+const StatValue = styled.span`
+  font-size: 1.3rem;
   font-weight: 800;
-  margin-bottom: 8px;
+  color: ${theme.colors.text};
 `;
 
-const Stats = styled.p`
-  color: #94a3b8;
-  font-size: 0.9rem;
-
-  strong {
-    color: #e5e7eb;
-  }
+const StatLabel = styled.span`
+  font-size: 0.7rem;
+  color: ${theme.colors.textMuted};
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 `;
 
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
+const ProgressBarOuter = styled.div`
+  width: 100%;
+  max-width: 200px;
+  height: 6px;
+  background: ${theme.colors.border};
+  border-radius: 3px;
+  overflow: hidden;
 `;
 
-// Cards obtained in the last 24 hours are considered "new"
+const ProgressBarInner = styled.div<{ $percent: number }>`
+  height: 100%;
+  width: ${(p) => p.$percent}%;
+  background: ${theme.gradients.primary};
+  border-radius: 3px;
+  transition: width 0.8s ease;
+`;
+
+const ContentArea = styled.div`
+  animation: ${fadeInUp} 0.5s ease-out 0.2s both;
+`;
+
 const NEW_CARD_THRESHOLD_MS = 24 * 60 * 60 * 1000;
 
 export default function CollectionPage() {
@@ -140,27 +170,46 @@ export default function CollectionPage() {
 
   const ownedCount = collectionCards.filter((c) => c.owned).length;
   const totalCount = collectionCards.length;
+  const percent = totalCount > 0 ? Math.round((ownedCount / totalCount) * 100) : 0;
 
   if (userLoading || loading) {
-    return <Loading>Chargement de votre collection...</Loading>;
+    return <LoadingState text="Chargement de votre collection..." />;
   }
 
   if (!user) {
-    return <Loading>Connectez-vous pour voir votre collection.</Loading>;
+    return <LoadingState text="Connectez-vous pour voir votre collection." />;
   }
 
   return (
     <Page>
-      <Header>
-        <Title>Ma Collection</Title>
-        <Stats>
-          <strong>{ownedCount}</strong> / {totalCount} cartes collectionnées
-        </Stats>
-      </Header>
+      <PageHeader title="Ma Collection" subtitle="Collectionnez toutes les cartes du monde post-apocalyptique">
+        <StatsRow>
+          <StatCard>
+            <StatValue>
+              <AnimatedCounter value={ownedCount} color={theme.colors.primary} />
+            </StatValue>
+            <StatLabel>Possédées</StatLabel>
+          </StatCard>
+          <StatCard>
+            <StatValue>{totalCount}</StatValue>
+            <StatLabel>Total</StatLabel>
+          </StatCard>
+          <StatCard>
+            <StatValue>
+              <AnimatedCounter value={percent} color={theme.colors.accent} suffix="%" />
+            </StatValue>
+            <StatLabel>Complétion</StatLabel>
+            <ProgressBarOuter>
+              <ProgressBarInner $percent={percent} />
+            </ProgressBarOuter>
+          </StatCard>
+        </StatsRow>
+      </PageHeader>
 
-      <FilterPanel filters={filters} onChange={setFilters} />
-
-      <CollectionGrid cards={filtered} onCardClick={setSelected} />
+      <ContentArea>
+        <FilterPanel filters={filters} onChange={setFilters} />
+        <CollectionGrid cards={filtered} onCardClick={setSelected} />
+      </ContentArea>
 
       {selected && <CardModal data={selected} onClose={() => setSelected(null)} />}
     </Page>

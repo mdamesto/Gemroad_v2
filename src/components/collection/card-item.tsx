@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { RARITY_COLORS, RARITY_LABELS, type Rarity } from "@/lib/constants";
 import { CardPlaceholder } from "@/components/shared/card-placeholder";
+import { shimmer, popIn } from "@/lib/animations";
+import { theme } from "@/lib/theme";
 import type { Card } from "@/types/cards";
-
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
 
 const holoShift = keyframes`
   0% { background-position: 0% 50%; }
@@ -17,20 +14,44 @@ const holoShift = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
-const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
+const mysteryShimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean; $isNew?: boolean }>`
   position: relative;
   width: 100%;
   max-width: 200px;
   border-radius: 12px;
   overflow: hidden;
-  background: #0f172a;
-  border: 2px solid ${(p) => (p.$owned ? RARITY_COLORS[p.$rarity] + "60" : "#1e293b")};
-  transition: transform 0.25s, box-shadow 0.25s;
+  background: ${theme.colors.bgCard};
+  border: 2px solid ${(p) => (p.$owned ? RARITY_COLORS[p.$rarity] + "60" : theme.colors.border)};
   cursor: pointer;
-  opacity: ${(p) => (p.$owned ? 1 : 0.45)};
-  filter: ${(p) => (p.$owned ? "none" : "grayscale(0.8)")};
+  transition: box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
 
-  /* Holographic overlay — visible on hover for owned cards */
+  ${(p) =>
+    !p.$owned &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 25%,
+          rgba(255, 255, 255, 0.04) 50%,
+          transparent 75%
+        );
+        background-size: 400% 100%;
+        animation: ${mysteryShimmer} 3s ease infinite;
+        pointer-events: none;
+        z-index: 3;
+      }
+    `}
+
   ${(p) =>
     p.$owned &&
     css`
@@ -41,11 +62,11 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
         border-radius: 12px;
         background: linear-gradient(
           135deg,
-          rgba(255, 0, 128, 0.12) 0%,
-          rgba(0, 200, 255, 0.12) 25%,
-          rgba(128, 0, 255, 0.12) 50%,
-          rgba(255, 200, 0, 0.12) 75%,
-          rgba(255, 0, 128, 0.12) 100%
+          rgba(255, 0, 128, 0.15) 0%,
+          rgba(0, 200, 255, 0.15) 25%,
+          rgba(128, 0, 255, 0.15) 50%,
+          rgba(255, 200, 0, 0.15) 75%,
+          rgba(255, 0, 128, 0.15) 100%
         );
         background-size: 300% 300%;
         opacity: 0;
@@ -56,19 +77,10 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
 
       &:hover::after {
         opacity: 1;
-        animation: ${holoShift} 3s ease infinite;
+        animation: ${holoShift} 2.5s ease infinite;
       }
     `}
 
-  &:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: ${(p) =>
-      p.$owned
-        ? `0 0 20px ${RARITY_COLORS[p.$rarity]}50, 0 8px 30px rgba(0,0,0,0.4)`
-        : "0 0 10px rgba(255,255,255,0.05)"};
-  }
-
-  /* Legendary shimmer top bar */
   ${(p) =>
     p.$owned &&
     p.$rarity === "legendary" &&
@@ -86,12 +98,21 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean }>`
         z-index: 4;
       }
     `}
+
+  opacity: ${(p) => (p.$owned ? 1 : 0.5)};
+  filter: ${(p) => (p.$owned ? "none" : "grayscale(0.7)")};
+
+  ${(p) =>
+    p.$isNew &&
+    css`
+      animation: ${popIn} 0.4s ease-out;
+    `}
 `;
 
 const ImageArea = styled.div<{ $hasImage: boolean }>`
   width: 100%;
   height: 160px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +140,7 @@ const Name = styled.h3`
   margin: 4px 0 0;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -150,7 +171,7 @@ const BadgeContainer = styled.div`
 
 const CountBadge = styled.span`
   background: #020617cc;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 0.7rem;
@@ -189,16 +210,49 @@ export interface CollectionCardData {
 interface CardItemProps {
   data: CollectionCardData;
   onClick: () => void;
+  index?: number;
 }
 
-export function CardItem({ data, onClick }: CardItemProps) {
+export function CardItem({ data, onClick, index = 0 }: CardItemProps) {
   const { card, quantity, owned, isNew } = data;
   const hasImage = !!card.image_url && card.image_url !== "";
   const [imgError, setImgError] = useState(false);
   const showImage = hasImage && owned && !imgError;
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!owned || !wrapperRef.current) return;
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const rotateX = (y - 0.5) * -12;
+      const rotateY = (x - 0.5) * 12;
+      wrapperRef.current.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+      wrapperRef.current.style.boxShadow = `0 0 20px ${RARITY_COLORS[card.rarity]}50, 0 8px 30px rgba(0,0,0,0.4)`;
+    },
+    [owned, card.rarity]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (!wrapperRef.current) return;
+    wrapperRef.current.style.transform = "";
+    wrapperRef.current.style.boxShadow = "";
+  }, []);
 
   return (
-    <Wrapper $rarity={card.rarity} $owned={owned} onClick={onClick}>
+    <Wrapper
+      ref={wrapperRef}
+      $rarity={card.rarity}
+      $owned={owned}
+      $isNew={isNew}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        animationDelay: `${Math.min(index * 30, 600)}ms`,
+      }}
+    >
       <BadgeContainer>
         {owned && isNew && <NewBadge>NEW</NewBadge>}
         {owned && quantity > 1 && <CountBadge>x{quantity}</CountBadge>}

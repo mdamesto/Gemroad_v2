@@ -4,7 +4,12 @@ import { useEffect, useState, useMemo } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import { GlowButton } from "@/components/ui/glow-button";
+import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { useToastStore } from "@/stores/toast-store";
+import { theme } from "@/lib/theme";
 import { formatGems } from "@/lib/utils";
 import type { Achievement } from "@/types/game";
 import type { AchievementWithStatus } from "@/types/game";
@@ -61,22 +66,7 @@ const spinIn = keyframes`
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: 32px;
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-`;
-
-const Subtitle = styled.p`
-  color: #94a3b8;
-  font-size: 0.95rem;
+  padding: 0 24px 40px;
 `;
 
 // ─── Stats Bar ────────────────────────────────────────────────────
@@ -87,15 +77,12 @@ const StatsBar = styled.div`
   flex-wrap: wrap;
 `;
 
-const StatCard = styled.div`
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  padding: 16px 24px;
+const StatCard = styled(GlassCard)`
   display: flex;
   align-items: center;
   gap: 12px;
   min-width: 180px;
+  padding: 16px 24px;
 `;
 
 const StatIcon = styled.div`
@@ -121,12 +108,9 @@ const StatLabel = styled.div`
   color: #94a3b8;
 `;
 
-const OverallProgress = styled.div`
+const OverallProgress = styled(GlassCard)`
   flex: 1;
   min-width: 280px;
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
   padding: 16px 24px;
 `;
 
@@ -168,14 +152,15 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid ${(p) => (p.$active ? "#38BDF8" : "#1e293b")};
-  background: ${(p) => (p.$active ? "#38BDF820" : "transparent")};
-  color: ${(p) => (p.$active ? "#38BDF8" : "#94a3b8")};
+  transition: all 0.25s ease;
+  border: 1px solid ${(p) => (p.$active ? theme.colors.primary : theme.colors.border)};
+  background: ${(p) => (p.$active ? `${theme.colors.primary}20` : "transparent")};
+  color: ${(p) => (p.$active ? theme.colors.primary : theme.colors.textMuted)};
 
   &:hover {
-    border-color: #38BDF860;
-    color: #e5e7eb;
+    border-color: ${theme.colors.primary}60;
+    color: ${theme.colors.text};
+    transform: translateY(-1px);
   }
 `;
 
@@ -474,12 +459,7 @@ const Tooltip = styled.div`
   }
 `;
 
-// ─── Loading ──────────────────────────────────────────────────────
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-`;
+// (LoadingState imported from skeleton-loader)
 
 // ─── Condition type labels ────────────────────────────────────────
 const CONDITION_LABELS: Record<string, string> = {
@@ -499,9 +479,16 @@ function getConditionLabel(conditionType: string): string {
   return CONDITION_LABELS[conditionType] || conditionType;
 }
 
+const StarIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
 // ─── Component ────────────────────────────────────────────────────
 export default function AchievementsPage() {
   const { user, loading: userLoading } = useUser();
+  const addToast = useToastStore((s) => s.addToast);
   const [achievements, setAchievements] = useState<AchievementWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [claimingId, setClaimingId] = useState<string | null>(null);
@@ -587,6 +574,8 @@ export default function AchievementsPage() {
         [achievementId]: { gems: result.gems, xp: result.xp },
       }));
 
+      addToast(`Récompense réclamée : +${result.gems} gems, +${result.xp} XP`, "success");
+
       // Remove animation after delay
       setTimeout(() => {
         setJustClaimedIds((prev) => {
@@ -646,7 +635,7 @@ export default function AchievementsPage() {
       : 0;
 
   // ─── Render ─────────────────────────────────────────────────────
-  if (loading) return <Loading>Chargement des achievements...</Loading>;
+  if (loading) return <LoadingState text="Chargement des achievements..." />;
 
   const filters: { key: FilterType; label: string }[] = [
     { key: "all", label: "Tous" },
@@ -656,12 +645,10 @@ export default function AchievementsPage() {
 
   return (
     <Page>
-      <PageHeader>
-        <Title>Achievements</Title>
-        <Subtitle>
-          Accomplis des défis pour débloquer des récompenses exclusives.
-        </Subtitle>
-      </PageHeader>
+      <PageHeaderUI
+        title="Achievements"
+        subtitle="Accomplis des défis pour débloquer des récompenses exclusives."
+      />
 
       {/* Stats */}
       <StatsBar>
@@ -828,13 +815,16 @@ export default function AchievementsPage() {
                   </RewardTags>
 
                   {a.unlocked && !a.claimed && (
-                    <Button
+                    <GlowButton
                       $size="sm"
+                      $variant="success"
                       onClick={() => handleClaim(a.id)}
                       disabled={claimingId === a.id}
+                      loading={claimingId === a.id}
+                      icon={StarIcon}
                     >
-                      {claimingId === a.id ? "Réclamation..." : "Réclamer"}
-                    </Button>
+                      Réclamer
+                    </GlowButton>
                   )}
                 </RewardsRow>
               </CardInner>

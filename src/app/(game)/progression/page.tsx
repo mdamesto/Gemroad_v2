@@ -7,6 +7,12 @@ import { createClient } from "@/lib/supabase/client";
 import { xpToNextLevel, formatGems } from "@/lib/utils";
 import { FACTION_COLORS, type FactionConst } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { GlowButton } from "@/components/ui/glow-button";
+import { useToastStore } from "@/stores/toast-store";
+import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
+import { GlassCard } from "@/components/ui/glass-card";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { theme } from "@/lib/theme";
 import type {
   TalentTree,
   Talent,
@@ -81,22 +87,7 @@ const confirmFadeIn = keyframes`
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
-`;
-
-const PageHeader = styled.div`
-  margin-bottom: 32px;
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-`;
-
-const Subtitle = styled.p`
-  color: #94a3b8;
-  font-size: 0.95rem;
+  padding: 0 24px 40px;
 `;
 
 // ─── Stats Section ────────────────────────────────────────────────
@@ -107,20 +98,17 @@ const StatsRow = styled.div`
   margin-bottom: 36px;
 `;
 
-const StatCard = styled.div<{ $highlight?: boolean }>`
-  background: #0f172a;
-  border: 1px solid ${(p) => (p.$highlight ? "#dbb45d40" : "#1e293b")};
-  border-radius: 14px;
-  padding: 20px 24px;
+const StatCard = styled(GlassCard)<{ $highlight?: boolean }>`
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: border-color 0.3s;
+  padding: 20px 24px;
 
   ${(p) =>
     p.$highlight &&
     css`
-    box-shadow: 0 0 20px #dbb45d10;
+    border-color: ${theme.colors.accent}40;
+    box-shadow: 0 0 20px ${theme.colors.accent}10;
   `}
 `;
 
@@ -173,10 +161,18 @@ const XpTrack = styled.div`
   overflow: hidden;
 `;
 
+const gradientShift = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
 const XpFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, #38BDF8, #dbb45d);
+  background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.primary});
+  background-size: 200% 100%;
+  animation: ${gradientShift} 3s ease infinite;
   border-radius: 5px;
   transition: width 0.5s ease-out;
 `;
@@ -284,12 +280,13 @@ const ConnectorSpacer = styled.div`
 `;
 
 const ConnectorLine = styled.div<{ $color: string; $active: boolean }>`
-  width: 2px;
+  width: 3px;
   height: 20px;
   margin-left: 32px;
-  background: ${(p) => (p.$active ? p.$color : "#1e293b")};
-  border-radius: 1px;
+  background: ${(p) => (p.$active ? p.$color : theme.colors.border)};
+  border-radius: 2px;
   transition: background 0.3s;
+  ${(p) => p.$active && `box-shadow: 0 0 8px ${p.$color}40;`}
 `;
 
 // ─── Talent Node ──────────────────────────────────────────────────
@@ -535,16 +532,12 @@ const SuccessText = styled.span`
   color: #e5e7eb;
 `;
 
-// ─── Loading ──────────────────────────────────────────────────────
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-`;
+// (LoadingState imported from skeleton-loader)
 
 // ─── Component ────────────────────────────────────────────────────
 export default function ProgressionPage() {
   const { user, profile, loading: userLoading } = useUser();
+  const addToast = useToastStore((s) => s.addToast);
   const [trees, setTrees] = useState<TreeWithTalents[]>([]);
   const [talentPoints, setTalentPoints] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -643,6 +636,8 @@ export default function ProgressionPage() {
       setJustUnlockedId(confirmTalent.id);
       setConfirmTalent(null);
 
+      addToast(`${confirmTalent.name} débloqué !`, "success");
+
       // Show success
       setSuccessMsg({
         text: `${confirmTalent.name} débloqué !`,
@@ -657,7 +652,7 @@ export default function ProgressionPage() {
       setTimeout(() => setSuccessMsg(null), 3000);
     } else {
       const err = await res.json();
-      alert(err.error || "Erreur lors du déblocage");
+      addToast(err.error || "Erreur lors du déblocage", "error");
     }
 
     setUnlocking(false);
@@ -665,10 +660,10 @@ export default function ProgressionPage() {
 
   // ─── Render ─────────────────────────────────────────────────────
   if (loading || userLoading)
-    return <Loading>Chargement de la progression...</Loading>;
+    return <LoadingState text="Chargement de la progression..." />;
 
   if (!user || !profile)
-    return <Loading>Connectez-vous pour voir votre progression.</Loading>;
+    return <LoadingState text="Connectez-vous pour voir votre progression." />;
 
   const xpInLevel = profile.xp % 100;
   const xpNeeded = xpToNextLevel(profile.xp);
@@ -681,12 +676,10 @@ export default function ProgressionPage() {
 
   return (
     <Page>
-      <PageHeader>
-        <Title>Progression</Title>
-        <Subtitle>
-          Monte en niveau, débloque des talents et renforce ton jeu.
-        </Subtitle>
-      </PageHeader>
+      <PageHeaderUI
+        title="Progression"
+        subtitle="Monte en niveau, débloque des talents et renforce ton jeu."
+      />
 
       {/* Stats Row */}
       <StatsRow>
@@ -878,7 +871,7 @@ export default function ProgressionPage() {
         })}
 
         {trees.length === 0 && (
-          <Loading>Aucun arbre de talents disponible.</Loading>
+          <LoadingState text="Aucun arbre de talents disponible." />
         )}
       </TreesContainer>
 
@@ -905,12 +898,14 @@ export default function ProgressionPage() {
               >
                 Annuler
               </Button>
-              <Button
+              <GlowButton
+                $variant="primary"
                 onClick={handleUnlock}
                 disabled={unlocking}
+                loading={unlocking}
               >
-                {unlocking ? "Déblocage..." : "Confirmer"}
-              </Button>
+                Confirmer
+              </GlowButton>
             </ModalButtons>
           </ModalCard>
         </ModalOverlay>

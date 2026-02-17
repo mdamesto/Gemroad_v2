@@ -11,23 +11,28 @@ import {
   type FactionConst,
 } from "@/lib/constants";
 import { CardPlaceholder } from "@/components/shared/card-placeholder";
+import { theme } from "@/lib/theme";
+import { fadeIn, scaleIn } from "@/lib/animations";
 import type { CollectionCardData } from "./card-item";
 
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
+const slideUp = keyframes`
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
-const slideUp = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+const particleFloat = keyframes`
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.4; }
+  100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
 `;
 
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,25 +42,52 @@ const Overlay = styled.div`
 `;
 
 const Card = styled.div<{ $rarity: Rarity }>`
-  background: #0f172a;
-  border: 1px solid ${(p) => RARITY_COLORS[p.$rarity]}40;
+  background: ${theme.colors.bgCard};
+  border: 1px solid ${(p) => RARITY_COLORS[p.$rarity]}50;
   border-radius: 20px;
   max-width: 480px;
   width: 100%;
   overflow: hidden;
-  animation: ${slideUp} 0.3s ease;
+  animation: ${slideUp} 0.35s ease;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  box-shadow: ${(p) => theme.shadows.glow(RARITY_COLORS[p.$rarity])};
+`;
+
+const ParticlesContainer = styled.div<{ $color: string }>`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+
+  span {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: ${(p) => p.$color};
+    animation: ${particleFloat} 4s ease-in-out infinite;
+
+    &:nth-child(1) { left: 10%; bottom: 20%; animation-delay: 0s; }
+    &:nth-child(2) { left: 30%; bottom: 10%; animation-delay: 0.8s; }
+    &:nth-child(3) { left: 50%; bottom: 30%; animation-delay: 1.6s; }
+    &:nth-child(4) { left: 70%; bottom: 15%; animation-delay: 2.4s; }
+    &:nth-child(5) { left: 85%; bottom: 25%; animation-delay: 3.2s; }
+  }
 `;
 
 const ImageArea = styled.div<{ $hasImage: boolean }>`
   width: 100%;
   height: 260px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 
   ${(p) => !p.$hasImage && `color: #334155; font-size: 5rem;`}
 
@@ -68,6 +100,8 @@ const ImageArea = styled.div<{ $hasImage: boolean }>`
 
 const Body = styled.div`
   padding: 24px;
+  position: relative;
+  z-index: 1;
 `;
 
 const Meta = styled.div`
@@ -93,20 +127,22 @@ const RarityTag = styled.span<{ $color: string }>`
 
 const MetaTag = styled.span`
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   padding: 3px 10px;
-  border: 1px solid #1e293b;
+  border: 1px solid ${theme.colors.border};
   border-radius: 9999px;
 `;
 
 const Name = styled.h2`
+  font-family: ${theme.fonts.heading};
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 8px;
+  letter-spacing: 0.02em;
 `;
 
 const Description = styled.p`
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 16px;
@@ -119,53 +155,65 @@ const Lore = styled.p`
   font-style: italic;
   margin-bottom: 16px;
   padding-left: 12px;
-  border-left: 2px solid #1e293b;
+  border-left: 2px solid ${theme.colors.border};
 `;
 
 const Stats = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 20px;
   margin-bottom: 16px;
 `;
 
 const Stat = styled.div<{ $color: string }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1.1rem;
   font-weight: 800;
   color: ${(p) => p.$color};
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const StatLabel = styled.span`
   font-size: 0.7rem;
   font-weight: 500;
-  color: #94a3b8;
-  margin-left: 4px;
+  color: ${theme.colors.textMuted};
+  margin-left: 2px;
 `;
 
 const Quantity = styled.div`
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   margin-bottom: 20px;
 
   strong {
-    color: #e5e7eb;
+    color: ${theme.colors.text};
   }
 `;
 
 const CloseBtn = styled.button`
   width: 100%;
   padding: 12px;
-  background: #1e293b;
-  border: 1px solid #1e293b;
+  background: ${theme.colors.bgHover};
+  border: 1px solid ${theme.colors.border};
   border-radius: 8px;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   &:hover {
-    background: #1e293b;
-    color: #e5e7eb;
+    color: ${theme.colors.text};
+    border-color: ${theme.colors.textMuted};
   }
 `;
 
@@ -179,10 +227,17 @@ export function CardModal({ data, onClose }: CardModalProps) {
   const hasImage = !!card.image_url && card.image_url !== "";
   const [imgError, setImgError] = useState(false);
   const showImage = hasImage && owned && !imgError;
+  const rarityColor = RARITY_COLORS[card.rarity];
 
   return (
     <Overlay onClick={onClose}>
       <Card $rarity={card.rarity} onClick={(e) => e.stopPropagation()}>
+        {(card.rarity === "epic" || card.rarity === "legendary" || card.rarity === "rare") && (
+          <ParticlesContainer $color={rarityColor}>
+            <span /><span /><span /><span /><span />
+          </ParticlesContainer>
+        )}
+
         <ImageArea $hasImage={showImage}>
           {showImage ? (
             <img src={card.image_url} alt={card.name} onError={() => setImgError(true)} />
@@ -193,7 +248,7 @@ export function CardModal({ data, onClose }: CardModalProps) {
 
         <Body>
           <Meta>
-            <RarityTag $color={RARITY_COLORS[card.rarity]}>
+            <RarityTag $color={rarityColor}>
               {RARITY_LABELS[card.rarity]}
             </RarityTag>
             <MetaTag>{CARD_TYPE_LABELS[card.type]}</MetaTag>
@@ -216,12 +271,18 @@ export function CardModal({ data, onClose }: CardModalProps) {
             <Stats>
               {card.attack !== null && (
                 <Stat $color="#EF4444">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14.5 3.5L12 1 9.5 3.5 7 1 4 4v5l8 8 8-8V4l-3-3-2.5 2.5zM12 14.5L5 7.5V5l2-2 1.5 1.5L12 1l3.5 3.5L17 3l2 2v2.5L12 14.5z" />
+                  </svg>
                   {card.attack}
                   <StatLabel>ATK</StatLabel>
                 </Stat>
               )}
               {card.defense !== null && (
                 <Stat $color="#60A5FA">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5-3.6-1.14-7-5.67-7-10.5V6.3l7-3.12z" />
+                  </svg>
                   {card.defense}
                   <StatLabel>DEF</StatLabel>
                 </Stat>
@@ -239,7 +300,12 @@ export function CardModal({ data, onClose }: CardModalProps) {
             )}
           </Quantity>
 
-          <CloseBtn onClick={onClose}>Fermer</CloseBtn>
+          <CloseBtn onClick={onClose}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            Fermer
+          </CloseBtn>
         </Body>
       </Card>
     </Overlay>

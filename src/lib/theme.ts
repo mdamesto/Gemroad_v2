@@ -19,6 +19,17 @@ export const theme = {
     rare: "#60A5FA",
     epic: "#A78BFA",
     legendary: "#FBBF24",
+    glassBg: "rgba(15, 23, 42, 0.6)",
+    glassBorder: "rgba(56, 189, 248, 0.15)",
+  },
+  gradients: {
+    primary: "linear-gradient(135deg, #38BDF8, #0EA5E9)",
+    accent: "linear-gradient(135deg, #DBB45D, #F59E0B)",
+    legendary: "linear-gradient(135deg, #FBBF24, #F59E0B, #EAB308)",
+    epic: "linear-gradient(135deg, #A78BFA, #8B5CF6)",
+    rare: "linear-gradient(135deg, #60A5FA, #3B82F6)",
+    mesh: "radial-gradient(ellipse at 20% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(219, 180, 93, 0.05) 0%, transparent 50%)",
+    separator: "linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), rgba(219, 180, 93, 0.3), transparent)",
   },
   fonts: {
     body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -37,6 +48,7 @@ export const theme = {
     md: "0 4px 6px rgba(0, 0, 0, 0.4)",
     lg: "0 10px 25px rgba(0, 0, 0, 0.5)",
     glow: (color: string) => `0 0 20px ${color}40, 0 0 40px ${color}20`,
+    glowStrong: (color: string) => `0 0 15px ${color}50, 0 0 30px ${color}30, 0 0 60px ${color}15`,
   },
 };
 

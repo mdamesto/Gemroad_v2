@@ -13,13 +13,15 @@ import {
   type CardTypeConst,
   type FactionConst,
 } from "@/lib/constants";
+import { theme } from "@/lib/theme";
 
 const Bar = styled.div`
   position: sticky;
   top: 64px;
   z-index: 10;
-  background: #020617ee;
-  backdrop-filter: blur(10px);
+  background: rgba(2, 6, 23, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 16px 0;
   margin-bottom: 24px;
   display: flex;
@@ -40,6 +42,15 @@ const Label = styled.span`
   text-transform: uppercase;
   letter-spacing: 0.05em;
   min-width: 60px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+  }
 `;
 
 const Pill = styled.button<{ $active: boolean; $color?: string }>`
@@ -47,24 +58,25 @@ const Pill = styled.button<{ $active: boolean; $color?: string }>`
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid ${(p) => (p.$active ? p.$color || "#38BDF8" : "#1e293b")};
-  background: ${(p) => (p.$active ? (p.$color || "#38BDF8") + "20" : "transparent")};
-  color: ${(p) => (p.$active ? p.$color || "#38BDF8" : "#94a3b8")};
+  border: 1px solid ${(p) => (p.$active ? p.$color || theme.colors.primary : theme.colors.border)};
+  background: ${(p) => (p.$active ? (p.$color || theme.colors.primary) + "20" : "transparent")};
+  color: ${(p) => (p.$active ? p.$color || theme.colors.primary : theme.colors.textMuted)};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 
   &:hover {
-    border-color: ${(p) => p.$color || "#38BDF8"};
-    color: ${(p) => p.$color || "#38BDF8"};
+    border-color: ${(p) => p.$color || theme.colors.primary};
+    color: ${(p) => p.$color || theme.colors.primary};
+    transform: translateY(-1px);
   }
 `;
 
 const SearchInput = styled.input`
   padding: 8px 14px;
-  background: #1e293b;
-  border: 1px solid #1e293b;
+  background: ${theme.colors.bgHover};
+  border: 1px solid ${theme.colors.border};
   border-radius: 8px;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
   font-size: 0.85rem;
   outline: none;
   width: 100%;
@@ -72,7 +84,7 @@ const SearchInput = styled.input`
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: #38BDF8;
+    border-color: ${theme.colors.primary};
   }
 
   &::placeholder {
@@ -82,7 +94,7 @@ const SearchInput = styled.input`
 
 const ToggleLabel = styled.label`
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -90,7 +102,7 @@ const ToggleLabel = styled.label`
 `;
 
 const Checkbox = styled.input`
-  accent-color: #38BDF8;
+  accent-color: ${theme.colors.primary};
   cursor: pointer;
 `;
 
@@ -130,7 +142,10 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       </Row>
 
       <Row>
-        <Label>Rareté</Label>
+        <Label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+          Rareté
+        </Label>
         <Pill $active={filters.rarity === "all"} onClick={() => set({ rarity: "all" })}>
           Toutes
         </Pill>
@@ -147,7 +162,10 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       </Row>
 
       <Row>
-        <Label>Type</Label>
+        <Label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
+          Type
+        </Label>
         <Pill $active={filters.type === "all"} onClick={() => set({ type: "all" })}>
           Tous
         </Pill>
@@ -159,7 +177,10 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
       </Row>
 
       <Row>
-        <Label>Faction</Label>
+        <Label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+          Faction
+        </Label>
         <Pill $active={filters.faction === "all"} onClick={() => set({ faction: "all" })}>
           Toutes
         </Pill>

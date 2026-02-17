@@ -1,77 +1,92 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import { useToastStore } from "@/stores/toast-store";
+import { GlowButton } from "@/components/ui/glow-button";
+import { GlassCard } from "@/components/ui/glass-card";
+import { PageHeader } from "@/components/ui/page-header";
+import { LoadingState } from "@/components/ui/skeleton-loader";
+import { theme } from "@/lib/theme";
+import { fadeInUp, gradientShift } from "@/lib/animations";
 import { formatPrice, formatGems } from "@/lib/utils";
 import type { BoosterType } from "@/types/cards";
 
 const Page = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
-`;
-
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-`;
-
-const Subtitle = styled.p`
-  color: #94a3b8;
-  margin-bottom: 32px;
-  font-size: 0.9rem;
+  padding: 0 24px 40px;
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
+  animation: ${fadeInUp} 0.5s ease-out 0.2s both;
 `;
 
-const ProductCard = styled.div`
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  padding: 32px;
+const ProductCard = styled(GlassCard)`
   text-align: center;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  padding: 32px;
 
   &:hover {
-    border-color: #dbb45d40;
+    transform: translateY(-4px);
+    border-color: ${theme.colors.accent}50;
+    box-shadow: ${theme.shadows.glow(theme.colors.accent)};
   }
+`;
+
+const borderRotate = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 `;
 
 const PopularBadge = styled.div`
   position: absolute;
-  top: 12px;
-  right: -28px;
-  background: #38BDF8;
-  color: white;
-  font-size: 0.7rem;
+  top: 16px;
+  right: 16px;
+  padding: 4px 12px;
+  border-radius: ${theme.radii.full};
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 4px 32px;
-  transform: rotate(45deg);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: white;
+  background: ${theme.gradients.primary};
+  background-size: 200% 200%;
+  animation: ${borderRotate} 3s ease infinite;
+  border: 1px solid ${theme.colors.primary}60;
+  box-shadow: 0 0 12px ${theme.colors.primary}40;
 `;
 
-const ProductIcon = styled.div`
-  font-size: 3.5rem;
-  margin-bottom: 20px;
+const ProductImage = styled.img`
+  width: 100px;
+  height: 133px;
+  margin: 0 auto 20px;
+  display: block;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+
+  ${ProductCard}:hover & {
+    transform: scale(1.05);
+  }
 `;
 
 const ProductName = styled.h3`
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 8px;
+  color: ${theme.colors.text};
 `;
 
 const ProductDesc = styled.p`
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.85rem;
   margin-bottom: 20px;
   line-height: 1.5;
@@ -80,24 +95,36 @@ const ProductDesc = styled.p`
 const PriceTag = styled.div`
   font-size: 1.5rem;
   font-weight: 800;
-  color: #dbb45d;
+  color: ${theme.colors.accent};
   margin-bottom: 8px;
 `;
 
 const GemPrice = styled.div`
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 `;
 
-const Loading = styled.div`
-  text-align: center;
-  padding: 60px;
-  color: #94a3b8;
-`;
+const CartIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+  </svg>
+);
+
+function getBoosterImage(name: string): string {
+  const lower = name.toLowerCase();
+  if (lower.includes("légend") || lower.includes("legend")) return "/images/ui/booster-legendary.svg";
+  if (lower.includes("premi") || lower.includes("premium")) return "/images/ui/booster-premium.svg";
+  return "/images/ui/booster-standard.svg";
+}
 
 export default function ShopPage() {
   const { user, loading: userLoading } = useUser();
+  const addToast = useToastStore((s) => s.addToast);
   const [boosters, setBoosters] = useState<BoosterType[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
@@ -131,27 +158,34 @@ export default function ShopPage() {
 
     if (res.ok) {
       const { url } = await res.json();
-      if (url) window.location.href = url;
+      if (url) {
+        addToast("Redirection vers le paiement...", "info");
+        window.location.href = url;
+      }
+    } else {
+      addToast("Erreur lors de la création du paiement", "error");
     }
 
     setPurchasing(null);
   };
 
-  if (loading || userLoading) return <Loading>Chargement...</Loading>;
+  if (loading || userLoading) return <LoadingState />;
 
   return (
     <Page>
-      <Title>Boutique</Title>
-      <Subtitle>
-        Achetez des boosters premium pour augmenter vos chances d&apos;obtenir
-        des cartes rares.
-      </Subtitle>
+      <PageHeader
+        title="Boutique"
+        subtitle="Achetez des boosters premium pour augmenter vos chances d'obtenir des cartes rares"
+      />
 
       <Grid>
         {boosters.map((bt, i) => (
           <ProductCard key={bt.id}>
             {i === 1 && <PopularBadge>POPULAIRE</PopularBadge>}
-            <ProductIcon>&#127183;</ProductIcon>
+            <ProductImage
+              src={getBoosterImage(bt.name)}
+              alt={bt.name}
+            />
             <ProductName>{bt.name}</ProductName>
             <ProductDesc>
               {bt.description} &middot; {bt.cards_count} cartes
@@ -159,18 +193,22 @@ export default function ShopPage() {
             <PriceTag>
               {bt.price_cents ? formatPrice(bt.price_cents) : "Gratuit"}
             </PriceTag>
-            <GemPrice>ou &#9670; {formatGems(bt.price_gems)} gems</GemPrice>
-            <Button
+            <GemPrice>
+              <span style={{ color: theme.colors.accent }}>&#9670;</span>
+              ou {formatGems(bt.price_gems)} gems
+            </GemPrice>
+            <GlowButton
+              $variant="accent"
+              $fullWidth
               onClick={() => handleBuy(bt.id)}
               disabled={!user || purchasing === bt.id}
-              $fullWidth
+              loading={purchasing === bt.id}
+              icon={CartIcon}
             >
               {!user
                 ? "Connectez-vous"
-                : purchasing === bt.id
-                  ? "Redirection..."
-                  : "Acheter"}
-            </Button>
+                : "Acheter"}
+            </GlowButton>
           </ProductCard>
         ))}
       </Grid>
