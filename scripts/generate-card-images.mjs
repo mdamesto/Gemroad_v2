@@ -12,251 +12,231 @@ const RARITY_COLORS = {
   legendary: "#FBBF24",
 };
 
-const SERIES_THEMES = {
-  neon: { bg1: "#0c0a2a", bg2: "#1a0a3a", accent: "#c084fc", accent2: "#38bdf8" },
-  desert: { bg1: "#1a0f0a", bg2: "#2a1a0a", accent: "#f59e0b", accent2: "#ef4444" },
-  ocean: { bg1: "#0a1520", bg2: "#0a1a2a", accent: "#06b6d4", accent2: "#3b82f6" },
+const FACTION_THEMES = {
+  dome_dwellers: { bg1: "#0a1020", bg2: "#0f1a30", accent: "#60a5fa", accent2: "#38bdf8" },
+  underground_resistance: { bg1: "#0f0a1a", bg2: "#1a0f2a", accent: "#a78bfa", accent2: "#c084fc" },
+  surface_survivors: { bg1: "#1a0f0a", bg2: "#2a1a0a", accent: "#f59e0b", accent2: "#ef4444" },
+  tech_scavengers: { bg1: "#0a1a15", bg2: "#0f2a20", accent: "#34d399", accent2: "#06b6d4" },
 };
 
 const cards = [
-  // Ruines de Neon
-  { slug: "eclaireur-neon", name: "Eclaireur Neon", rarity: "common", series: "neon", icon: "scout" },
-  { slug: "sentinelle-rouillee", name: "Sentinelle Rouillee", rarity: "common", series: "neon", icon: "robot" },
-  { slug: "chasseur-fragments", name: "Chasseur de Fragments", rarity: "uncommon", series: "neon", icon: "hunter" },
-  { slug: "marchande-ombres", name: "Marchande d'Ombres", rarity: "uncommon", series: "neon", icon: "merchant" },
-  { slug: "golem-cables", name: "Golem de Cables", rarity: "rare", series: "neon", icon: "golem" },
-  { slug: "spectre-holographique", name: "Spectre Holographique", rarity: "rare", series: "neon", icon: "ghost" },
-  { slug: "archonte-neon", name: "Archonte du Neon", rarity: "epic", series: "neon", icon: "archon" },
-  { slug: "titan-chrome", name: "Titan Chrome", rarity: "legendary", series: "neon", icon: "titan" },
-  // Desert de Cendres
-  { slug: "nomade-cendres", name: "Nomade des Cendres", rarity: "common", series: "desert", icon: "nomad" },
-  { slug: "scorpion-mutant", name: "Scorpion Mutant", rarity: "common", series: "desert", icon: "scorpion" },
-  { slug: "prophete-sable", name: "Prophete du Sable", rarity: "uncommon", series: "desert", icon: "prophet" },
-  { slug: "colosse-rouille", name: "Colosse de Rouille", rarity: "rare", series: "desert", icon: "colossus" },
-  { slug: "reine-tempetes", name: "Reine des Tempetes", rarity: "epic", series: "desert", icon: "queen" },
-  { slug: "leviathan-enseveli", name: "Leviathan Enseveli", rarity: "legendary", series: "desert", icon: "leviathan" },
-  // Ocean Toxique
-  { slug: "plongeur-aveugle", name: "Plongeur Aveugle", rarity: "common", series: "ocean", icon: "diver" },
-  { slug: "meduse-radioactive", name: "Meduse Radioactive", rarity: "common", series: "ocean", icon: "jellyfish" },
-  { slug: "pirate-recifs", name: "Pirate des Recifs", rarity: "common", series: "ocean", icon: "pirate" },
-  { slug: "sirene-corrompue", name: "Sirene Corrompue", rarity: "uncommon", series: "ocean", icon: "siren" },
-  { slug: "requin-blinde", name: "Requin Blinde", rarity: "uncommon", series: "ocean", icon: "shark" },
-  { slug: "kraken-petrole", name: "Kraken de Petrole", rarity: "rare", series: "ocean", icon: "kraken" },
-  { slug: "amiral-fantome", name: "Amiral Fantome", rarity: "rare", series: "ocean", icon: "admiral" },
-  { slug: "hydre-abyssale", name: "Hydre Abyssale", rarity: "epic", series: "ocean", icon: "hydra" },
-  { slug: "poseidon-corrompu", name: "Poseidon Corrompu", rarity: "epic", series: "ocean", icon: "poseidon" },
-  { slug: "abomination-abysses", name: "Abomination des Abysses", rarity: "legendary", series: "ocean", icon: "abomination" },
+  // Dome Dwellers
+  { slug: "dome-guardian", rarity: "common", faction: "dome_dwellers", icon: "guardian" },
+  { slug: "atmospheric-purifier", rarity: "uncommon", faction: "dome_dwellers", icon: "purifier" },
+  { slug: "council-chamber", rarity: "rare", faction: "dome_dwellers", icon: "chamber" },
+  { slug: "dome-breach-protocol", rarity: "epic", faction: "dome_dwellers", icon: "breach" },
+  // Underground Resistance
+  { slug: "tunnel-rat", rarity: "common", faction: "underground_resistance", icon: "tunnelrat" },
+  { slug: "signal-jammer", rarity: "rare", faction: "underground_resistance", icon: "jammer" },
+  { slug: "deep-warren", rarity: "epic", faction: "underground_resistance", icon: "warren" },
+  // Surface Survivors
+  { slug: "wasteland-nomad", rarity: "common", faction: "surface_survivors", icon: "nomad" },
+  { slug: "rad-storm-warning", rarity: "uncommon", faction: "surface_survivors", icon: "radstorm" },
+  { slug: "scrapyard-fortress", rarity: "rare", faction: "surface_survivors", icon: "fortress" },
+  { slug: "mutant-warlord", rarity: "legendary", faction: "surface_survivors", icon: "warlord" },
+  // Tech Scavengers
+  { slug: "chrome-hacker", rarity: "uncommon", faction: "tech_scavengers", icon: "hacker" },
+  { slug: "quantum-core", rarity: "legendary", faction: "tech_scavengers", icon: "quantumcore" },
+  { slug: "neural-uplink-helm", rarity: "legendary", faction: "tech_scavengers", icon: "neuralhelm" },
+  // Cross-faction
+  { slug: "doomsday-codex", rarity: "legendary", faction: "underground_resistance", icon: "codex" },
 ];
 
-// Simple geometric icon paths for each card type
-function getIconSvg(icon, color, color2) {
+function getIconSvg(icon, c1, c2) {
   const icons = {
-    // Neon series
-    scout: `<circle cx="200" cy="160" r="30" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="130" x2="200" y2="100" stroke="${color}" stroke-width="2"/>
-      <line x1="170" y1="160" x2="140" y2="160" stroke="${color2}" stroke-width="1.5"/>
-      <line x1="230" y1="160" x2="260" y2="160" stroke="${color2}" stroke-width="1.5"/>
-      <polygon points="185,200 200,240 215,200" fill="${color}" opacity="0.6"/>
-      <line x1="200" y1="190" x2="200" y2="280" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="220" x2="160" y2="250" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="220" x2="240" y2="250" stroke="${color}" stroke-width="2"/>`,
+    guardian: `
+      <circle cx="200" cy="140" r="28" fill="none" stroke="${c1}" stroke-width="2.5"/>
+      <rect x="172" y="168" width="56" height="80" rx="6" fill="none" stroke="${c1}" stroke-width="2"/>
+      <line x1="172" y1="200" x2="140" y2="230" stroke="${c1}" stroke-width="2.5"/>
+      <line x1="228" y1="200" x2="260" y2="230" stroke="${c1}" stroke-width="2.5"/>
+      <polygon points="140,230 130,260 150,255" fill="${c2}" opacity="0.5"/>
+      <polygon points="260,230 270,260 250,255" fill="${c2}" opacity="0.5"/>
+      <rect x="185" y="248" width="12" height="25" fill="${c1}" opacity="0.4"/>
+      <rect x="203" y="248" width="12" height="25" fill="${c1}" opacity="0.4"/>
+      <ellipse cx="200" cy="100" rx="50" ry="20" fill="none" stroke="${c2}" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>`,
 
-    robot: `<rect x="170" y="120" width="60" height="70" rx="8" fill="none" stroke="${color}" stroke-width="2"/>
-      <circle cx="185" cy="150" r="8" fill="${color2}"/>
-      <circle cx="215" cy="150" r="8" fill="${color2}"/>
-      <rect x="180" y="190" width="40" height="80" rx="4" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="180" y1="220" x2="150" y2="250" stroke="${color}" stroke-width="2"/>
-      <line x1="220" y1="220" x2="250" y2="250" stroke="${color}" stroke-width="2"/>
-      <rect x="185" y="270" width="12" height="20" fill="${color}" opacity="0.5"/>
-      <rect x="203" y="270" width="12" height="20" fill="${color}" opacity="0.5"/>`,
+    purifier: `
+      <rect x="160" y="120" width="80" height="120" rx="12" fill="none" stroke="${c1}" stroke-width="2"/>
+      <circle cx="200" cy="170" r="25" fill="none" stroke="${c2}" stroke-width="2"/>
+      <circle cx="200" cy="170" r="12" fill="${c2}" opacity="0.2"/>
+      <path d="M200,145 L200,120" stroke="${c2}" stroke-width="2"/>
+      <path d="M200,195 L200,220" stroke="${c2}" stroke-width="2"/>
+      <line x1="175" y1="170" x2="160" y2="170" stroke="${c2}" stroke-width="1.5"/>
+      <line x1="225" y1="170" x2="240" y2="170" stroke="${c2}" stroke-width="1.5"/>
+      <path d="M170,240 Q200,260 230,240" fill="none" stroke="${c1}" stroke-width="1.5"/>
+      <circle cx="200" cy="170" r="5" fill="${c2}" opacity="0.6"/>
+      <line x1="160" y1="105" x2="160" y2="90" stroke="${c1}" stroke-width="2"/>
+      <line x1="240" y1="105" x2="240" y2="90" stroke="${c1}" stroke-width="2"/>
+      <circle cx="160" cy="87" r="4" fill="${c2}" opacity="0.4"/>
+      <circle cx="240" cy="87" r="4" fill="${c2}" opacity="0.4"/>`,
 
-    hunter: `<circle cx="200" cy="150" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="175" x2="200" y2="260" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="200" x2="160" y2="240" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="200" x2="240" y2="240" stroke="${color}" stroke-width="2"/>
-      <line x1="240" y1="240" x2="270" y2="200" stroke="${color2}" stroke-width="2.5"/>
-      <polygon points="270,200 280,190 275,205" fill="${color2}"/>`,
+    chamber: `
+      <path d="M130,250 L130,140 L200,100 L270,140 L270,250 Z" fill="none" stroke="${c1}" stroke-width="2"/>
+      <line x1="200" y1="100" x2="200" y2="250" stroke="${c1}" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <circle cx="200" cy="170" r="20" fill="none" stroke="${c2}" stroke-width="2"/>
+      <circle cx="200" cy="170" r="8" fill="${c2}" opacity="0.3"/>
+      <rect x="145" y="210" width="20" height="40" rx="4" fill="none" stroke="${c1}" stroke-width="1.5"/>
+      <rect x="235" y="210" width="20" height="40" rx="4" fill="none" stroke="${c1}" stroke-width="1.5"/>
+      <polygon points="200,100 195,85 205,85" fill="${c2}"/>
+      <line x1="130" y1="250" x2="270" y2="250" stroke="${c1}" stroke-width="2"/>`,
 
-    merchant: `<circle cx="200" cy="150" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M170,180 L200,175 L230,180 L240,280 L160,280 Z" fill="none" stroke="${color}" stroke-width="2"/>
-      <ellipse cx="200" cy="240" rx="30" ry="15" fill="none" stroke="${color2}" stroke-width="1.5"/>
-      <line x1="200" y1="225" x2="200" y2="255" stroke="${color2}" stroke-width="1.5"/>
-      <line x1="185" y1="240" x2="215" y2="240" stroke="${color2}" stroke-width="1.5"/>`,
+    breach: `
+      <circle cx="200" cy="180" r="60" fill="none" stroke="${c1}" stroke-width="2.5"/>
+      <circle cx="200" cy="180" r="40" fill="none" stroke="${c1}" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <path d="M175,145 L160,120" stroke="${c2}" stroke-width="3"/>
+      <path d="M225,145 L240,120" stroke="${c2}" stroke-width="3"/>
+      <path d="M155,195 L125,205" stroke="${c2}" stroke-width="3"/>
+      <path d="M245,195 L275,205" stroke="${c2}" stroke-width="3"/>
+      <polygon points="200,180 190,165 210,165" fill="${c2}" opacity="0.5"/>
+      <polygon points="200,180 190,195 210,195" fill="${c2}" opacity="0.5"/>
+      <polygon points="200,180 185,180 185,175" fill="${c2}" opacity="0.3"/>
+      <polygon points="200,180 215,180 215,175" fill="${c2}" opacity="0.3"/>
+      <circle cx="200" cy="180" r="8" fill="${c2}" opacity="0.4"/>`,
 
-    golem: `<rect x="160" y="130" width="80" height="90" rx="10" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="185" cy="160" r="10" fill="${color2}"/>
-      <circle cx="215" cy="160" r="10" fill="${color2}"/>
-      <rect x="155" y="220" width="90" height="60" rx="8" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <line x1="155" y1="250" x2="120" y2="270" stroke="${color}" stroke-width="3"/>
-      <line x1="245" y1="250" x2="280" y2="270" stroke="${color}" stroke-width="3"/>
-      <path d="M170,250 Q200,260 230,250" fill="none" stroke="${color2}" stroke-width="2"/>`,
+    tunnelrat: `
+      <circle cx="200" cy="145" r="22" fill="none" stroke="${c1}" stroke-width="2"/>
+      <path d="M180,167 L175,260 L200,255 L225,260 L220,167" fill="none" stroke="${c1}" stroke-width="2"/>
+      <line x1="200" y1="190" x2="165" y2="220" stroke="${c1}" stroke-width="2"/>
+      <line x1="200" y1="190" x2="235" y2="210" stroke="${c1}" stroke-width="2"/>
+      <circle cx="192" cy="140" r="4" fill="${c2}"/>
+      <circle cx="208" cy="140" r="4" fill="${c2}"/>
+      <path d="M120,270 Q160,230 200,260 Q240,230 280,270" fill="none" stroke="${c1}" stroke-width="1.5" opacity="0.4"/>
+      <path d="M100,290 Q160,250 200,280 Q240,250 300,290" fill="none" stroke="${c1}" stroke-width="1" opacity="0.2"/>`,
 
-    ghost: `<ellipse cx="200" cy="180" rx="40" ry="50" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="4,4"/>
-      <circle cx="188" cy="170" r="8" fill="${color2}" opacity="0.8"/>
-      <circle cx="212" cy="170" r="8" fill="${color2}" opacity="0.8"/>
-      <path d="M160,230 Q170,260 180,240 Q190,260 200,240 Q210,260 220,240 Q230,260 240,230" fill="none" stroke="${color}" stroke-width="2" stroke-dasharray="4,4"/>`,
+    jammer: `
+      <rect x="165" y="130" width="70" height="100" rx="8" fill="none" stroke="${c1}" stroke-width="2"/>
+      <circle cx="200" cy="170" r="20" fill="none" stroke="${c2}" stroke-width="2"/>
+      <line x1="200" y1="150" x2="200" y2="130" stroke="${c2}" stroke-width="2"/>
+      <line x1="200" y1="100" x2="200" y2="130" stroke="${c1}" stroke-width="2"/>
+      <line x1="190" y1="100" x2="210" y2="100" stroke="${c1}" stroke-width="2"/>
+      <path d="M170,100 Q200,80 230,100" fill="none" stroke="${c2}" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <path d="M155,90 Q200,60 245,90" fill="none" stroke="${c2}" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <line x1="183" y1="170" x2="175" y2="170" stroke="${c2}" stroke-width="2"/>
+      <line x1="217" y1="170" x2="225" y2="170" stroke="${c2}" stroke-width="2"/>
+      <circle cx="200" cy="170" r="6" fill="${c2}" opacity="0.4"/>
+      <line x1="200" y1="230" x2="200" y2="260" stroke="${c1}" stroke-width="1.5"/>
+      <ellipse cx="200" cy="265" rx="15" ry="5" fill="none" stroke="${c1}" stroke-width="1.5"/>`,
 
-    archon: `<polygon points="200,100 240,160 260,240 200,280 140,240 160,160" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="200" cy="180" r="30" fill="none" stroke="${color2}" stroke-width="2"/>
-      <circle cx="200" cy="180" r="15" fill="${color2}" opacity="0.3"/>
-      <line x1="200" y1="100" x2="200" y2="80" stroke="${color}" stroke-width="2"/>
-      <polygon points="190,80 200,60 210,80" fill="${color}"/>
-      <line x1="140" y1="240" x2="120" y2="250" stroke="${color2}" stroke-width="1.5"/>
-      <line x1="260" y1="240" x2="280" y2="250" stroke="${color2}" stroke-width="1.5"/>`,
+    warren: `
+      <path d="M120,280 L140,200 L170,220 L200,160 L230,220 L260,200 L280,280 Z" fill="none" stroke="${c1}" stroke-width="2"/>
+      <rect x="180" y="200" width="40" height="50" rx="6" fill="none" stroke="${c2}" stroke-width="2"/>
+      <line x1="200" y1="200" x2="200" y2="160" stroke="${c2}" stroke-width="1.5"/>
+      <circle cx="200" cy="155" r="8" fill="${c2}" opacity="0.3"/>
+      <path d="M140,200 Q130,170 150,150" fill="none" stroke="${c1}" stroke-width="1.5" opacity="0.5"/>
+      <path d="M260,200 Q270,170 250,150" fill="none" stroke="${c1}" stroke-width="1.5" opacity="0.5"/>
+      <rect x="185" y="230" width="12" height="20" rx="3" fill="${c2}" opacity="0.2"/>
+      <rect x="203" y="230" width="12" height="20" rx="3" fill="${c2}" opacity="0.2"/>
+      <line x1="120" y1="280" x2="280" y2="280" stroke="${c1}" stroke-width="2"/>`,
 
-    titan: `<rect x="155" y="110" width="90" height="100" rx="12" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="185" cy="150" r="12" fill="${color2}"/>
-      <circle cx="215" cy="150" r="12" fill="${color2}"/>
-      <line x1="175" y1="180" x2="225" y2="180" stroke="${color}" stroke-width="2"/>
-      <rect x="150" y="210" width="100" height="80" rx="8" fill="none" stroke="${color}" stroke-width="3"/>
-      <line x1="150" y1="250" x2="110" y2="240" stroke="${color}" stroke-width="4"/>
-      <line x1="250" y1="250" x2="290" y2="240" stroke="${color}" stroke-width="4"/>
-      <polygon points="190,100 200,70 210,100" fill="${color}"/>
-      <polygon points="165,110 155,85 175,110" fill="${color2}" opacity="0.6"/>
-      <polygon points="235,110 245,85 225,110" fill="${color2}" opacity="0.6"/>`,
+    nomad: `
+      <circle cx="200" cy="140" r="22" fill="none" stroke="${c1}" stroke-width="2"/>
+      <path d="M178,162 L168,275 L200,265 L232,275 L222,162" fill="none" stroke="${c1}" stroke-width="2"/>
+      <line x1="200" y1="120" x2="235" y2="90" stroke="${c2}" stroke-width="1.5"/>
+      <circle cx="238" cy="87" r="6" fill="${c2}" opacity="0.4"/>
+      <line x1="200" y1="195" x2="165" y2="230" stroke="${c1}" stroke-width="2"/>
+      <line x1="200" y1="195" x2="235" y2="230" stroke="${c1}" stroke-width="2"/>
+      <path d="M130,290 Q200,270 270,290" fill="none" stroke="${c1}" stroke-width="1" opacity="0.3"/>
+      <path d="M110,300 Q200,275 290,300" fill="none" stroke="${c1}" stroke-width="1" opacity="0.15"/>`,
 
-    // Desert series
-    nomad: `<circle cx="200" cy="150" r="22" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M178,172 L165,280 L200,270 L235,280 L222,172" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="140" x2="230" y2="100" stroke="${color2}" stroke-width="1.5"/>
-      <circle cx="230" cy="100" r="5" fill="${color2}" opacity="0.5"/>
-      <line x1="165" y1="280" x2="235" y2="280" stroke="${color}" stroke-width="1.5" stroke-dasharray="3,3"/>`,
+    radstorm: `
+      <path d="M140,160 L200,100 L260,160" fill="none" stroke="${c2}" stroke-width="2.5"/>
+      <path d="M120,200 L200,140 L280,200" fill="none" stroke="${c1}" stroke-width="2" opacity="0.6"/>
+      <path d="M100,240 L200,180 L300,240" fill="none" stroke="${c1}" stroke-width="1.5" opacity="0.3"/>
+      <polygon points="200,170 190,200 210,190 195,230 220,195 200,210" fill="${c2}" opacity="0.6" stroke="${c2}" stroke-width="1.5"/>
+      <circle cx="140" cy="120" r="2" fill="${c2}" opacity="0.6"/>
+      <circle cx="260" cy="130" r="1.5" fill="${c2}" opacity="0.5"/>
+      <circle cx="170" cy="250" r="2" fill="${c1}" opacity="0.4"/>
+      <circle cx="240" cy="260" r="1.8" fill="${c1}" opacity="0.3"/>`,
 
-    scorpion: `<ellipse cx="200" cy="220" rx="45" ry="20" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M245,220 Q280,200 270,160 Q260,130 240,140" stroke="${color2}" stroke-width="2.5" fill="none"/>
-      <polygon points="240,140 235,130 245,135" fill="${color2}"/>
-      <line x1="155" y1="220" x2="130" y2="200" stroke="${color}" stroke-width="1.5"/>
-      <line x1="155" y1="225" x2="125" y2="215" stroke="${color}" stroke-width="1.5"/>
-      <line x1="155" y1="230" x2="130" y2="240" stroke="${color}" stroke-width="1.5"/>
-      <circle cx="190" cy="215" r="3" fill="${color2}"/>
-      <circle cx="210" cy="215" r="3" fill="${color2}"/>`,
+    fortress: `
+      <rect x="140" y="150" width="120" height="110" rx="4" fill="none" stroke="${c1}" stroke-width="2.5"/>
+      <rect x="175" y="220" width="50" height="40" rx="4" fill="none" stroke="${c2}" stroke-width="2"/>
+      <rect x="150" y="130" width="25" height="30" rx="2" fill="none" stroke="${c1}" stroke-width="2"/>
+      <rect x="225" y="130" width="25" height="30" rx="2" fill="none" stroke="${c1}" stroke-width="2"/>
+      <polygon points="162,130 162,110 150,130" fill="${c2}" opacity="0.5"/>
+      <polygon points="237,130 237,110 250,130" fill="${c2}" opacity="0.5"/>
+      <rect x="155" y="170" width="15" height="15" fill="none" stroke="${c2}" stroke-width="1.5"/>
+      <rect x="230" y="170" width="15" height="15" fill="none" stroke="${c2}" stroke-width="1.5"/>
+      <line x1="140" y1="260" x2="260" y2="260" stroke="${c1}" stroke-width="2.5"/>
+      <line x1="130" y1="260" x2="270" y2="260" stroke="${c1}" stroke-width="1" opacity="0.5"/>`,
 
-    prophet: `<circle cx="200" cy="145" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M175,170 L170,280 L230,280 L225,170" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="120" x2="200" y2="90" stroke="${color2}" stroke-width="1.5"/>
-      <circle cx="200" cy="85" r="8" fill="none" stroke="${color2}" stroke-width="1.5"/>
-      <circle cx="200" cy="85" r="3" fill="${color2}" opacity="0.6"/>
-      <path d="M175,220 Q200,200 225,220" fill="none" stroke="${color2}" stroke-width="1.5"/>`,
+    warlord: `
+      <circle cx="200" cy="135" r="30" fill="none" stroke="${c1}" stroke-width="3"/>
+      <circle cx="190" cy="130" r="6" fill="${c2}"/>
+      <circle cx="215" cy="128" r="8" fill="${c2}" opacity="0.7"/>
+      <line x1="200" y1="165" x2="200" y2="270" stroke="${c1}" stroke-width="3"/>
+      <line x1="200" y1="195" x2="145" y2="240" stroke="${c1}" stroke-width="3"/>
+      <line x1="200" y1="195" x2="255" y2="240" stroke="${c1}" stroke-width="3"/>
+      <polygon points="255,240 280,220 270,250" fill="${c2}" opacity="0.6"/>
+      <polygon points="145,240 120,220 130,250" fill="${c2}" opacity="0.6"/>
+      <path d="M175,105 L185,80 L195,100" fill="none" stroke="${c2}" stroke-width="2"/>
+      <path d="M205,100 L215,78 L225,105" fill="none" stroke="${c2}" stroke-width="2"/>
+      <rect x="185" y="270" width="12" height="20" fill="${c1}" opacity="0.4"/>
+      <rect x="203" y="270" width="12" height="20" fill="${c1}" opacity="0.4"/>`,
 
-    colossus: `<rect x="150" y="120" width="100" height="70" rx="6" fill="none" stroke="${color}" stroke-width="3"/>
-      <rect x="165" y="140" width="20" height="10" rx="2" fill="${color2}"/>
-      <rect x="215" y="140" width="20" height="10" rx="2" fill="${color2}"/>
-      <rect x="140" y="190" width="120" height="90" rx="10" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="170" cy="230" r="18" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="230" cy="230" r="18" fill="none" stroke="${color}" stroke-width="3"/>
-      <rect x="180" y="100" width="40" height="20" rx="4" fill="none" stroke="${color2}" stroke-width="2"/>`,
+    hacker: `
+      <rect x="155" y="125" width="90" height="65" rx="6" fill="none" stroke="${c1}" stroke-width="2"/>
+      <rect x="165" y="135" width="70" height="45" rx="3" fill="${c2}" opacity="0.1"/>
+      <line x1="170" y1="148" x2="195" y2="148" stroke="${c2}" stroke-width="1.5"/>
+      <line x1="170" y1="158" x2="210" y2="158" stroke="${c2}" stroke-width="1" opacity="0.6"/>
+      <line x1="170" y1="168" x2="185" y2="168" stroke="${c2}" stroke-width="1" opacity="0.4"/>
+      <rect x="175" y="195" width="50" height="6" rx="3" fill="none" stroke="${c1}" stroke-width="1.5"/>
+      <circle cx="200" cy="240" r="22" fill="none" stroke="${c1}" stroke-width="2"/>
+      <circle cx="192" cy="235" r="4" fill="${c2}"/>
+      <circle cx="208" cy="235" r="4" fill="${c2}"/>
+      <path d="M190,248 Q200,255 210,248" fill="none" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="200" y1="218" x2="200" y2="201" stroke="${c1}" stroke-width="1.5"/>`,
 
-    queen: `<circle cx="200" cy="150" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M170,175 L165,270 L235,270 L230,175" fill="none" stroke="${color}" stroke-width="2"/>
-      <polygon points="175,125 185,100 195,120 200,95 205,120 215,100 225,125" fill="none" stroke="${color2}" stroke-width="2"/>
-      <path d="M150,200 Q130,180 140,160" fill="none" stroke="${color2}" stroke-width="2"/>
-      <path d="M250,200 Q270,180 260,160" fill="none" stroke="${color2}" stroke-width="2"/>`,
+    quantumcore: `
+      <polygon points="200,100 250,140 250,220 200,260 150,220 150,140" fill="none" stroke="${c1}" stroke-width="3"/>
+      <polygon points="200,120 235,148 235,212 200,240 165,212 165,148" fill="none" stroke="${c2}" stroke-width="1.5"/>
+      <circle cx="200" cy="180" r="20" fill="${c2}" opacity="0.2"/>
+      <circle cx="200" cy="180" r="10" fill="${c2}" opacity="0.4"/>
+      <circle cx="200" cy="180" r="4" fill="${c2}" opacity="0.8"/>
+      <line x1="200" y1="100" x2="200" y2="80" stroke="${c1}" stroke-width="2"/>
+      <line x1="250" y1="140" x2="268" y2="130" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="250" y1="220" x2="268" y2="230" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="150" y1="140" x2="132" y2="130" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="150" y1="220" x2="132" y2="230" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="200" y1="260" x2="200" y2="280" stroke="${c1}" stroke-width="2"/>`,
 
-    leviathan: `<ellipse cx="200" cy="200" rx="70" ry="40" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="175" cy="190" r="10" fill="${color2}"/>
-      <circle cx="225" cy="190" r="10" fill="${color2}"/>
-      <path d="M130,200 Q110,180 120,150 Q130,130 140,140" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M270,200 Q290,180 280,150 Q270,130 260,140" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M160,230 Q200,260 240,230" fill="none" stroke="${color}" stroke-width="2"/>
-      <polygon points="185,240 200,260 215,240" fill="${color2}" opacity="0.4"/>`,
+    neuralhelm: `
+      <ellipse cx="200" cy="160" rx="45" ry="40" fill="none" stroke="${c1}" stroke-width="2.5"/>
+      <path d="M160,175 Q200,210 240,175" fill="none" stroke="${c1}" stroke-width="2"/>
+      <circle cx="185" cy="155" r="10" fill="none" stroke="${c2}" stroke-width="2"/>
+      <circle cx="215" cy="155" r="10" fill="none" stroke="${c2}" stroke-width="2"/>
+      <circle cx="185" cy="155" r="4" fill="${c2}" opacity="0.5"/>
+      <circle cx="215" cy="155" r="4" fill="${c2}" opacity="0.5"/>
+      <line x1="200" y1="120" x2="200" y2="90" stroke="${c2}" stroke-width="2"/>
+      <line x1="200" y1="90" x2="185" y2="80" stroke="${c2}" stroke-width="1.5"/>
+      <line x1="200" y1="90" x2="215" y2="80" stroke="${c2}" stroke-width="1.5"/>
+      <line x1="200" y1="90" x2="200" y2="75" stroke="${c2}" stroke-width="1.5"/>
+      <path d="M160,175 L155,220 L200,230 L245,220 L240,175" fill="none" stroke="${c1}" stroke-width="1.5" stroke-dasharray="4,3"/>`,
 
-    // Ocean series
-    diver: `<circle cx="200" cy="140" r="30" fill="none" stroke="${color}" stroke-width="2"/>
-      <circle cx="200" cy="140" r="22" fill="none" stroke="${color2}" stroke-width="1.5"/>
-      <line x1="200" y1="170" x2="200" y2="260" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="200" x2="165" y2="240" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="200" x2="235" y2="240" stroke="${color}" stroke-width="2"/>
-      <ellipse cx="200" cy="270" rx="25" ry="8" fill="none" stroke="${color2}" stroke-width="1.5"/>`,
-
-    jellyfish: `<ellipse cx="200" cy="150" rx="40" ry="30" fill="none" stroke="${color}" stroke-width="2"/>
-      <circle cx="200" cy="150" r="12" fill="${color2}" opacity="0.3"/>
-      <path d="M165,175 Q170,210 160,250" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <path d="M185,180 Q190,220 180,260" fill="none" stroke="${color2}" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <path d="M215,180 Q210,220 220,260" fill="none" stroke="${color2}" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <path d="M235,175 Q230,210 240,250" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="4,3"/>`,
-
-    pirate: `<circle cx="200" cy="150" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="180" y1="140" x2="220" y2="140" stroke="${color2}" stroke-width="2"/>
-      <circle cx="193" cy="155" r="5" fill="${color2}"/>
-      <line x1="210" y1="150" x2="220" y2="160" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="175" x2="200" y2="260" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="200" x2="250" y2="190" stroke="${color2}" stroke-width="2.5"/>
-      <polygon points="250,190 265,185 255,195" fill="${color2}"/>`,
-
-    siren: `<circle cx="200" cy="145" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M180,170 Q200,250 200,280" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M220,170 Q200,250 200,280" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M200,280 Q180,300 160,290" fill="none" stroke="${color2}" stroke-width="2"/>
-      <path d="M200,280 Q220,300 240,290" fill="none" stroke="${color2}" stroke-width="2"/>
-      <path d="M160,145 Q140,130 145,115" fill="none" stroke="${color2}" stroke-width="1.5"/>
-      <path d="M240,145 Q260,130 255,115" fill="none" stroke="${color2}" stroke-width="1.5"/>`,
-
-    shark: `<ellipse cx="200" cy="200" rx="60" ry="25" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <polygon points="140,200 120,180 135,200" fill="${color}" opacity="0.5"/>
-      <polygon points="260,200 290,195 270,210" fill="${color}" opacity="0.5"/>
-      <polygon points="195,175 200,145 205,175" fill="${color2}"/>
-      <circle cx="170" cy="195" r="5" fill="${color2}"/>
-      <line x1="230" y1="190" x2="250" y2="185" stroke="${color}" stroke-width="1.5"/>
-      <line x1="230" y1="195" x2="250" y2="195" stroke="${color}" stroke-width="1.5"/>
-      <line x1="230" y1="200" x2="250" y2="205" stroke="${color}" stroke-width="1.5"/>`,
-
-    kraken: `<circle cx="200" cy="170" r="35" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="190" cy="165" r="8" fill="${color2}"/>
-      <circle cx="215" cy="165" r="8" fill="${color2}"/>
-      <path d="M170,200 Q150,240 130,270" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M180,205 Q165,250 155,275" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M220,205 Q235,250 245,275" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M230,200 Q250,240 270,270" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M200,205 Q200,250 200,280" fill="none" stroke="${color2}" stroke-width="2"/>`,
-
-    admiral: `<circle cx="200" cy="140" r="25" fill="none" stroke="${color}" stroke-width="2"/>
-      <rect x="180" y="120" width="40" height="8" rx="4" fill="${color2}" opacity="0.6"/>
-      <line x1="200" y1="165" x2="200" y2="260" stroke="${color}" stroke-width="2"/>
-      <path d="M175,180 L165,260 L235,260 L225,180" fill="none" stroke="${color}" stroke-width="2"/>
-      <line x1="175" y1="200" x2="225" y2="200" stroke="${color2}" stroke-width="1.5"/>
-      <polygon points="190,195 200,175 210,195" fill="${color2}" opacity="0.5"/>`,
-
-    hydra: `<circle cx="170" cy="140" r="18" fill="none" stroke="${color}" stroke-width="2"/>
-      <circle cx="200" cy="120" r="18" fill="none" stroke="${color2}" stroke-width="2"/>
-      <circle cx="230" cy="140" r="18" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M170,158 Q175,190 200,200" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M200,138 Q200,170 200,200" fill="none" stroke="${color2}" stroke-width="2.5"/>
-      <path d="M230,158 Q225,190 200,200" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <ellipse cx="200" cy="240" rx="35" ry="40" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="173" cy="135" r="4" fill="${color2}"/>
-      <circle cx="200" cy="115" r="4" fill="${color}"/>
-      <circle cx="227" cy="135" r="4" fill="${color2}"/>`,
-
-    poseidon: `<circle cx="200" cy="140" r="28" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <polygon points="185,112 192,90 200,108 208,90 215,112" fill="${color2}" stroke="${color2}" stroke-width="1"/>
-      <line x1="200" y1="168" x2="200" y2="270" stroke="${color}" stroke-width="2.5"/>
-      <line x1="200" y1="195" x2="160" y2="230" stroke="${color}" stroke-width="2"/>
-      <line x1="200" y1="195" x2="240" y2="230" stroke="${color}" stroke-width="2"/>
-      <line x1="240" y1="230" x2="270" y2="170" stroke="${color2}" stroke-width="3"/>
-      <line x1="265" y1="175" x2="275" y2="165" stroke="${color2}" stroke-width="2"/>
-      <line x1="265" y1="175" x2="270" y2="180" stroke="${color2}" stroke-width="2"/>
-      <line x1="265" y1="175" x2="275" y2="178" stroke="${color2}" stroke-width="2"/>`,
-
-    abomination: `<ellipse cx="200" cy="190" rx="55" ry="60" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="180" cy="170" r="12" fill="${color2}"/>
-      <circle cx="210" cy="160" r="8" fill="${color2}"/>
-      <circle cx="225" cy="180" r="6" fill="${color2}" opacity="0.6"/>
-      <path d="M150,170 Q120,150 110,170" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M145,190 Q110,200 105,185" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M250,170 Q280,150 290,170" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <path d="M255,190 Q290,200 295,185" fill="none" stroke="${color}" stroke-width="2"/>
-      <path d="M160,240 Q180,270 200,250 Q220,270 240,240" fill="none" stroke="${color2}" stroke-width="2"/>`,
+    codex: `
+      <rect x="155" y="110" width="90" height="130" rx="6" fill="none" stroke="${c1}" stroke-width="2.5"/>
+      <line x1="175" y1="110" x2="175" y2="240" stroke="${c1}" stroke-width="1.5"/>
+      <line x1="185" y1="135" x2="230" y2="135" stroke="${c2}" stroke-width="1"/>
+      <line x1="185" y1="150" x2="225" y2="150" stroke="${c2}" stroke-width="1" opacity="0.7"/>
+      <line x1="185" y1="165" x2="220" y2="165" stroke="${c2}" stroke-width="1" opacity="0.5"/>
+      <line x1="185" y1="180" x2="228" y2="180" stroke="${c2}" stroke-width="1" opacity="0.4"/>
+      <circle cx="207" cy="210" r="15" fill="none" stroke="${c2}" stroke-width="1.5"/>
+      <polygon points="207,200 212,208 207,205 202,208" fill="${c2}" opacity="0.5"/>
+      <rect x="150" y="115" width="6" height="20" rx="3" fill="${c1}" opacity="0.4"/>
+      <rect x="150" y="145" width="6" height="20" rx="3" fill="${c1}" opacity="0.4"/>
+      <rect x="150" y="175" width="6" height="20" rx="3" fill="${c1}" opacity="0.4"/>`,
   };
-  return icons[icon] || icons["scout"];
+  return icons[icon] || "";
 }
 
 function generateCardSvg(card) {
-  const theme = SERIES_THEMES[card.series];
+  const theme = FACTION_THEMES[card.faction];
   const rarityColor = RARITY_COLORS[card.rarity];
   const isLegendary = card.rarity === "legendary";
   const isEpic = card.rarity === "epic";
 
   const glowOpacity = isLegendary ? 0.4 : isEpic ? 0.25 : 0.15;
+  const borderWidth = isLegendary ? 3 : isEpic ? 2 : 1;
   const borderOpacity = isLegendary ? 0.8 : isEpic ? 0.6 : 0.3;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
@@ -269,55 +249,30 @@ function generateCardSvg(card) {
       <stop offset="0%" stop-color="${rarityColor}" stop-opacity="${glowOpacity}"/>
       <stop offset="100%" stop-color="${rarityColor}" stop-opacity="0"/>
     </radialGradient>
-    <filter id="blur">
-      <feGaussianBlur stdDeviation="20"/>
-    </filter>
-    ${isLegendary ? `<linearGradient id="legendaryBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+    ${isLegendary ? `<linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FBBF24"/>
       <stop offset="50%" stop-color="#FDE68A"/>
       <stop offset="100%" stop-color="#F59E0B"/>
     </linearGradient>` : ""}
   </defs>
-
-  <!-- Background -->
   <rect width="400" height="400" fill="url(#bg)"/>
-
-  <!-- Ambient glow -->
   <ellipse cx="200" cy="180" rx="150" ry="120" fill="url(#glow)"/>
-
-  <!-- Particle dots -->
   <circle cx="80" cy="60" r="1.5" fill="${theme.accent}" opacity="0.4"/>
   <circle cx="320" cy="90" r="1" fill="${theme.accent2}" opacity="0.3"/>
   <circle cx="50" cy="300" r="1.2" fill="${rarityColor}" opacity="0.35"/>
   <circle cx="350" cy="280" r="1.8" fill="${theme.accent}" opacity="0.25"/>
   <circle cx="150" cy="350" r="1" fill="${theme.accent2}" opacity="0.3"/>
   <circle cx="300" cy="40" r="1.3" fill="${rarityColor}" opacity="0.3"/>
-  <circle cx="120" cy="120" r="0.8" fill="${theme.accent}" opacity="0.2"/>
-  <circle cx="280" cy="320" r="1.5" fill="${theme.accent2}" opacity="0.2"/>
-
-  <!-- Icon -->
-  <g opacity="0.9">
-    ${getIconSvg(card.icon, theme.accent, theme.accent2)}
-  </g>
-
-  <!-- Rarity border glow -->
-  <rect x="2" y="2" width="396" height="396" rx="0" fill="none"
-    stroke="${isLegendary ? "url(#legendaryBorder)" : rarityColor}"
-    stroke-width="${isLegendary ? 3 : isEpic ? 2 : 1}"
-    stroke-opacity="${borderOpacity}"/>
-
-  <!-- Vignette -->
-  <rect width="400" height="400" fill="url(#bg)" opacity="0" />
-  <rect x="0" y="300" width="400" height="100" fill="url(#bg)" opacity="0.3"/>
+  <g opacity="0.9">${getIconSvg(card.icon, theme.accent, theme.accent2)}</g>
+  <rect x="2" y="2" width="396" height="396" fill="none"
+    stroke="${isLegendary ? "url(#lb)" : rarityColor}"
+    stroke-width="${borderWidth}" stroke-opacity="${borderOpacity}"/>
 </svg>`;
 }
 
-// Generate all cards
 for (const card of cards) {
   const svg = generateCardSvg(card);
-  const filePath = join(outDir, `${card.slug}.svg`);
-  writeFileSync(filePath, svg);
+  writeFileSync(join(outDir, `${card.slug}.svg`), svg);
   console.log(`Generated: ${card.slug}.svg`);
 }
-
 console.log(`\nDone! Generated ${cards.length} card images.`);
