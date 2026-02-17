@@ -38,18 +38,25 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // If user is logged in and tries to access login/register, redirect to /collection
-  if (user && authRoutes.includes(pathname)) {
+  // Helper: create a redirect that preserves refreshed auth cookies
+  function redirectWithCookies(destination: string) {
     const url = request.nextUrl.clone();
-    url.pathname = "/collection";
-    return NextResponse.redirect(url);
+    url.pathname = destination;
+    const redirectResponse = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+    });
+    return redirectResponse;
   }
 
-  // If user is NOT logged in and tries to access a protected route, redirect to /login
+  // If user is logged in and tries to access login/register, redirect to /collection
+  if (user && authRoutes.includes(pathname)) {
+    return redirectWithCookies("/collection");
+  }
+
+  // If user is NOT logged in and tries to access a protected route, redirect to /
   if (!user && !publicRoutes.includes(pathname) && !pathname.startsWith("/api")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+    return redirectWithCookies("/");
   }
 
   return supabaseResponse;
