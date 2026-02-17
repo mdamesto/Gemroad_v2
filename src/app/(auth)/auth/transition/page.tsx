@@ -160,7 +160,7 @@ function TransitionContent() {
       {currentPhase === "transition" && (
         <TransitionOverlay>
           <TransitionVideo
-            src="/videos/login_transition.mov"
+            src="/videos/login_transition.mp4"
             autoPlay
             playsInline
             muted={isMuted}

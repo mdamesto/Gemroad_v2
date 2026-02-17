@@ -681,7 +681,7 @@ export default function AuthPage() {
       {currentPhase === "transition" && (
         <TransitionOverlay>
           <TransitionVideo
-            src="/videos/login_transition.mov"
+            src="/videos/login_transition.mp4"
             autoPlay
             playsInline
             muted={isMuted}
@@ -724,7 +724,7 @@ export default function AuthPage() {
       {/* Background Video */}
       <BackgroundVideo
         ref={bgVideoRef}
-        src="/videos/background_login.mov"
+        src="/videos/background_login.mp4"
         autoPlay
         muted={isMuted}
         loop
