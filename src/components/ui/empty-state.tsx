@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { floatY, fadeInUp } from "@/lib/animations";
 
 const Container = styled.div`
@@ -43,19 +43,19 @@ const Subtitle = styled.p`
 
 const ChestSvg = () => (
   <svg viewBox="0 0 120 120" fill="none">
-    <rect x="20" y="50" width="80" height="50" rx="8" fill={`${theme.colors.bgHover}`} stroke={theme.colors.border} strokeWidth="2" />
+    <rect x="20" y="50" width="80" height="50" rx="8" fill={theme.colors.bgHover} stroke={theme.colors.border} strokeWidth="2" />
     <path d="M20 58a8 8 0 0 1 8-8h64a8 8 0 0 1 8 8v2H20v-2z" fill={theme.colors.border} />
-    <rect x="52" y="65" width="16" height="12" rx="3" fill={`${theme.colors.accent}40`} stroke={theme.colors.accent} strokeWidth="1.5" />
+    <rect x="52" y="65" width="16" height="12" rx="3" fill={alpha(theme.colors.accent, 0.25)} stroke={theme.colors.accent} strokeWidth="1.5" />
     <path d="M30 50 L40 30 L80 30 L90 50" stroke={theme.colors.border} strokeWidth="2" fill="none" strokeLinecap="round" />
-    <circle cx="60" cy="30" r="4" fill={`${theme.colors.accent}30`} stroke={theme.colors.accent} strokeWidth="1" />
+    <circle cx="60" cy="30" r="4" fill={alpha(theme.colors.accent, 0.19)} stroke={theme.colors.accent} strokeWidth="1" />
   </svg>
 );
 
 const CardsSvg = () => (
   <svg viewBox="0 0 120 120" fill="none">
-    <rect x="25" y="25" width="50" height="70" rx="6" fill={`${theme.colors.bgHover}`} stroke={theme.colors.border} strokeWidth="2" transform="rotate(-8 50 60)" />
-    <rect x="35" y="20" width="50" height="70" rx="6" fill={`${theme.colors.bgCard}`} stroke={theme.colors.border} strokeWidth="2" transform="rotate(4 60 55)" />
-    <circle cx="60" cy="50" r="10" fill="none" stroke={`${theme.colors.primary}40`} strokeWidth="1.5" />
+    <rect x="25" y="25" width="50" height="70" rx="6" fill={theme.colors.bgHover} stroke={theme.colors.border} strokeWidth="2" transform="rotate(-8 50 60)" />
+    <rect x="35" y="20" width="50" height="70" rx="6" fill={theme.colors.bgCard} stroke={theme.colors.border} strokeWidth="2" transform="rotate(4 60 55)" />
+    <circle cx="60" cy="50" r="10" fill="none" stroke={alpha(theme.colors.primary, 0.25)} strokeWidth="1.5" />
     <text x="60" y="55" textAnchor="middle" fill={theme.colors.textMuted} fontSize="12">?</text>
   </svg>
 );

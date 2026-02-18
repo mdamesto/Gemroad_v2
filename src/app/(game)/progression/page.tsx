@@ -12,7 +12,7 @@ import { useToastStore } from "@/stores/toast-store";
 import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import type {
   TalentTree,
   Talent,
@@ -68,16 +68,6 @@ const unlockBurst = keyframes`
   100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
-const pulseGlow = keyframes`
-  0%, 100% { filter: drop-shadow(0 0 6px var(--glow-color)); }
-  50% { filter: drop-shadow(0 0 14px var(--glow-color)); }
-`;
-
 const confirmFadeIn = keyframes`
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -94,7 +84,7 @@ const Page = styled.div`
 const StatsRow = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: 20px;
   margin-bottom: 36px;
 `;
 
@@ -107,8 +97,8 @@ const StatCard = styled(GlassCard)<{ $highlight?: boolean }>`
   ${(p) =>
     p.$highlight &&
     css`
-    border-color: ${theme.colors.accent}40;
-    box-shadow: 0 0 20px ${theme.colors.accent}10;
+    border-color: ${alpha(theme.colors.accent, 0.25)};
+    box-shadow: 0 0 20px ${alpha(theme.colors.accent, 0.06)};
   `}
 `;
 
@@ -116,8 +106,9 @@ const StatIconBox = styled.div<{ $color: string }>`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: ${(p) => p.$color}15;
-  border: 1px solid ${(p) => p.$color}30;
+  background: ${(p) => alpha(p.$color, 0.08)};
+  border: none;
+  box-shadow: inset 0 0 0 1px ${(p) => alpha(p.$color, 0.08)};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,12 +123,12 @@ const StatInfo = styled.div`
 const StatValue = styled.div<{ $color?: string }>`
   font-size: 1.4rem;
   font-weight: 800;
-  color: ${(p) => p.$color || "#e5e7eb"};
+  color: ${(p) => p.$color || theme.colors.text};
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.78rem;
-  color: #94a3b8;
+  font-size: 0.82rem;
+  color: ${theme.colors.textMuted};
   margin-top: 2px;
 `;
 
@@ -151,28 +142,20 @@ const XpLabels = styled.div`
   justify-content: space-between;
   margin-bottom: 6px;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
 `;
 
 const XpTrack = styled.div`
   height: 10px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   border-radius: 5px;
   overflow: hidden;
-`;
-
-const gradientShift = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 `;
 
 const XpFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.primary});
-  background-size: 200% 100%;
-  animation: ${gradientShift} 3s ease infinite;
+  background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent});
   border-radius: 5px;
   transition: width 0.5s ease-out;
 `;
@@ -181,20 +164,28 @@ const XpFill = styled.div<{ $percent: number }>`
 const TreesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 40px;
 `;
 
 const TreeCard = styled.div<{ $color: string }>`
-  background: #0f172a;
-  border: 1px solid ${(p) => p.$color}30;
-  border-radius: 16px;
+  background: ${theme.colors.bgCard};
+  border: none;
+  border-radius: 20px;
+  box-shadow:
+    0 2px 8px rgba(var(--shadow-base), 0.3),
+    0 8px 24px rgba(var(--shadow-base), 0.2),
+    inset 0 0 30px ${(p) => alpha(p.$color, 0.02)};
   overflow: hidden;
   animation: ${fadeIn} 0.3s ease-out;
 `;
 
 const TreeHeader = styled.div<{ $color: string }>`
   padding: 20px 24px;
-  border-bottom: 1px solid ${(p) => p.$color}20;
+  border-bottom: none;
+  background-image: linear-gradient(90deg, transparent, ${(p) => alpha(p.$color, 0.12)}, transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -208,8 +199,6 @@ const TreeHeader = styled.div<{ $color: string }>`
     right: 0;
     height: 3px;
     background: linear-gradient(90deg, transparent, ${(p) => p.$color}, transparent);
-    background-size: 200% 100%;
-    animation: ${shimmer} 4s infinite;
   }
 `;
 
@@ -222,8 +211,8 @@ const TreeName = styled.h2`
 `;
 
 const TreeDesc = styled.p`
-  font-size: 0.8rem;
-  color: #94a3b8;
+  font-size: 0.85rem;
+  color: ${theme.colors.textMuted};
 `;
 
 const TreeProgress = styled.div<{ $color: string }>`
@@ -241,7 +230,7 @@ const TierRow = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 
   &:last-child {
     margin-bottom: 0;
@@ -249,11 +238,11 @@ const TierRow = styled.div`
 `;
 
 const TierLabel = styled.div`
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #475569;
+  color: ${theme.colors.textMuted};
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   width: 48px;
   flex-shrink: 0;
   text-align: right;
@@ -270,7 +259,7 @@ const TierNodes = styled.div`
 const ConnectorRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 `;
 
 const ConnectorSpacer = styled.div`
@@ -286,7 +275,7 @@ const ConnectorLine = styled.div<{ $color: string; $active: boolean }>`
   background: ${(p) => (p.$active ? p.$color : theme.colors.border)};
   border-radius: 2px;
   transition: background 0.3s;
-  ${(p) => p.$active && `box-shadow: 0 0 8px ${p.$color}40;`}
+  ${(p) => p.$active && `box-shadow: 0 0 8px ${alpha(p.$color, 0.25)};`}
 `;
 
 // ─── Talent Node ──────────────────────────────────────────────────
@@ -303,26 +292,27 @@ const Node = styled.button<{
   width: 64px;
   height: 64px;
   border-radius: 14px;
-  border: 2px solid
+  border: none;
+  box-shadow:
     ${(p) =>
       p.$unlocked
-        ? p.$color
+        ? `0 0 12px ${alpha(p.$color, 0.25)}, inset 0 0 8px ${alpha(p.$color, 0.08)}`
         : p.$available
-          ? `${p.$color}80`
-          : "#1e293b"};
+          ? `0 0 8px ${alpha(p.$color, 0.15)}`
+          : `0 1px 4px rgba(var(--shadow-base), 0.3)`};
   background: ${(p) =>
     p.$unlocked
-      ? `${p.$color}20`
+      ? alpha(p.$color, 0.12)
       : p.$available
-        ? "#1e293b"
-        : "#0d0d14"};
+        ? theme.colors.bgHover
+        : `rgba(var(--c-bg), 0.8)`};
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   cursor: ${(p) => (p.$available && !p.$unlocked ? "pointer" : "default")};
   transition: all 0.3s;
-  --glow-color: ${(p) => p.$color}60;
+  --glow-color: ${(p) => alpha(p.$color, 0.38)};
   position: relative;
 
   ${(p) =>
@@ -335,8 +325,7 @@ const Node = styled.button<{
   ${(p) =>
     p.$unlocked &&
     css`
-    animation: ${pulseGlow} 3s ease-in-out infinite;
-    box-shadow: 0 0 12px ${p.$color}30;
+    box-shadow: 0 0 12px ${alpha(p.$color, 0.19)};
   `}
 
   ${(p) =>
@@ -353,9 +342,9 @@ const Node = styled.button<{
     css`
     &:hover {
       border-color: ${p.$color};
-      background: ${p.$color}15;
+      background: ${alpha(p.$color, 0.08)};
       transform: scale(1.08);
-      box-shadow: 0 0 20px ${p.$color}20;
+      box-shadow: 0 0 20px ${alpha(p.$color, 0.12)};
     }
   `}
 `;
@@ -364,9 +353,9 @@ const NodeCostBadge = styled.span<{ $color: string; $affordable: boolean }>`
   position: absolute;
   bottom: -6px;
   right: -6px;
-  background: ${(p) => (p.$affordable ? p.$color : "#1e293b")};
-  color: ${(p) => (p.$affordable ? "#fff" : "#475569")};
-  font-size: 0.65rem;
+  background: ${(p) => (p.$affordable ? p.$color : theme.colors.bgHover)};
+  color: ${(p) => (p.$affordable ? "#fff" : theme.colors.textMuted)};
+  font-size: 0.75rem;
   font-weight: 800;
   padding: 2px 6px;
   border-radius: 6px;
@@ -378,7 +367,7 @@ const UnlockedCheck = styled.span`
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #2a9d8f;
+  background: ${theme.colors.success};
   color: white;
   font-size: 0.6rem;
   width: 16px;
@@ -396,8 +385,8 @@ const TooltipContainer = styled.div<{ $visible: boolean; $color: string }>`
   bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1e293b;
-  border: 1px solid ${(p) => p.$color}40;
+  background: ${theme.colors.bgHover};
+  border: none;
   border-radius: 12px;
   padding: 14px 18px;
   min-width: 220px;
@@ -407,7 +396,7 @@ const TooltipContainer = styled.div<{ $visible: boolean; $color: string }>`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   visibility: ${(p) => (p.$visible ? "visible" : "hidden")};
   transition: all 0.2s;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(var(--shadow-base), 0.4);
 
   &::after {
     content: '';
@@ -416,7 +405,7 @@ const TooltipContainer = styled.div<{ $visible: boolean; $color: string }>`
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: ${(p) => p.$color}40;
+    border-top-color: ${theme.colors.bgHover};
   }
 `;
 
@@ -428,7 +417,7 @@ const TooltipName = styled.div`
 
 const TooltipDesc = styled.div`
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   line-height: 1.4;
   margin-bottom: 8px;
 `;
@@ -436,20 +425,20 @@ const TooltipDesc = styled.div`
 const TooltipMeta = styled.div`
   display: flex;
   gap: 12px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
 `;
 
 const TooltipTag = styled.span<{ $color: string }>`
   padding: 2px 8px;
   border-radius: 6px;
-  background: ${(p) => p.$color}15;
+  background: ${(p) => alpha(p.$color, 0.08)};
   color: ${(p) => p.$color};
   font-weight: 600;
 `;
 
 const TooltipStatus = styled.div<{ $color: string }>`
   margin-top: 8px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: ${(p) => p.$color};
 `;
@@ -458,7 +447,7 @@ const TooltipStatus = styled.div<{ $color: string }>`
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(var(--shadow-base), 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -467,9 +456,10 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalCard = styled.div<{ $color: string }>`
-  background: #0f172a;
-  border: 1px solid ${(p) => p.$color}40;
-  border-radius: 16px;
+  background: ${theme.colors.bgCard};
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 0 40px ${(p) => alpha(p.$color, 0.12)}, 0 16px 48px rgba(var(--shadow-base), 0.5);
   padding: 32px;
   max-width: 400px;
   width: 90%;
@@ -490,7 +480,7 @@ const ModalTitle = styled.h3`
 
 const ModalDesc = styled.p`
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   line-height: 1.5;
   margin-bottom: 8px;
 `;
@@ -514,22 +504,23 @@ const SuccessBanner = styled.div<{ $color: string }>`
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: ${(p) => p.$color}20;
-  border: 1px solid ${(p) => p.$color}40;
+  background: ${(p) => alpha(p.$color, 0.12)};
+  border: none;
   border-radius: 12px;
   padding: 14px 28px;
   z-index: 200;
+  box-shadow: 0 0 20px ${(p) => alpha(p.$color, 0.15)};
   display: flex;
   align-items: center;
   gap: 10px;
   animation: ${confirmFadeIn} 0.3s ease-out;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(var(--shadow-base), 0.4);
 `;
 
 const SuccessText = styled.span`
   font-size: 0.9rem;
   font-weight: 600;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
 `;
 
 // (LoadingState imported from skeleton-loader)
@@ -543,7 +534,7 @@ export default function ProgressionPage() {
   const [loading, setLoading] = useState(true);
   const [hoveredTalent, setHoveredTalent] = useState<string | null>(null);
   const [confirmTalent, setConfirmTalent] = useState<TalentWithStatus | null>(null);
-  const [confirmTreeColor, setConfirmTreeColor] = useState("#38BDF8");
+  const [confirmTreeColor, setConfirmTreeColor] = useState(theme.colors.primary);
   const [unlocking, setUnlocking] = useState(false);
   const [justUnlockedId, setJustUnlockedId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<{
@@ -684,9 +675,9 @@ export default function ProgressionPage() {
       {/* Stats Row */}
       <StatsRow>
         <StatCard>
-          <StatIconBox $color="#38BDF8">⚔</StatIconBox>
+          <StatIconBox $color={theme.colors.primary}>⚔</StatIconBox>
           <StatInfo>
-            <StatValue $color="#38BDF8">Niveau {profile.level}</StatValue>
+            <StatValue $color={theme.colors.primary}>Niveau {profile.level}</StatValue>
             <StatLabel>
               {profile.xp} XP total
             </StatLabel>
@@ -694,9 +685,9 @@ export default function ProgressionPage() {
         </StatCard>
 
         <StatCard $highlight={talentPoints > 0}>
-          <StatIconBox $color="#dbb45d">🧠</StatIconBox>
+          <StatIconBox $color={theme.colors.accent}>🧠</StatIconBox>
           <StatInfo>
-            <StatValue $color={talentPoints > 0 ? "#dbb45d" : "#e5e7eb"}>
+            <StatValue $color={talentPoints > 0 ? theme.colors.accent : theme.colors.text}>
               {talentPoints}
             </StatValue>
             <StatLabel>
@@ -708,7 +699,7 @@ export default function ProgressionPage() {
         </StatCard>
 
         <StatCard>
-          <StatIconBox $color="#2a9d8f">🌟</StatIconBox>
+          <StatIconBox $color={theme.colors.success}>🌟</StatIconBox>
           <StatInfo>
             <StatValue>
               {unlockedTalents}/{totalTalents}
@@ -718,7 +709,7 @@ export default function ProgressionPage() {
         </StatCard>
 
         <StatCard>
-          <StatIconBox $color="#60a5fa">📈</StatIconBox>
+          <StatIconBox $color={theme.colors.primary}>📈</StatIconBox>
           <XpBarSection>
             <XpLabels>
               <span>Niveau {profile.level}</span>
@@ -737,7 +728,7 @@ export default function ProgressionPage() {
       <TreesContainer>
         {trees.map((tree) => {
           const factionKey = tree.faction as FactionConst;
-          const color = FACTION_COLORS[factionKey] || "#38BDF8";
+          const color = FACTION_COLORS[factionKey] || theme.colors.primary;
           const treeUnlocked = tree.talents.filter((t) => t.unlocked).length;
 
           // Group talents by tier
@@ -834,17 +825,17 @@ export default function ProgressionPage() {
                                 <TooltipTag $color={color}>
                                   Tier {talent.tier}
                                 </TooltipTag>
-                                <TooltipTag $color="#dbb45d">
+                                <TooltipTag $color={theme.colors.accent}>
                                   Coût: {talent.cost}
                                 </TooltipTag>
                               </TooltipMeta>
                               <TooltipStatus
                                 $color={
                                   talent.unlocked
-                                    ? "#2a9d8f"
+                                    ? theme.colors.success
                                     : talent.available
                                       ? color
-                                      : "#475569"
+                                      : theme.colors.textMuted
                                 }
                               >
                                 {talent.unlocked

@@ -13,13 +13,13 @@ import {
   type CardTypeConst,
   type FactionConst,
 } from "@/lib/constants";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 
 const Bar = styled.div`
   position: sticky;
   top: 64px;
   z-index: 10;
-  background: rgba(2, 6, 23, 0.9);
+  background: ${alpha(theme.colors.bg, 0.9)};
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 16px 0;
@@ -37,10 +37,8 @@ const Row = styled.div`
 `;
 
 const Label = styled.span`
-  font-size: 0.75rem;
-  color: #475569;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  color: ${theme.colors.textMuted};
   min-width: 60px;
   display: flex;
   align-items: center;
@@ -58,14 +56,15 @@ const Pill = styled.button<{ $active: boolean; $color?: string }>`
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid ${(p) => (p.$active ? p.$color || theme.colors.primary : theme.colors.border)};
-  background: ${(p) => (p.$active ? (p.$color || theme.colors.primary) + "20" : "transparent")};
+  border: none;
+  background: ${(p) => (p.$active ? alpha(p.$color || theme.colors.primary, 0.12) : "transparent")};
   color: ${(p) => (p.$active ? p.$color || theme.colors.primary : theme.colors.textMuted)};
   cursor: pointer;
   transition: all 0.25s ease;
+  box-shadow: ${(p) => (p.$active ? `0 0 10px ${alpha(p.$color || theme.colors.primary, 0.12)}` : "none")};
 
   &:hover {
-    border-color: ${(p) => p.$color || theme.colors.primary};
+    background: ${(p) => alpha(p.$color || theme.colors.primary, 0.08)};
     color: ${(p) => p.$color || theme.colors.primary};
     transform: translateY(-1px);
   }
@@ -74,21 +73,22 @@ const Pill = styled.button<{ $active: boolean; $color?: string }>`
 const SearchInput = styled.input`
   padding: 8px 14px;
   background: ${theme.colors.bgHover};
-  border: 1px solid ${theme.colors.border};
+  border: none;
   border-radius: 8px;
   color: ${theme.colors.text};
   font-size: 0.85rem;
   outline: none;
   width: 100%;
   max-width: 300px;
-  transition: border-color 0.2s;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(var(--shadow-base), 0.2), inset 0 0 0 1px var(--white-alpha-004);
 
   &:focus {
-    border-color: ${theme.colors.primary};
+    box-shadow: 0 2px 12px rgba(var(--shadow-base), 0.3), 0 0 0 2px ${alpha(theme.colors.primary, 0.25)};
   }
 
   &::placeholder {
-    color: #475569;
+    color: ${theme.colors.textMuted};
   }
 `;
 
@@ -112,6 +112,7 @@ export interface FilterState {
   faction: FactionConst | "all";
   search: string;
   showUnowned: boolean;
+  foilOnly: boolean;
 }
 
 interface FilterPanelProps {
@@ -138,6 +139,14 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
             onChange={(e) => set({ showUnowned: e.target.checked })}
           />
           Afficher non possédées
+        </ToggleLabel>
+        <ToggleLabel>
+          <Checkbox
+            type="checkbox"
+            checked={filters.foilOnly}
+            onChange={(e) => set({ foilOnly: e.target.checked })}
+          />
+          Foils uniquement
         </ToggleLabel>
       </Row>
 

@@ -9,7 +9,7 @@ import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { formatGems } from "@/lib/utils";
 import type { Achievement } from "@/types/game";
 import type { AchievementWithStatus } from "@/types/game";
@@ -36,11 +36,6 @@ function getAchievementIcon(conditionType: string): string {
 }
 
 // ─── Animations ───────────────────────────────────────────────────
-const glowPulse = keyframes`
-  0%, 100% { box-shadow: 0 0 15px #2a9d8f20, 0 0 30px #2a9d8f10; }
-  50% { box-shadow: 0 0 25px #2a9d8f30, 0 0 50px #2a9d8f15; }
-`;
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -50,11 +45,6 @@ const claimBurst = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 `;
 
 const spinIn = keyframes`
@@ -100,12 +90,12 @@ const StatInfo = styled.div``;
 const StatValue = styled.div`
   font-size: 1.3rem;
   font-weight: 800;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.75rem;
-  color: #94a3b8;
+  font-size: 0.8rem;
+  color: ${theme.colors.textMuted};
 `;
 
 const OverallProgress = styled(GlassCard)`
@@ -116,7 +106,7 @@ const OverallProgress = styled(GlassCard)`
 
 const OverallLabel = styled.div`
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
@@ -125,7 +115,7 @@ const OverallLabel = styled.div`
 const OverallTrack = styled.div`
   width: 100%;
   height: 10px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   border-radius: 5px;
   overflow: hidden;
 `;
@@ -133,7 +123,7 @@ const OverallTrack = styled.div`
 const OverallFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, #2a9d8f, #34d399);
+  background: linear-gradient(90deg, ${theme.colors.success}, ${alpha(theme.colors.success, 0.7)});
   border-radius: 5px;
   transition: width 0.5s ease-out;
 `;
@@ -153,12 +143,13 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
-  border: 1px solid ${(p) => (p.$active ? theme.colors.primary : theme.colors.border)};
-  background: ${(p) => (p.$active ? `${theme.colors.primary}20` : "transparent")};
+  border: none;
+  background: ${(p) => (p.$active ? alpha(theme.colors.primary, 0.12) : "transparent")};
   color: ${(p) => (p.$active ? theme.colors.primary : theme.colors.textMuted)};
+  box-shadow: ${(p) => (p.$active ? `0 0 10px ${alpha(theme.colors.primary, 0.12)}` : "none")};
 
   &:hover {
-    border-color: ${theme.colors.primary}60;
+    background: ${alpha(theme.colors.primary, 0.06)};
     color: ${theme.colors.text};
     transform: translateY(-1px);
   }
@@ -174,13 +165,13 @@ const FilterCount = styled.span`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+  gap: 20px;
 `;
 
 const EmptyState = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.95rem;
   grid-column: 1 / -1;
 `;
@@ -188,9 +179,13 @@ const EmptyState = styled.div`
 // ─── Achievement Card ─────────────────────────────────────────────
 const Card = styled.div<{ $unlocked: boolean; $justClaimed: boolean }>`
   position: relative;
-  background: #0f172a;
-  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f40" : "#1e293b")};
-  border-radius: 14px;
+  background: ${theme.colors.bgCard};
+  border: none;
+  border-radius: 20px;
+  box-shadow:
+    0 2px 8px rgba(var(--shadow-base), 0.3),
+    0 8px 24px rgba(var(--shadow-base), 0.2)
+    ${(p) => (p.$unlocked ? `, 0 0 15px ${alpha(theme.colors.success, 0.08)}` : "")};
   padding: 20px;
   transition: all 0.3s;
   animation: ${fadeIn} 0.3s ease-out;
@@ -198,7 +193,10 @@ const Card = styled.div<{ $unlocked: boolean; $justClaimed: boolean }>`
   ${(p) =>
     p.$unlocked &&
     css`
-    animation: ${glowPulse} 4s ease-in-out infinite;
+    box-shadow:
+      0 2px 8px rgba(var(--shadow-base), 0.3),
+      0 8px 24px rgba(var(--shadow-base), 0.2),
+      0 0 15px ${alpha(theme.colors.success, 0.12)};
   `}
 
   ${(p) =>
@@ -208,8 +206,11 @@ const Card = styled.div<{ $unlocked: boolean; $justClaimed: boolean }>`
   `}
 
   &:hover {
-    border-color: ${(p) => (p.$unlocked ? "#2a9d8f60" : "#1e293b80")};
     transform: translateY(-2px);
+    box-shadow:
+      0 4px 12px rgba(var(--shadow-base), 0.4),
+      0 12px 32px rgba(var(--shadow-base), 0.25)
+      ${(p) => (p.$unlocked ? `, 0 0 25px ${alpha(theme.colors.success, 0.12)}` : "")};
   }
 `;
 
@@ -225,9 +226,7 @@ const UnlockedShimmer = styled.div`
   right: 0;
   height: 3px;
   border-radius: 14px 14px 0 0;
-  background: linear-gradient(90deg, transparent, #2a9d8f, #34d399, #2a9d8f, transparent);
-  background-size: 200% 100%;
-  animation: ${shimmer} 3s infinite;
+  background: linear-gradient(90deg, transparent, ${theme.colors.success}, ${alpha(theme.colors.success, 0.7)}, ${theme.colors.success}, transparent);
 `;
 
 const CardHeaderRow = styled.div`
@@ -241,8 +240,8 @@ const IconContainer = styled.div<{ $unlocked: boolean }>`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: ${(p) => (p.$unlocked ? "#2a9d8f15" : "#1e293b")};
-  border: 1px solid ${(p) => (p.$unlocked ? "#2a9d8f30" : "#1e293b")};
+  background: ${(p) => (p.$unlocked ? alpha(theme.colors.success, 0.08) : theme.colors.bgHover)};
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,12 +265,12 @@ const CardName = styled.h3`
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 2px;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
 `;
 
 const CardCondition = styled.div`
-  font-size: 0.75rem;
-  color: #64748b;
+  font-size: 0.78rem;
+  color: ${theme.colors.textMuted};
   font-style: italic;
 `;
 
@@ -283,35 +282,35 @@ const StatusBadge = styled.span<{ $status: "locked" | "unlocked" | "claimed" }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 
   ${(p) =>
     p.$status === "claimed"
       ? css`
-        background: #2a9d8f20;
-        color: #2a9d8f;
-        border: 1px solid #2a9d8f40;
+        background: ${alpha(theme.colors.success, 0.12)};
+        color: ${theme.colors.success};
+        border: none;
+        box-shadow: 0 0 8px ${alpha(theme.colors.success, 0.08)};
       `
       : p.$status === "unlocked"
         ? css`
-        background: #dbb45d20;
-        color: #dbb45d;
-        border: 1px solid #dbb45d40;
+        background: ${alpha(theme.colors.accent, 0.12)};
+        color: ${theme.colors.accent};
+        border: none;
+        box-shadow: 0 0 8px ${alpha(theme.colors.accent, 0.08)};
       `
         : css`
-        background: #1e293b;
-        color: #475569;
-        border: 1px solid #1e293b;
+        background: ${theme.colors.bgHover};
+        color: ${theme.colors.textMuted};
+        border: none;
       `}
 `;
 
 const CardDescription = styled.p`
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.85rem;
   margin-bottom: 14px;
   line-height: 1.5;
@@ -320,12 +319,14 @@ const CardDescription = styled.p`
 // ─── Progress Bar (for locked achievements) ───────────────────────
 const ProgressSection = styled.div`
   margin-bottom: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--white-alpha-004);
 `;
 
 const ProgressTrack = styled.div`
   width: 100%;
   height: 6px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -334,14 +335,14 @@ const ProgressTrack = styled.div`
 const ProgressFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
-  background: linear-gradient(90deg, #38BDF8, #38BDF890);
+  background: linear-gradient(90deg, ${theme.colors.primary}, ${alpha(theme.colors.primary, 0.56)});
   border-radius: 3px;
   transition: width 0.5s ease-out;
 `;
 
 const ProgressLabel = styled.div`
-  font-size: 0.72rem;
-  color: #64748b;
+  font-size: 0.78rem;
+  color: ${theme.colors.textMuted};
   display: flex;
   justify-content: space-between;
 `;
@@ -352,6 +353,8 @@ const RewardsRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--white-alpha-004);
 `;
 
 const RewardTags = styled.div`
@@ -371,14 +374,16 @@ const RewardTag = styled.div<{ $type: "gems" | "xp" }>`
   ${(p) =>
     p.$type === "gems"
       ? css`
-        background: #dbb45d15;
-        color: #dbb45d;
-        border: 1px solid #dbb45d30;
+        background: ${alpha(theme.colors.accent, 0.08)};
+        color: ${theme.colors.accent};
+        border: none;
+        box-shadow: 0 0 6px ${alpha(theme.colors.accent, 0.06)};
       `
       : css`
-        background: #60a5fa15;
-        color: #60a5fa;
-        border: 1px solid #60a5fa30;
+        background: ${alpha(theme.colors.primary, 0.08)};
+        color: ${theme.colors.primary};
+        border: none;
+        box-shadow: 0 0 6px ${alpha(theme.colors.primary, 0.06)};
       `}
 `;
 
@@ -391,7 +396,7 @@ const ClaimSuccessOverlay = styled.div`
   position: absolute;
   inset: 0;
   border-radius: 14px;
-  background: #2a9d8f10;
+  background: ${alpha(theme.colors.success, 0.06)};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -400,23 +405,24 @@ const ClaimSuccessOverlay = styled.div`
 `;
 
 const ClaimSuccessText = styled.div`
-  background: #0f172a;
-  border: 1px solid #2a9d8f40;
+  background: ${theme.colors.bgCard};
+  border: none;
   border-radius: 12px;
   padding: 12px 24px;
   text-align: center;
+  box-shadow: 0 0 20px ${alpha(theme.colors.success, 0.12)};
 `;
 
 const ClaimSuccessTitle = styled.div`
   font-size: 0.9rem;
   font-weight: 700;
-  color: #2a9d8f;
+  color: ${theme.colors.success};
   margin-bottom: 4px;
 `;
 
 const ClaimSuccessRewards = styled.div`
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
 `;
 
 // ─── Tooltip ──────────────────────────────────────────────────────
@@ -435,12 +441,13 @@ const Tooltip = styled.div`
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: #1e293b;
-  border: 1px solid #1e293b;
+  background: ${theme.colors.bgHover};
+  border: none;
   border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(var(--shadow-base), 0.3);
   padding: 10px 14px;
   font-size: 0.78rem;
-  color: #e5e7eb;
+  color: ${theme.colors.text};
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
@@ -455,7 +462,7 @@ const Tooltip = styled.div`
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #1e293b;
+    border-top-color: ${theme.colors.bgHover};
   }
 `;
 
@@ -490,6 +497,7 @@ export default function AchievementsPage() {
   const { user, loading: userLoading } = useUser();
   const addToast = useToastStore((s) => s.addToast);
   const [achievements, setAchievements] = useState<AchievementWithStatus[]>([]);
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [justClaimedIds, setJustClaimedIds] = useState<Set<string>>(new Set());
@@ -502,14 +510,18 @@ export default function AchievementsPage() {
     async function fetchData() {
       const supabase = createClient();
 
-      const { data: allAchievements } = await supabase
-        .from("achievements")
-        .select("*")
-        .order("condition_value");
+      const [{ data: allAchievements }, progressRes] = await Promise.all([
+        supabase.from("achievements").select("*").order("condition_value"),
+        fetch("/api/achievements/progress").then((r) => r.ok ? r.json() : null),
+      ]);
 
       if (!allAchievements) {
         setLoading(false);
         return;
+      }
+
+      if (progressRes?.progress) {
+        setProgressMap(progressRes.progress);
       }
 
       let userAchievements: Array<{
@@ -665,7 +677,7 @@ export default function AchievementsPage() {
         <StatCard>
           <StatIcon>◆</StatIcon>
           <StatInfo>
-            <StatValue style={{ color: "#dbb45d" }}>
+            <StatValue style={{ color: theme.colors.accent }}>
               {formatGems(totalGems)}
             </StatValue>
             <StatLabel>Gemmes récoltées</StatLabel>
@@ -675,7 +687,7 @@ export default function AchievementsPage() {
         <StatCard>
           <StatIcon>⚡</StatIcon>
           <StatInfo>
-            <StatValue style={{ color: "#60a5fa" }}>{totalXp}</StatValue>
+            <StatValue style={{ color: theme.colors.primary }}>{totalXp}</StatValue>
             <StatLabel>XP récoltée</StatLabel>
           </StatInfo>
         </StatCard>
@@ -683,7 +695,7 @@ export default function AchievementsPage() {
         <OverallProgress>
           <OverallLabel>
             <span>Progression globale</span>
-            <span style={{ fontWeight: 700, color: "#e5e7eb" }}>
+            <span style={{ fontWeight: 700, color: theme.colors.text }}>
               {Math.round(overallPercent)}%
             </span>
           </OverallLabel>
@@ -784,19 +796,23 @@ export default function AchievementsPage() {
                 <CardDescription>{a.description}</CardDescription>
 
                 {/* Progress bar for locked achievements */}
-                {!a.unlocked && (
-                  <ProgressSection>
-                    <ProgressTrack>
-                      <ProgressFill $percent={0} />
-                    </ProgressTrack>
-                    <ProgressLabel>
-                      <span>Progression</span>
-                      <span>
-                        ? / {a.condition_value}
-                      </span>
-                    </ProgressLabel>
-                  </ProgressSection>
-                )}
+                {!a.unlocked && (() => {
+                  const current = progressMap[a.condition_type] ?? 0;
+                  const pct = Math.min(100, Math.round((current / a.condition_value) * 100));
+                  return (
+                    <ProgressSection>
+                      <ProgressTrack>
+                        <ProgressFill $percent={pct} />
+                      </ProgressTrack>
+                      <ProgressLabel>
+                        <span>Progression</span>
+                        <span>
+                          {current} / {a.condition_value}
+                        </span>
+                      </ProgressLabel>
+                    </ProgressSection>
+                  );
+                })()}
 
                 <RewardsRow>
                   <RewardTags>

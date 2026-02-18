@@ -12,7 +12,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { BackButton } from "@/components/ui/back-button";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { fadeInUp } from "@/lib/animations";
 import type { Card, Series } from "@/types/cards";
 
@@ -55,7 +55,7 @@ const ProgressText = styled.p`
 const RewardSection = styled(GlassCard)`
   margin-bottom: 32px;
   max-width: 500px;
-  border-color: ${theme.colors.accent}30;
+  box-shadow: 0 0 15px ${alpha(theme.colors.accent, 0.07)}, 0 4px 12px rgba(var(--shadow-base), 0.2);
 `;
 
 const RewardTitle = styled.h3`
@@ -88,8 +88,8 @@ const StatusTag = styled.span<{ $variant: "success" | "muted" }>`
   font-weight: 600;
   ${(p) =>
     p.$variant === "success"
-      ? `background: ${theme.colors.success}20; color: ${theme.colors.success}; border: 1px solid ${theme.colors.success}40;`
-      : `background: ${theme.colors.border}; color: ${theme.colors.textMuted}; border: 1px solid ${theme.colors.border};`}
+      ? `background: ${alpha(theme.colors.success, 0.12)}; color: ${theme.colors.success}; border: none; box-shadow: 0 0 8px ${alpha(theme.colors.success, 0.08)};`
+      : `background: ${theme.colors.border}; color: ${theme.colors.textMuted}; border: none;`}
 `;
 
 const TrophyIcon = (

@@ -10,7 +10,7 @@ import { RarityBadge } from "@/components/shared/rarity-badge";
 import { GlowButton } from "@/components/ui/glow-button";
 import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
 import { LoadingState } from "@/components/ui/skeleton-loader";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import type { Card, Series } from "@/types/cards";
 import type { UserSeriesProgress } from "@/types/game";
 
@@ -38,11 +38,6 @@ function getGemInfo(rewardType: string) {
 }
 
 // ─── Animations ───────────────────────────────────────────────────
-const goldShimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -75,12 +70,13 @@ const FilterButton = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
-  border: 1px solid ${(p) => (p.$active ? theme.colors.primary : theme.colors.border)};
-  background: ${(p) => (p.$active ? `${theme.colors.primary}20` : "transparent")};
+  border: none;
+  background: ${(p) => (p.$active ? alpha(theme.colors.primary, 0.12) : "transparent")};
   color: ${(p) => (p.$active ? theme.colors.primary : theme.colors.textMuted)};
+  box-shadow: ${(p) => (p.$active ? `0 0 10px ${alpha(theme.colors.primary, 0.12)}` : "none")};
 
   &:hover {
-    border-color: ${theme.colors.primary}60;
+    background: ${alpha(theme.colors.primary, 0.06)};
     color: ${theme.colors.text};
     transform: translateY(-1px);
   }
@@ -102,7 +98,7 @@ const Grid = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.95rem;
   grid-column: 1 / -1;
 `;
@@ -112,29 +108,34 @@ const CardContainer = styled.div<{ $completed: boolean }>`
   background: ${theme.colors.glassBg};
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid ${(p) => (p.$completed ? "#FBBF2440" : theme.colors.glassBorder)};
-  border-radius: 16px;
+  border: none;
+  border-radius: 20px;
   overflow: hidden;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: box-shadow 0.3s;
+  box-shadow:
+    0 2px 8px rgba(var(--shadow-base), 0.3),
+    0 8px 24px rgba(var(--shadow-base), 0.2),
+    ${(p) => (p.$completed ? `0 0 20px ${alpha("#FBBF24", 0.07)}` : `inset 0 0 20px rgba(var(--c-primary), 0.03)`)};
   animation: ${fadeIn} 0.3s ease-out;
 
   ${(p) =>
     p.$completed &&
     css`
-    box-shadow: 0 0 20px #FBBF2410;
+    box-shadow: 0 0 20px ${alpha("#FBBF24", 0.06)};
 
     &::before {
       content: '';
       display: block;
       height: 3px;
       background: linear-gradient(90deg, transparent, #FBBF24, #DBB45D, #FBBF24, transparent);
-      background-size: 200% 100%;
-      animation: ${goldShimmer} 3s infinite;
     }
   `}
 
   &:hover {
-    border-color: ${(p) => (p.$completed ? "#FBBF2460" : "#38BDF840")};
+    box-shadow:
+      0 4px 12px rgba(var(--shadow-base), 0.4),
+      0 12px 32px rgba(var(--shadow-base), 0.25),
+      0 0 25px ${(p) => (p.$completed ? alpha("#FBBF24", 0.12) : alpha(theme.colors.primary, 0.08))};
   }
 `;
 
@@ -171,13 +172,12 @@ const CompletedBadge = styled.span`
   gap: 4px;
   padding: 4px 12px;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: #FBBF24;
-  background: #FBBF2420;
-  border: 1px solid #FBBF2440;
+  background: ${alpha("#FBBF24", 0.12)};
+  border: none;
+  box-shadow: 0 0 8px ${alpha("#FBBF24", 0.08)};
 `;
 
 const InProgressBadge = styled.span`
@@ -186,15 +186,16 @@ const InProgressBadge = styled.span`
   gap: 4px;
   padding: 4px 12px;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #38BDF8;
-  background: #38BDF820;
-  border: 1px solid #38BDF840;
+  color: ${theme.colors.primary};
+  background: ${alpha(theme.colors.primary, 0.12)};
+  border: none;
+  box-shadow: 0 0 8px ${alpha(theme.colors.primary, 0.08)};
 `;
 
 const SeriesDesc = styled.p`
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 0.85rem;
   margin-bottom: 16px;
   line-height: 1.4;
@@ -208,7 +209,7 @@ const ProgressBarContainer = styled.div`
 const ProgressTrack = styled.div`
   width: 100%;
   height: 8px;
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -220,7 +221,7 @@ const ProgressFill = styled.div<{ $percent: number; $completed: boolean }>`
     p.$completed
       ? "linear-gradient(90deg, #FBBF24, #DBB45D)"
       : p.$percent > 0
-        ? "linear-gradient(90deg, #38BDF8, #38BDF890)"
+        ? `linear-gradient(90deg, ${theme.colors.primary}, ${alpha(theme.colors.primary, 0.56)})`
         : "transparent"};
   border-radius: 4px;
   transition: width 0.5s ease-out;
@@ -235,13 +236,13 @@ const ProgressInfo = styled.div`
 
 const ProgressText = styled.span`
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
 `;
 
 const ProgressPercent = styled.span<{ $completed: boolean }>`
   font-size: 0.8rem;
   font-weight: 700;
-  color: ${(p) => (p.$completed ? "#FBBF24" : "#e5e7eb")};
+  color: ${(p) => (p.$completed ? "#FBBF24" : theme.colors.text)};
 `;
 
 // ─── Reward Section ───────────────────────────────────────────────
@@ -249,7 +250,8 @@ const RewardRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px 16px;
+  padding: 8px 24px 16px;
+  border-top: 1px solid var(--white-alpha-004);
 `;
 
 const RewardInfo = styled.div`
@@ -261,12 +263,12 @@ const RewardInfo = styled.div`
 const GemIcon = styled.span<{ $color: string }>`
   font-size: 1.3rem;
   color: ${(p) => p.$color};
-  filter: drop-shadow(0 0 4px ${(p) => p.$color}60);
+  filter: drop-shadow(0 0 4px ${(p) => alpha(p.$color, 0.38)});
 `;
 
 const RewardLabel = styled.div`
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
 `;
 
 const RewardValue = styled.div<{ $color: string }>`
@@ -280,9 +282,10 @@ const ClaimedTag = styled.span`
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #2A9D8F;
-  background: #2A9D8F20;
-  border: 1px solid #2A9D8F40;
+  color: ${theme.colors.success};
+  background: ${alpha(theme.colors.success, 0.12)};
+  border: none;
+  box-shadow: 0 0 8px ${alpha(theme.colors.success, 0.08)};
 `;
 
 // ─── Expand Toggle ────────────────────────────────────────────────
@@ -291,16 +294,20 @@ const ExpandToggle = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px;
-  border-top: 1px solid #1e293b;
+  border-top: none;
+  background-image: linear-gradient(90deg, transparent, rgba(var(--c-primary), 0.15), transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top;
   cursor: pointer;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   transition: color 0.2s, background 0.2s;
   gap: 6px;
 
   &:hover {
-    color: #e5e7eb;
-    background: #1e293b;
+    color: ${theme.colors.text};
+    background: ${theme.colors.bgHover};
   }
 `;
 
@@ -314,14 +321,18 @@ const Arrow = styled.span<{ $expanded: boolean }>`
 const ExpandedContent = styled.div`
   animation: ${expandIn} 0.3s ease-out;
   overflow: hidden;
-  border-top: 1px solid #1e293b;
+  border-top: none;
+  background-image: linear-gradient(90deg, transparent, rgba(var(--c-primary), 0.12), transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top;
 `;
 
 const CardList = styled.div`
   padding: 16px 24px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  gap: 14px;
 `;
 
 const MiniCard = styled.div<{ $owned: boolean; $rarity: Rarity }>`
@@ -330,9 +341,10 @@ const MiniCard = styled.div<{ $owned: boolean; $rarity: Rarity }>`
   gap: 10px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: ${(p) => (p.$owned ? "#1e293b" : "#020617")};
-  border: 1px solid ${(p) =>
-    p.$owned ? `${RARITY_COLORS[p.$rarity]}40` : "#1e293b40"};
+  background: ${(p) => (p.$owned ? theme.colors.bgHover : theme.colors.bg)};
+  border: none;
+  box-shadow: ${(p) =>
+    p.$owned ? `0 0 8px ${alpha(RARITY_COLORS[p.$rarity], 0.12)}` : `0 1px 4px rgba(var(--shadow-base), 0.2)`};
   opacity: ${(p) => (p.$owned ? 1 : 0.5)};
   transition: opacity 0.2s;
 `;
@@ -356,13 +368,13 @@ const MiniCardName = styled.div`
 `;
 
 const MiniCardRarity = styled.div<{ $color: string }>`
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: ${(p) => p.$color};
 `;
 
 const StatusIcon = styled.span<{ $owned: boolean }>`
   font-size: 0.85rem;
-  color: ${(p) => (p.$owned ? "#2A9D8F" : "#94a3b8")};
+  color: ${(p) => (p.$owned ? theme.colors.success : theme.colors.textMuted)};
   flex-shrink: 0;
 `;
 
@@ -370,14 +382,18 @@ const ViewDetailLink = styled(Link)`
   display: block;
   text-align: center;
   padding: 12px;
-  border-top: 1px solid #1e293b40;
+  border-top: none;
+  background-image: linear-gradient(90deg, transparent, rgba(var(--c-primary), 0.10), transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #38BDF8;
+  color: ${theme.colors.primary};
   transition: background 0.2s;
 
   &:hover {
-    background: #38BDF810;
+    background: ${alpha(theme.colors.primary, 0.06)};
   }
 `;
 

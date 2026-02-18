@@ -1,6 +1,7 @@
 "use client";
 
 import styled, { keyframes } from "styled-components";
+import { alpha } from "@/lib/theme";
 
 const drift1 = keyframes`
   0%, 100% { transform: translate(0, 0) scale(1); }
@@ -22,6 +23,7 @@ const Container = styled.div`
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
+  opacity: var(--orb-opacity);
 `;
 
 const Orb = styled.div<{ $color: string; $size: number; $x: string; $y: string; $delay: number; $variant: 1 | 2 }>`
@@ -29,7 +31,7 @@ const Orb = styled.div<{ $color: string; $size: number; $x: string; $y: string; 
   width: ${(p) => p.$size}px;
   height: ${(p) => p.$size}px;
   border-radius: 50%;
-  background: radial-gradient(circle, ${(p) => p.$color}12 0%, transparent 70%);
+  background: radial-gradient(circle, ${(p) => alpha(p.$color, 0.09)} 0%, transparent 70%);
   left: ${(p) => p.$x};
   top: ${(p) => p.$y};
   animation: ${(p) => (p.$variant === 1 ? drift1 : drift2)} ${(p) => 20 + p.$delay * 5}s ease-in-out infinite;

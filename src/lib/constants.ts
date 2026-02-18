@@ -62,3 +62,46 @@ export const DAILY_REWARD_MAX_STREAK = 7;
 export const STARTER_GEMS = 200;
 
 export const FREE_DAILY_BOOSTERS = 3;
+
+// Feature 9: Foil cards
+export const FOIL_CHANCE = 0.05;
+
+// Feature 6: Fusion / Crafting
+export const FUSION_COST: Record<string, number> = {
+  common: 5,
+  uncommon: 5,
+  rare: 4,
+  epic: 3,
+};
+
+export const FUSION_TARGET: Record<string, string> = {
+  common: "uncommon",
+  uncommon: "rare",
+  rare: "epic",
+  epic: "legendary",
+};
+
+export const RECYCLE_GEM_VALUES: Record<string, number> = {
+  common: 5,
+  uncommon: 15,
+  rare: 40,
+  epic: 100,
+  legendary: 250,
+};
+
+// Feature 8: Missions
+export const MISSION_TEMPLATES = {
+  daily: [
+    { name: "Ouvreur de boosters", description: "Ouvre {value} booster(s)", condition_type: "open_boosters", condition_value: 2, reward_gems: 30, reward_xp: 20 },
+    { name: "Collectionneur du jour", description: "Obtiens {value} nouvelle(s) carte(s)", condition_type: "collect_cards", condition_value: 3, reward_gems: 25, reward_xp: 15 },
+    { name: "Acheteur malin", description: "Achète {value} booster(s)", condition_type: "purchase_boosters", condition_value: 1, reward_gems: 20, reward_xp: 10 },
+    { name: "Recycleur", description: "Recycle {value} carte(s)", condition_type: "recycle_cards", condition_value: 3, reward_gems: 20, reward_xp: 15 },
+    { name: "Alchimiste", description: "Fusionne {value} fois", condition_type: "craft_fusion", condition_value: 1, reward_gems: 35, reward_xp: 25 },
+  ],
+  weekly: [
+    { name: "Maître des boosters", description: "Ouvre {value} boosters cette semaine", condition_type: "open_boosters", condition_value: 10, reward_gems: 150, reward_xp: 100 },
+    { name: "Grand collectionneur", description: "Obtiens {value} nouvelles cartes", condition_type: "collect_cards", condition_value: 15, reward_gems: 120, reward_xp: 80 },
+    { name: "Forgeron de la semaine", description: "Fusionne {value} fois cette semaine", condition_type: "craft_fusion", condition_value: 5, reward_gems: 100, reward_xp: 75 },
+    { name: "Récupérateur d'élite", description: "Recycle {value} cartes cette semaine", condition_type: "recycle_cards", condition_value: 15, reward_gems: 100, reward_xp: 60 },
+  ],
+};

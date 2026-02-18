@@ -10,8 +10,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { theme } from "@/lib/theme";
-import { fadeInUp, gradientShift } from "@/lib/animations";
+import { theme, alpha } from "@/lib/theme";
+import { fadeInUp } from "@/lib/animations";
 
 const Page = styled.div`
   max-width: 800px;
@@ -44,7 +44,7 @@ const AvatarCircle = styled.div`
   color: white;
   text-transform: uppercase;
   flex-shrink: 0;
-  box-shadow: 0 0 20px ${theme.colors.primary}30;
+  box-shadow: 0 0 20px ${alpha(theme.colors.primary, 0.19)};
 `;
 
 const HeroInfo = styled.div`
@@ -71,15 +71,16 @@ const LevelBadge = styled.span`
   border-radius: ${theme.radii.full};
   font-size: 0.75rem;
   font-weight: 700;
-  background: ${theme.colors.primary}20;
+  background: ${alpha(theme.colors.primary, 0.12)};
   color: ${theme.colors.primary};
-  border: 1px solid ${theme.colors.primary}40;
+  border: none;
+  box-shadow: 0 0 8px ${alpha(theme.colors.primary, 0.08)};
 `;
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 16px;
   margin-bottom: 24px;
 `;
 
@@ -92,8 +93,8 @@ const StatIconCircle = styled.div<{ $color: string }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: ${(p) => p.$color}15;
-  border: 1px solid ${(p) => p.$color}30;
+  background: ${(p) => alpha(p.$color, 0.08)};
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,11 +114,9 @@ const StatValue = styled.div<{ $color?: string }>`
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: ${theme.colors.textMuted};
   margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 `;
 
 const XpSection = styled(GlassCard)`
@@ -144,8 +143,6 @@ const XpFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
   background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent});
-  background-size: 200% 100%;
-  animation: ${gradientShift} 3s ease infinite;
   border-radius: 6px;
   transition: width 0.5s ease-out;
 `;
@@ -161,7 +158,7 @@ const SectionTitle = styled.h3`
 const TransactionList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 `;
 
 const TransactionItem = styled(GlassCard)`
@@ -181,7 +178,7 @@ const TransactionIcon = styled.div<{ $positive: boolean }>`
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: ${(p) => (p.$positive ? `${theme.colors.success}15` : `${theme.colors.primary}15`)};
+  background: ${(p) => (p.$positive ? `${alpha(theme.colors.success, 0.08)}` : `${alpha(theme.colors.primary, 0.08)}`)};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,7 +196,7 @@ const TransactionDesc = styled.div`
 `;
 
 const TransactionDate = styled.div`
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   color: ${theme.colors.textMuted};
 `;
 

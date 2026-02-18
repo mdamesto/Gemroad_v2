@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import { RARITY_COLORS, RARITY_LABELS, type Rarity } from "@/lib/constants";
+import { alpha } from "@/lib/theme";
 
 const Badge = styled.span<{ $color: string }>`
   display: inline-flex;
@@ -13,8 +14,8 @@ const Badge = styled.span<{ $color: string }>`
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: ${(p) => p.$color};
-  background: ${(p) => p.$color}20;
-  border: 1px solid ${(p) => p.$color}40;
+  background: ${(p) => alpha(p.$color, 0.12)};
+  border: 1px solid ${(p) => alpha(p.$color, 0.25)};
 `;
 
 export function RarityBadge({ rarity }: { rarity: Rarity }) {

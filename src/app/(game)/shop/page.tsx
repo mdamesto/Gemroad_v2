@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/stores/toast-store";
@@ -9,8 +9,8 @@ import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { LoadingState } from "@/components/ui/skeleton-loader";
-import { theme } from "@/lib/theme";
-import { fadeInUp, gradientShift } from "@/lib/animations";
+import { theme, alpha } from "@/lib/theme";
+import { fadeInUp } from "@/lib/animations";
 import { formatPrice, formatGems } from "@/lib/utils";
 import type { BoosterType } from "@/types/cards";
 
@@ -36,15 +36,10 @@ const ProductCard = styled(GlassCard)`
 
   &:hover {
     transform: translateY(-4px);
-    border-color: ${theme.colors.accent}50;
-    box-shadow: ${theme.shadows.glow(theme.colors.accent)};
+    box-shadow:
+      0 4px 16px rgba(var(--shadow-base), 0.35),
+      0 0 24px ${alpha(theme.colors.accent, 0.09)};
   }
-`;
-
-const borderRotate = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 `;
 
 const PopularBadge = styled.div`
@@ -53,16 +48,13 @@ const PopularBadge = styled.div`
   right: 16px;
   padding: 4px 12px;
   border-radius: ${theme.radii.full};
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: white;
   background: ${theme.gradients.primary};
-  background-size: 200% 200%;
-  animation: ${borderRotate} 3s ease infinite;
-  border: 1px solid ${theme.colors.primary}60;
-  box-shadow: 0 0 12px ${theme.colors.primary}40;
+  border: none;
 `;
 
 const ProductImage = styled.img`
@@ -70,7 +62,7 @@ const ProductImage = styled.img`
   height: 133px;
   margin: 0 auto 20px;
   display: block;
-  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 4px 16px rgba(var(--shadow-base), 0.5));
   transition: transform 0.3s ease;
 
   ${ProductCard}:hover & {

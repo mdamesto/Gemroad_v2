@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { fadeInUp } from "@/lib/animations";
 
 const HeaderWrapper = styled.div`
@@ -15,7 +15,10 @@ const HeaderWrapper = styled.div`
     content: "";
     position: absolute;
     inset: 0;
-    background: ${theme.gradients.mesh};
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(var(--c-primary), 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(var(--c-accent), 0.08) 0%, transparent 50%);
     pointer-events: none;
   }
 `;
@@ -26,12 +29,33 @@ const Title = styled.h1`
   color: ${theme.colors.text};
   margin-bottom: 8px;
   position: relative;
-  letter-spacing: 1px;
+  letter-spacing: 0.02em;
+  display: inline-block;
 
   background: linear-gradient(135deg, ${theme.colors.text}, ${theme.colors.primary});
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    border-radius: 1px;
+    background: linear-gradient(90deg, transparent, ${theme.colors.primary}, ${theme.colors.accent}, ${theme.colors.primary}, transparent);
+  }
+`;
+
+const DecoLine = styled.div`
+  width: 40px;
+  height: 2px;
+  margin: 20px auto 0;
+  border-radius: 1px;
+  background: linear-gradient(90deg, ${alpha(theme.colors.primary, 0.38)}, ${alpha(theme.colors.accent, 0.38)});
+  opacity: 0.5;
 `;
 
 const Subtitle = styled.p`
@@ -39,7 +63,7 @@ const Subtitle = styled.p`
   font-size: 1rem;
   position: relative;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 16px auto 0;
 `;
 
 const ChildrenRow = styled.div`
@@ -64,6 +88,7 @@ export function PageHeader({
   return (
     <HeaderWrapper>
       <Title>{title}</Title>
+      <DecoLine />
       {subtitle && <Subtitle>{subtitle}</Subtitle>}
       {children && <ChildrenRow>{children}</ChildrenRow>}
     </HeaderWrapper>

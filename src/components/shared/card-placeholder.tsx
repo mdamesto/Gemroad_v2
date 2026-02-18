@@ -2,6 +2,8 @@
 
 import styled from "styled-components";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
+import { alpha } from "@/lib/theme";
+import { theme } from "@/lib/theme";
 
 const Wrapper = styled.div<{ $color: string }>`
   width: 100%;
@@ -11,9 +13,9 @@ const Wrapper = styled.div<{ $color: string }>`
   justify-content: center;
   background: linear-gradient(
     135deg,
-    #0f172a 0%,
-    ${(p) => p.$color}15 50%,
-    #0f172a 100%
+    ${theme.colors.bgCard} 0%,
+    ${(p) => alpha(p.$color, 0.08)} 50%,
+    ${theme.colors.bgCard} 100%
   );
   position: relative;
   overflow: hidden;
@@ -24,7 +26,7 @@ const Wrapper = styled.div<{ $color: string }>`
     inset: 0;
     background: radial-gradient(
       circle at 50% 40%,
-      ${(p) => p.$color}20,
+      ${(p) => alpha(p.$color, 0.12)},
       transparent 70%
     );
   }

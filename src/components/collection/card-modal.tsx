@@ -11,8 +11,8 @@ import {
   type FactionConst,
 } from "@/lib/constants";
 import { CardPlaceholder } from "@/components/shared/card-placeholder";
-import { theme } from "@/lib/theme";
-import { fadeIn, scaleIn } from "@/lib/animations";
+import { theme, alpha } from "@/lib/theme";
+import { fadeIn, scaleIn, holoRainbow } from "@/lib/animations";
 import type { CollectionCardData } from "./card-item";
 
 const slideUp = keyframes`
@@ -43,7 +43,7 @@ const Overlay = styled.div`
 
 const Card = styled.div<{ $rarity: Rarity }>`
   background: ${theme.colors.bgCard};
-  border: 1px solid ${(p) => RARITY_COLORS[p.$rarity]}50;
+  border: none;
   border-radius: 20px;
   max-width: 480px;
   width: 100%;
@@ -68,13 +68,11 @@ const ParticlesContainer = styled.div<{ $color: string }>`
     height: 4px;
     border-radius: 50%;
     background: ${(p) => p.$color};
-    animation: ${particleFloat} 4s ease-in-out infinite;
+    animation: ${particleFloat} 5s ease-in-out infinite;
 
-    &:nth-child(1) { left: 10%; bottom: 20%; animation-delay: 0s; }
-    &:nth-child(2) { left: 30%; bottom: 10%; animation-delay: 0.8s; }
-    &:nth-child(3) { left: 50%; bottom: 30%; animation-delay: 1.6s; }
-    &:nth-child(4) { left: 70%; bottom: 15%; animation-delay: 2.4s; }
-    &:nth-child(5) { left: 85%; bottom: 25%; animation-delay: 3.2s; }
+    &:nth-child(1) { left: 15%; bottom: 20%; animation-delay: 0s; }
+    &:nth-child(2) { left: 50%; bottom: 15%; animation-delay: 1s; }
+    &:nth-child(3) { left: 80%; bottom: 25%; animation-delay: 2s; }
   }
 `;
 
@@ -89,7 +87,7 @@ const ImageArea = styled.div<{ $hasImage: boolean }>`
   position: relative;
   z-index: 1;
 
-  ${(p) => !p.$hasImage && `color: #334155; font-size: 5rem;`}
+  ${(p) => !p.$hasImage && `color: ${theme.colors.border}; font-size: 5rem;`}
 
   img {
     width: 100%;
@@ -116,21 +114,35 @@ const RarityTag = styled.span<{ $color: string }>`
   display: inline-flex;
   padding: 2px 10px;
   border-radius: 9999px;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${(p) => p.$color};
-  background: ${(p) => p.$color}20;
-  border: 1px solid ${(p) => p.$color}40;
+  background: ${(p) => alpha(p.$color, 0.12)};
+  border: none;
 `;
 
 const MetaTag = styled.span`
   font-size: 0.75rem;
   color: ${theme.colors.textMuted};
   padding: 3px 10px;
-  border: 1px solid ${theme.colors.border};
+  border: none;
   border-radius: 9999px;
+  background: ${theme.colors.bgHover};
+`;
+
+const FoilTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #FFD700, #FF6B6B, #00CED1, #FFD700);
+  background-size: 200% 200%;
+  animation: ${holoRainbow} 2s ease infinite;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 `;
 
 const Name = styled.h2`
@@ -149,13 +161,13 @@ const Description = styled.p`
 `;
 
 const Lore = styled.p`
-  color: #475569;
+  color: ${theme.colors.textMuted};
   font-size: 0.8rem;
   line-height: 1.5;
   font-style: italic;
   margin-bottom: 16px;
   padding-left: 12px;
-  border-left: 2px solid ${theme.colors.border};
+  border-left: 2px solid ${alpha(theme.colors.primary, 0.19)};
 `;
 
 const Stats = styled.div`
@@ -179,7 +191,7 @@ const Stat = styled.div<{ $color: string }>`
 `;
 
 const StatLabel = styled.span`
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: ${theme.colors.textMuted};
   margin-left: 2px;
@@ -199,7 +211,7 @@ const CloseBtn = styled.button`
   width: 100%;
   padding: 12px;
   background: ${theme.colors.bgHover};
-  border: 1px solid ${theme.colors.border};
+  border: none;
   border-radius: 8px;
   color: ${theme.colors.textMuted};
   font-size: 0.85rem;
@@ -210,10 +222,11 @@ const CloseBtn = styled.button`
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: inset 0 0 0 1px var(--white-alpha-006);
 
   &:hover {
     color: ${theme.colors.text};
-    border-color: ${theme.colors.textMuted};
+    box-shadow: inset 0 0 0 1px var(--white-alpha-012);
   }
 `;
 
@@ -223,7 +236,7 @@ interface CardModalProps {
 }
 
 export function CardModal({ data, onClose }: CardModalProps) {
-  const { card, quantity, owned } = data;
+  const { card, quantity, owned, isFoil } = data;
   const hasImage = !!card.image_url && card.image_url !== "";
   const [imgError, setImgError] = useState(false);
   const showImage = hasImage && owned && !imgError;
@@ -234,7 +247,7 @@ export function CardModal({ data, onClose }: CardModalProps) {
       <Card $rarity={card.rarity} onClick={(e) => e.stopPropagation()}>
         {(card.rarity === "epic" || card.rarity === "legendary" || card.rarity === "rare") && (
           <ParticlesContainer $color={rarityColor}>
-            <span /><span /><span /><span /><span />
+            <span /><span /><span />
           </ParticlesContainer>
         )}
 
@@ -251,6 +264,7 @@ export function CardModal({ data, onClose }: CardModalProps) {
             <RarityTag $color={rarityColor}>
               {RARITY_LABELS[card.rarity]}
             </RarityTag>
+            {isFoil && <FoilTag>FOIL</FoilTag>}
             <MetaTag>{CARD_TYPE_LABELS[card.type]}</MetaTag>
             {card.faction && (
               <MetaTag>

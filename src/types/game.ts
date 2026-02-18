@@ -37,3 +37,14 @@ export interface TalentWithStatus extends Talent {
   unlocked: boolean;
   unlocked_at?: string;
 }
+
+export type Mission = Database["public"]["Tables"]["missions"]["Row"];
+export type UserMission = Database["public"]["Tables"]["user_missions"]["Row"];
+
+export interface MissionWithProgress extends Mission {
+  user_mission_id?: string;
+  progress: number;
+  completed: boolean;
+  claimed: boolean;
+  expires_at?: string;
+}

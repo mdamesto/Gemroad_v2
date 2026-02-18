@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cinzel } from "next/font/google";
 import "./globals.css";
 import { StyledComponentsRegistry } from "@/lib/styled-registry";
+import { ThemeInitializer } from "@/components/ui/theme-initializer";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -22,9 +23,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={cinzel.variable}>
+    <html lang="fr" className={cinzel.variable} data-theme="dark">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("gemroad-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body>
         <StyledComponentsRegistry>
+          <ThemeInitializer />
           {children}
         </StyledComponentsRegistry>
       </body>

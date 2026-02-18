@@ -2,16 +2,17 @@
 
 import styled from "styled-components";
 import { CardItem, type CollectionCardData } from "./card-item";
+import { theme } from "@/lib/theme";
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
   justify-items: center;
 
   @media (max-width: 640px) {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 14px;
   }
 `;
 
@@ -19,7 +20,7 @@ const Empty = styled.div`
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: ${theme.colors.textMuted};
   font-size: 1.1rem;
 `;
 

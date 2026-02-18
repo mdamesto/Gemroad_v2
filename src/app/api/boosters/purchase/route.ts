@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { updateMissionProgress } from "@/lib/missions";
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -75,6 +76,9 @@ export async function POST(request: NextRequest) {
     amount: -boosterType.price_gems,
     description: `Achat de ${boosterType.name}`,
   });
+
+  // Update mission progress
+  await updateMissionProgress(admin, user.id, "purchase_boosters", 1);
 
   return NextResponse.json({ booster });
 }

@@ -49,9 +49,9 @@ export async function middleware(request: NextRequest) {
     return redirectResponse;
   }
 
-  // If user is logged in and tries to access login/register, redirect to /collection
+  // If user is logged in and tries to access login/register, redirect to /dashboard
   if (user && authRoutes.includes(pathname)) {
-    return redirectWithCookies("/collection");
+    return redirectWithCookies("/dashboard");
   }
 
   // If user is NOT logged in and tries to access a protected route, redirect to /

@@ -4,7 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { useGameStore } from "@/stores/game-store";
 import { CardDisplay } from "./card-display";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { GlowButton } from "@/components/ui/glow-button";
 
 const fadeIn = keyframes`
@@ -77,7 +77,7 @@ const PackImage = styled.img`
   filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.4));
 `;
 
-const CardReveal = styled.div`
+const CardRevealStyled = styled.div`
   animation: ${cardReveal} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 `;
@@ -153,8 +153,8 @@ const RarityFlash = styled.div<{ $rarity: Rarity }>`
   position: fixed;
   inset: 0;
   pointer-events: none;
-  box-shadow: inset 0 0 120px ${(p) => RARITY_COLORS[p.$rarity]}40,
-    inset 0 0 60px ${(p) => RARITY_COLORS[p.$rarity]}20;
+  box-shadow: inset 0 0 120px ${(p) => alpha(RARITY_COLORS[p.$rarity], 0.25)},
+    inset 0 0 60px ${(p) => alpha(RARITY_COLORS[p.$rarity], 0.12)};
   animation: ${fadeIn} 0.3s ease;
   z-index: 99;
 `;
@@ -210,9 +210,9 @@ export function BoosterAnimation() {
       {!allRevealed ? (
         <>
           {currentCard ? (
-            <CardReveal key={currentIndex}>
+            <CardRevealStyled key={currentIndex}>
               <CardDisplay card={currentCard} />
-            </CardReveal>
+            </CardRevealStyled>
           ) : (
             <PackContainer>
               <PackImage

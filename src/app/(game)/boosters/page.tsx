@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { useCurrency } from "@/hooks/use-currency";
 import { useGameStore } from "@/stores/game-store";
@@ -12,8 +12,8 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { EmptyState } from "@/components/ui/empty-state";
-import { theme } from "@/lib/theme";
-import { fadeInUp, glowPulse } from "@/lib/animations";
+import { theme, alpha } from "@/lib/theme";
+import { fadeInUp } from "@/lib/animations";
 import { formatGems } from "@/lib/utils";
 import { FREE_DAILY_BOOSTERS } from "@/lib/constants";
 import type { BoosterType, UserBooster } from "@/types/cards";
@@ -54,8 +54,9 @@ const BoosterCardStyled = styled(GlassCard)`
 
   &:hover {
     transform: translateY(-4px) scale(1.02);
-    border-color: ${theme.colors.primary}50;
-    box-shadow: ${theme.shadows.glow(theme.colors.primary)};
+    box-shadow:
+      0 4px 16px rgba(var(--shadow-base), 0.35),
+      0 0 24px ${alpha(theme.colors.primary, 0.09)};
   }
 `;
 
@@ -64,7 +65,7 @@ const BoosterImage = styled.img`
   height: 107px;
   margin: 0 auto 16px;
   display: block;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 4px 12px rgba(var(--shadow-base), 0.4));
 `;
 
 const BoosterName = styled.h3`
@@ -103,19 +104,15 @@ const UnopenedList = styled.div`
   flex-wrap: wrap;
 `;
 
-const pulseAttention = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(219, 180, 93, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(219, 180, 93, 0); }
-`;
-
 const UnopenedBooster = styled(GlassCard)`
   text-align: center;
   width: 180px;
-  animation: ${pulseAttention} 2s ease infinite;
+  animation: ${fadeInUp} 0.4s ease-out;
+  box-shadow: 0 0 15px rgba(219, 180, 93, 0.15), 0 4px 12px rgba(var(--shadow-base), 0.3);
 
   &:hover {
     transform: translateY(-3px);
-    border-color: ${theme.colors.accent}60;
+    box-shadow: 0 0 25px rgba(219, 180, 93, 0.3), 0 8px 20px rgba(var(--shadow-base), 0.3);
   }
 `;
 
@@ -124,7 +121,7 @@ const UnopenedImage = styled.img`
   height: 67px;
   margin: 0 auto 8px;
   display: block;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 2px 8px rgba(var(--shadow-base), 0.4));
 `;
 
 const FreeCard = styled(GlassCard)`
@@ -133,7 +130,7 @@ const FreeCard = styled(GlassCard)`
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  border-color: ${theme.colors.success}30;
+  box-shadow: 0 0 15px ${alpha(theme.colors.success, 0.07)}, 0 4px 12px rgba(var(--shadow-base), 0.2);
 `;
 
 const FreeInfo = styled.div`
@@ -153,21 +150,15 @@ const FreeSubtitle = styled.p`
   color: ${theme.colors.textMuted};
 `;
 
-const pulseBadge = keyframes`
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-`;
-
 const FreeBadge = styled.span<{ $hasRemaining: boolean }>`
   display: inline-block;
   font-size: 0.85rem;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 8px;
-  background: ${theme.colors.success}20;
-  border: 1px solid ${theme.colors.success}40;
+  background: ${(p) => p.$hasRemaining ? `${alpha(theme.colors.success, 0.19)}` : `${alpha(theme.colors.success, 0.12)}`};
+  border: none;
   color: ${theme.colors.success};
-  ${(p) => p.$hasRemaining && css`animation: ${pulseBadge} 2s ease infinite;`}
 `;
 
 // SVG Icons

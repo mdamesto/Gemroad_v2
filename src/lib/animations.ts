@@ -111,3 +111,11 @@ export const popIn = keyframes`
   50% { transform: scale(1.02); }
   100% { transform: scale(1); opacity: 1; }
 `;
+
+export const holoRainbow = keyframes`
+  0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+  25% { background-position: 50% 100%; }
+  50% { background-position: 100% 50%; filter: hue-rotate(90deg); }
+  75% { background-position: 50% 0%; }
+  100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+`;

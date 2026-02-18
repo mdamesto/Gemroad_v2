@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 
 const Button = styled.button`
   display: inline-flex;
@@ -27,8 +27,8 @@ const Button = styled.button`
 
   &:hover {
     color: ${theme.colors.text};
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: 0 0 12px ${theme.colors.primary}15;
+    background: var(--white-alpha-004);
+    box-shadow: 0 0 12px ${alpha(theme.colors.primary, 0.08)};
 
     svg {
       transform: translateX(-2px);

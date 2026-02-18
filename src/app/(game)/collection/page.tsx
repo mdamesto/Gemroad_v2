@@ -45,10 +45,8 @@ const StatValue = styled.span`
 `;
 
 const StatLabel = styled.span`
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: ${theme.colors.textMuted};
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 `;
 
 const ProgressBarOuter = styled.div`
@@ -77,7 +75,7 @@ const NEW_CARD_THRESHOLD_MS = 24 * 60 * 60 * 1000;
 export default function CollectionPage() {
   const { user, loading: userLoading } = useUser();
   const [allCards, setAllCards] = useState<Card[]>([]);
-  const [ownedMap, setOwnedMap] = useState<Map<string, { quantity: number; obtainedAt: string }>>(
+  const [ownedMap, setOwnedMap] = useState<Map<string, { quantity: number; obtainedAt: string; isFoil: boolean }>>(
     new Map()
   );
   const [loading, setLoading] = useState(true);
@@ -87,6 +85,7 @@ export default function CollectionPage() {
     faction: "all",
     search: "",
     showUnowned: true,
+    foilOnly: false,
   });
   const [selected, setSelected] = useState<CollectionCardData | null>(null);
 
@@ -100,15 +99,16 @@ export default function CollectionPage() {
         supabase.from("cards").select("*").order("name"),
         supabase
           .from("user_cards")
-          .select("card_id, quantity, obtained_at")
+          .select("card_id, quantity, obtained_at, is_foil")
           .eq("user_id", user!.id),
       ]);
 
       setAllCards((cards as Card[]) || []);
 
-      const map = new Map<string, { quantity: number; obtainedAt: string }>();
-      (owned || []).forEach((uc: { card_id: string; quantity: number; obtained_at: string }) => {
-        map.set(uc.card_id, { quantity: uc.quantity, obtainedAt: uc.obtained_at });
+      const map = new Map<string, { quantity: number; obtainedAt: string; isFoil: boolean }>();
+      (owned || []).forEach((uc: { card_id: string; quantity: number; obtained_at: string; is_foil: boolean }) => {
+        const key = uc.is_foil ? `${uc.card_id}_foil` : uc.card_id;
+        map.set(key, { quantity: uc.quantity, obtainedAt: uc.obtained_at, isFoil: uc.is_foil });
       });
       setOwnedMap(map);
       setLoading(false);
@@ -119,15 +119,34 @@ export default function CollectionPage() {
 
   const collectionCards = useMemo<CollectionCardData[]>(() => {
     const now = Date.now();
-    return allCards.map((card) => {
-      const entry = ownedMap.get(card.id);
-      return {
+    const result: CollectionCardData[] = [];
+
+    for (const card of allCards) {
+      const normalEntry = ownedMap.get(card.id);
+      const foilEntry = ownedMap.get(`${card.id}_foil`);
+
+      // Normal card entry
+      result.push({
         card,
-        quantity: entry?.quantity || 0,
-        owned: !!entry,
-        isNew: entry ? now - new Date(entry.obtainedAt).getTime() < NEW_CARD_THRESHOLD_MS : false,
-      };
-    });
+        quantity: normalEntry?.quantity || 0,
+        owned: !!normalEntry,
+        isNew: normalEntry ? now - new Date(normalEntry.obtainedAt).getTime() < NEW_CARD_THRESHOLD_MS : false,
+        isFoil: false,
+      });
+
+      // Foil variant if owned
+      if (foilEntry) {
+        result.push({
+          card,
+          quantity: foilEntry.quantity,
+          owned: true,
+          isNew: now - new Date(foilEntry.obtainedAt).getTime() < NEW_CARD_THRESHOLD_MS,
+          isFoil: true,
+        });
+      }
+    }
+
+    return result;
   }, [allCards, ownedMap]);
 
   const filtered = useMemo(() => {
@@ -135,6 +154,9 @@ export default function CollectionPage() {
 
     if (!filters.showUnowned) {
       result = result.filter((c) => c.owned);
+    }
+    if (filters.foilOnly) {
+      result = result.filter((c) => c.isFoil);
     }
     if (filters.rarity !== "all") {
       result = result.filter((c) => c.card.rarity === filters.rarity);

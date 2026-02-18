@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { pickRarity } from "@/lib/utils";
-import { XP_PER_BOOSTER, XP_PER_CARD_NEW } from "@/lib/constants";
+import { XP_PER_BOOSTER, XP_PER_CARD_NEW, FOIL_CHANCE } from "@/lib/constants";
+import { updateMissionProgress } from "@/lib/missions";
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
   // 2. Pick random cards based on drop rates
   const dropRates = boosterType.drop_rates;
   const cardsCount = boosterType.cards_count;
-  const drawnCards: Array<{ id: string; rarity: string; series_id: string | null; [key: string]: unknown }> = [];
+  const drawnCards: Array<{ id: string; rarity: string; series_id: string | null; is_foil: boolean; [key: string]: unknown }> = [];
   const guaranteedRarity = boosterType.guaranteed_rarity;
   let guaranteedSlotUsed = false;
 
@@ -96,7 +97,9 @@ export async function POST(request: NextRequest) {
 
     if (cards && cards.length > 0) {
       const randomCard = cards[Math.floor(Math.random() * cards.length)];
-      drawnCards.push(randomCard);
+      // Roll foil chance
+      const isFoil = Math.random() < FOIL_CHANCE;
+      drawnCards.push({ ...randomCard, is_foil: isFoil });
     }
   }
 
@@ -105,27 +108,57 @@ export async function POST(request: NextRequest) {
   let xpGained = XP_PER_BOOSTER;
 
   for (const card of drawnCards) {
-    const { data: existing } = await admin
-      .from("user_cards")
-      .select("id, quantity")
-      .eq("user_id", user.id)
-      .eq("card_id", card.id)
-      .single();
-
-    if (existing) {
-      await admin
+    // For foil cards, always create a new entry (foils are separate from non-foil)
+    if (card.is_foil) {
+      const { data: existingFoil } = await admin
         .from("user_cards")
-        .update({ quantity: existing.quantity + 1 })
-        .eq("id", existing.id);
+        .select("id, quantity")
+        .eq("user_id", user.id)
+        .eq("card_id", card.id)
+        .eq("is_foil", true)
+        .single();
+
+      if (existingFoil) {
+        await admin
+          .from("user_cards")
+          .update({ quantity: existingFoil.quantity + 1 })
+          .eq("id", existingFoil.id);
+      } else {
+        await admin.from("user_cards").insert({
+          user_id: user.id,
+          card_id: card.id,
+          quantity: 1,
+          is_foil: true,
+          obtained_from: `booster_${boosterType.name.toLowerCase().replace(/\s/g, "_")}`,
+        });
+        newCards.push(card.id);
+        xpGained += XP_PER_CARD_NEW;
+      }
     } else {
-      await admin.from("user_cards").insert({
-        user_id: user.id,
-        card_id: card.id,
-        quantity: 1,
-        obtained_from: `booster_${boosterType.name.toLowerCase().replace(/\s/g, "_")}`,
-      });
-      newCards.push(card.id);
-      xpGained += XP_PER_CARD_NEW;
+      const { data: existing } = await admin
+        .from("user_cards")
+        .select("id, quantity")
+        .eq("user_id", user.id)
+        .eq("card_id", card.id)
+        .eq("is_foil", false)
+        .single();
+
+      if (existing) {
+        await admin
+          .from("user_cards")
+          .update({ quantity: existing.quantity + 1 })
+          .eq("id", existing.id);
+      } else {
+        await admin.from("user_cards").insert({
+          user_id: user.id,
+          card_id: card.id,
+          quantity: 1,
+          is_foil: false,
+          obtained_from: `booster_${boosterType.name.toLowerCase().replace(/\s/g, "_")}`,
+        });
+        newCards.push(card.id);
+        xpGained += XP_PER_CARD_NEW;
+      }
     }
   }
 
@@ -193,6 +226,12 @@ export async function POST(request: NextRequest) {
 
   // 7. Check achievements
   await checkAchievements(admin, user.id);
+
+  // 8. Update mission progress
+  await updateMissionProgress(admin, user.id, "open_boosters", 1);
+  if (newCards.length > 0) {
+    await updateMissionProgress(admin, user.id, "collect_cards", newCards.length);
+  }
 
   return NextResponse.json({
     cards: drawnCards,

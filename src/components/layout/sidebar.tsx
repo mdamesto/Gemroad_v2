@@ -5,8 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useGameStore } from "@/stores/game-store";
 import { useUser } from "@/hooks/use-user";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 import { fadeIn } from "@/lib/animations";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useNotifications } from "@/hooks/use-notifications";
 
 const Overlay = styled.div<{ $open: boolean }>`
   display: none;
@@ -35,7 +37,8 @@ const Panel = styled.aside<{ $open: boolean }>`
     background: ${theme.colors.glassBg};
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-left: 1px solid ${theme.colors.glassBorder};
+    border-left: none;
+    box-shadow: -4px 0 20px ${alpha(theme.colors.primary, 0.08)}, -1px 0 0 ${alpha(theme.colors.primary, 0.1)};
     z-index: 70;
     transform: translateX(${(p) => (p.$open ? "0" : "100%")});
     transition: transform 0.3s ease;
@@ -65,7 +68,7 @@ const UserSection = styled.div`
   gap: 12px;
   padding: 16px 0;
   margin-bottom: 8px;
-  border-bottom: 1px solid ${theme.colors.border};
+  border-bottom: none;
 `;
 
 const UserAvatar = styled.div`
@@ -99,6 +102,16 @@ const UserLevel = styled.span`
   font-weight: 500;
 `;
 
+const ThemeRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: ${theme.colors.textMuted};
+`;
+
 const SidebarNav = styled.nav`
   margin-top: 12px;
   display: flex;
@@ -116,7 +129,7 @@ const SidebarLink = styled(Link)<{ $active?: boolean }>`
   font-size: 0.95rem;
   border-radius: 8px;
   transition: all 0.2s;
-  background: ${({ $active }) => ($active ? `${theme.colors.primary}15` : "transparent")};
+  background: ${({ $active }) => ($active ? alpha(theme.colors.primary, 0.08) : "transparent")};
   border-left: 3px solid ${({ $active }) => ($active ? theme.colors.primary : "transparent")};
 
   svg {
@@ -131,7 +144,23 @@ const SidebarLink = styled(Link)<{ $active?: boolean }>`
   }
 `;
 
+const NotifDot = styled.span`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+`;
+
 const sidebarItems = [
+  { href: "/dashboard", label: "Accueil", icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  )},
   { href: "/collection", label: "Collection", icon: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
@@ -142,6 +171,21 @@ const sidebarItems = [
       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
     </svg>
   )},
+  { href: "/daily-reward", label: "Quotidien", icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  )},
+  { href: "/missions", label: "Missions", icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="9" y1="15" x2="15" y2="15" /><line x1="9" y1="11" x2="13" y2="11" />
+    </svg>
+  )},
+  { href: "/fusion", label: "Fusion", icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M8 12l4-4 4 4" /><path d="M12 16V8" />
+    </svg>
+  )},
   { href: "/series", label: "Séries", icon: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
@@ -150,6 +194,11 @@ const sidebarItems = [
   { href: "/achievements", label: "Trophées", icon: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M10 22V9" /><path d="M14 22V9" /><rect x="6" y="2" width="12" height="7" rx="1" />
+    </svg>
+  )},
+  { href: "/leaderboard", label: "Classement", icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
     </svg>
   )},
   { href: "/progression", label: "Progression", icon: (
@@ -173,6 +222,7 @@ export function Sidebar() {
   const { sidebarOpen, setSidebarOpen } = useGameStore();
   const { profile } = useUser();
   const pathname = usePathname();
+  const { badgeMap } = useNotifications();
 
   const close = () => setSidebarOpen(false);
 
@@ -192,6 +242,11 @@ export function Sidebar() {
           </UserSection>
         )}
 
+        <ThemeRow>
+          <ThemeToggle />
+          <span>Changer le thème</span>
+        </ThemeRow>
+
         <SidebarNav>
           {sidebarItems.map((item) => (
             <SidebarLink
@@ -200,9 +255,11 @@ export function Sidebar() {
               $active={pathname === item.href || pathname.startsWith(item.href + "/")}
               prefetch={false}
               onClick={close}
+              style={{ position: "relative" }}
             >
               {item.icon}
               {item.label}
+              {badgeMap[item.href] && <NotifDot />}
             </SidebarLink>
           ))}
         </SidebarNav>

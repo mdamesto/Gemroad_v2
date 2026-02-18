@@ -18,7 +18,7 @@ export interface UserCardWithDetails extends UserCard {
 }
 
 export interface BoosterOpenResult {
-  cards: Card[];
+  cards: (Card & { is_foil?: boolean })[];
   newCards: string[];
   boosterId: string;
 }

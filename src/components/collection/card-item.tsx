@@ -4,8 +4,8 @@ import { useState, useCallback, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { RARITY_COLORS, RARITY_LABELS, type Rarity } from "@/lib/constants";
 import { CardPlaceholder } from "@/components/shared/card-placeholder";
-import { shimmer, popIn } from "@/lib/animations";
-import { theme } from "@/lib/theme";
+import { popIn, holoRainbow } from "@/lib/animations";
+import { theme, alpha } from "@/lib/theme";
 import type { Card } from "@/types/cards";
 
 const holoShift = keyframes`
@@ -14,10 +14,6 @@ const holoShift = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
-const mysteryShimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
 
 const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean; $isNew?: boolean }>`
   position: relative;
@@ -26,7 +22,10 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean; $isNew?: boolean 
   border-radius: 12px;
   overflow: hidden;
   background: ${theme.colors.bgCard};
-  border: 2px solid ${(p) => (p.$owned ? RARITY_COLORS[p.$rarity] + "60" : theme.colors.border)};
+  border: none;
+  box-shadow: ${(p) => (p.$owned
+    ? `0 0 12px ${alpha(RARITY_COLORS[p.$rarity], 0.15)}, 0 4px 12px rgba(var(--shadow-base), 0.3)`
+    : `0 2px 8px rgba(var(--shadow-base), 0.3)`)};
   cursor: pointer;
   transition: box-shadow 0.3s ease;
   transform-style: preserve-3d;
@@ -42,11 +41,9 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean; $isNew?: boolean 
         background: linear-gradient(
           90deg,
           transparent 25%,
-          rgba(255, 255, 255, 0.04) 50%,
+          rgba(255, 255, 255, 0.03) 50%,
           transparent 75%
         );
-        background-size: 400% 100%;
-        animation: ${mysteryShimmer} 3s ease infinite;
         pointer-events: none;
         z-index: 3;
       }
@@ -93,8 +90,6 @@ const Wrapper = styled.div<{ $rarity: Rarity; $owned: boolean; $isNew?: boolean 
         right: 0;
         height: 3px;
         background: linear-gradient(90deg, transparent, ${RARITY_COLORS.legendary}, transparent);
-        background-size: 200% 100%;
-        animation: ${shimmer} 2s infinite;
         z-index: 4;
       }
     `}
@@ -121,7 +116,7 @@ const ImageArea = styled.div<{ $hasImage: boolean }>`
   ${(p) =>
     !p.$hasImage &&
     css`
-      color: #334155;
+      color: ${theme.colors.border};
       font-size: 2.8rem;
     `}
 
@@ -138,7 +133,7 @@ const Body = styled.div`
 
 const Name = styled.h3`
   margin: 4px 0 0;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: ${theme.colors.text};
   white-space: nowrap;
@@ -150,13 +145,11 @@ const RarityTag = styled.span<{ $color: string }>`
   display: inline-flex;
   padding: 1px 8px;
   border-radius: 9999px;
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: ${(p) => p.$color};
-  background: ${(p) => p.$color}20;
-  border: 1px solid ${(p) => p.$color}40;
+  background: ${(p) => alpha(p.$color, 0.12)};
+  border: none;
 `;
 
 const BadgeContainer = styled.div`
@@ -170,11 +163,11 @@ const BadgeContainer = styled.div`
 `;
 
 const CountBadge = styled.span`
-  background: #020617cc;
+  background: ${alpha(theme.colors.bg, 0.8)};
   color: ${theme.colors.text};
   padding: 2px 8px;
   border-radius: 9999px;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-align: center;
 `;
@@ -184,7 +177,7 @@ const NewBadge = styled.span`
   color: #fff;
   padding: 2px 8px;
   border-radius: 9999px;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -192,12 +185,91 @@ const NewBadge = styled.span`
 `;
 
 const LockIcon = styled.div`
-  background: #020617cc;
-  color: #475569;
+  background: ${alpha(theme.colors.bg, 0.8)};
+  color: ${theme.colors.textMuted};
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  text-align: center;
+`;
+
+const ShimmerOverlay = styled.div<{ $rarity: Rarity }>`
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  mix-blend-mode: overlay;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    ${(p) =>
+      p.$rarity === "legendary"
+        ? "rgba(255, 215, 0, 0.4), rgba(255, 100, 0, 0.2), transparent 70%"
+        : p.$rarity === "epic"
+          ? "rgba(167, 139, 250, 0.35), rgba(139, 92, 246, 0.15), transparent 70%"
+          : p.$rarity === "rare"
+            ? "rgba(96, 165, 250, 0.3), rgba(59, 130, 246, 0.12), transparent 70%"
+            : p.$rarity === "uncommon"
+              ? "rgba(52, 211, 153, 0.2), transparent 60%"
+              : "rgba(255, 255, 255, 0.1), transparent 60%"}
+  );
+
+  ${(p) =>
+    p.$rarity === "legendary" &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 0, 128, 0.12) 0%,
+          rgba(0, 200, 255, 0.12) 25%,
+          rgba(128, 0, 255, 0.12) 50%,
+          rgba(255, 200, 0, 0.12) 75%,
+          rgba(255, 0, 128, 0.12) 100%
+        );
+        background-size: 200% 200%;
+        animation: ${holoRainbow} 3s ease infinite;
+      }
+    `}
+
+  ${(p) =>
+    p.$rarity === "epic" &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(167, 139, 250, 0.1),
+          rgba(139, 92, 246, 0.15),
+          rgba(167, 139, 250, 0.1)
+        );
+        background-size: 200% 200%;
+        animation: ${holoRainbow} 4s ease infinite;
+      }
+    `}
+`;
+
+const FoilBadge = styled.span`
+  background: linear-gradient(135deg, #FFD700, #FF6B6B, #00CED1, #FFD700);
+  background-size: 200% 200%;
+  animation: ${holoRainbow} 2s ease infinite;
+  color: #fff;
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 `;
 
 export interface CollectionCardData {
@@ -205,6 +277,7 @@ export interface CollectionCardData {
   quantity: number;
   owned: boolean;
   isNew: boolean;
+  isFoil?: boolean;
 }
 
 interface CardItemProps {
@@ -214,11 +287,12 @@ interface CardItemProps {
 }
 
 export function CardItem({ data, onClick, index = 0 }: CardItemProps) {
-  const { card, quantity, owned, isNew } = data;
+  const { card, quantity, owned, isNew, isFoil } = data;
   const hasImage = !!card.image_url && card.image_url !== "";
   const [imgError, setImgError] = useState(false);
   const showImage = hasImage && owned && !imgError;
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const shimmerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -229,7 +303,14 @@ export function CardItem({ data, onClick, index = 0 }: CardItemProps) {
       const rotateX = (y - 0.5) * -12;
       const rotateY = (x - 0.5) * 12;
       wrapperRef.current.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-      wrapperRef.current.style.boxShadow = `0 0 20px ${RARITY_COLORS[card.rarity]}50, 0 8px 30px rgba(0,0,0,0.4)`;
+      wrapperRef.current.style.boxShadow = `0 0 20px ${alpha(RARITY_COLORS[card.rarity], 0.31)}, 0 8px 30px rgba(0,0,0,0.4)`;
+
+      // Update shimmer position
+      if (shimmerRef.current) {
+        shimmerRef.current.style.setProperty("--mouse-x", `${Math.round(x * 100)}%`);
+        shimmerRef.current.style.setProperty("--mouse-y", `${Math.round(y * 100)}%`);
+        shimmerRef.current.style.opacity = "1";
+      }
     },
     [owned, card.rarity]
   );
@@ -238,7 +319,10 @@ export function CardItem({ data, onClick, index = 0 }: CardItemProps) {
     if (!wrapperRef.current) return;
     wrapperRef.current.style.transform = "";
     wrapperRef.current.style.boxShadow = "";
-  }, []);
+    if (shimmerRef.current) {
+      shimmerRef.current.style.opacity = isFoil ? "0.6" : "0";
+    }
+  }, [isFoil]);
 
   return (
     <Wrapper
@@ -251,13 +335,23 @@ export function CardItem({ data, onClick, index = 0 }: CardItemProps) {
       onMouseLeave={handleMouseLeave}
       style={{
         animationDelay: `${Math.min(index * 30, 600)}ms`,
+        ...(isFoil && owned ? { boxShadow: `0 0 15px ${alpha(RARITY_COLORS[card.rarity], 0.4)}, 0 0 30px ${alpha(RARITY_COLORS[card.rarity], 0.2)}` } : {}),
       }}
     >
       <BadgeContainer>
+        {owned && isFoil && <FoilBadge>FOIL</FoilBadge>}
         {owned && isNew && <NewBadge>NEW</NewBadge>}
         {owned && quantity > 1 && <CountBadge>x{quantity}</CountBadge>}
         {!owned && <LockIcon>?</LockIcon>}
       </BadgeContainer>
+
+      {owned && (
+        <ShimmerOverlay
+          ref={shimmerRef}
+          $rarity={card.rarity}
+          style={{ opacity: isFoil ? 0.6 : 0 }}
+        />
+      )}
 
       <ImageArea $hasImage={showImage}>
         {showImage ? (

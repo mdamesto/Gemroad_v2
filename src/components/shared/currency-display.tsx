@@ -2,18 +2,18 @@
 
 import styled from "styled-components";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { theme } from "@/lib/theme";
+import { theme, alpha } from "@/lib/theme";
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: #1e293b;
-  border: 1px solid #dbb45d40;
+  background: ${theme.colors.bgHover};
+  border: 1px solid ${alpha(theme.colors.accent, 0.25)};
   border-radius: 9999px;
   font-weight: 600;
-  color: #dbb45d;
+  color: ${theme.colors.accent};
   font-size: 0.9rem;
   position: relative;
 
@@ -31,7 +31,7 @@ const GemSvg = styled.span`
   svg {
     width: 16px;
     height: 16px;
-    filter: drop-shadow(0 0 3px ${theme.colors.accent}60);
+    filter: drop-shadow(0 0 3px ${alpha(theme.colors.accent, 0.38)});
   }
 `;
 
@@ -40,7 +40,7 @@ const Tooltip = styled.span`
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: #1e293b;
+  background: ${theme.colors.bgHover};
   border: 1px solid ${theme.colors.border};
   border-radius: 8px;
   padding: 6px 12px;
@@ -60,7 +60,7 @@ const Tooltip = styled.span`
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #1e293b;
+    border-top-color: ${theme.colors.bgHover};
   }
 `;
 

@@ -163,6 +163,7 @@ export interface Database {
           user_id: string;
           card_id: string;
           quantity: number;
+          is_foil: boolean;
           obtained_at: string;
           obtained_from: string | null;
         };
@@ -171,11 +172,13 @@ export interface Database {
           user_id: string;
           card_id: string;
           quantity?: number;
+          is_foil?: boolean;
           obtained_at?: string;
           obtained_from?: string | null;
         };
         Update: {
           quantity?: number;
+          is_foil?: boolean;
           obtained_from?: string | null;
         };
       };
@@ -397,6 +400,66 @@ export interface Database {
         Update: {
           user_id?: string;
           talent_id?: string;
+        };
+      };
+      missions: {
+        Row: {
+          id: string;
+          name: string;
+          description: string;
+          condition_type: string;
+          condition_value: number;
+          reward_gems: number;
+          reward_xp: number;
+          frequency: "daily" | "weekly";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description: string;
+          condition_type: string;
+          condition_value: number;
+          reward_gems?: number;
+          reward_xp?: number;
+          frequency: "daily" | "weekly";
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          description?: string;
+          condition_type?: string;
+          condition_value?: number;
+          reward_gems?: number;
+          reward_xp?: number;
+          frequency?: "daily" | "weekly";
+        };
+      };
+      user_missions: {
+        Row: {
+          id: string;
+          user_id: string;
+          mission_id: string;
+          progress: number;
+          completed: boolean;
+          claimed: boolean;
+          assigned_at: string;
+          expires_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          mission_id: string;
+          progress?: number;
+          completed?: boolean;
+          claimed?: boolean;
+          assigned_at?: string;
+          expires_at: string;
+        };
+        Update: {
+          progress?: number;
+          completed?: boolean;
+          claimed?: boolean;
         };
       };
     };

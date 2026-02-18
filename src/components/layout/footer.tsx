@@ -19,7 +19,8 @@ const FooterWrapper = styled.footer`
     left: 10%;
     right: 10%;
     height: 1px;
-    background: ${theme.gradients.separator};
+    background: linear-gradient(90deg, transparent, rgba(var(--c-primary), 0.4), rgba(var(--c-accent), 0.4), transparent);
+    box-shadow: 0 0 12px rgba(var(--c-primary), 0.15);
   }
 
   position: relative;
