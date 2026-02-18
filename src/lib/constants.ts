@@ -89,6 +89,34 @@ export const RECYCLE_GEM_VALUES: Record<string, number> = {
   legendary: 250,
 };
 
+// World Map — Regions
+export const REGIONS = ["neon_ruins", "ash_desert", "toxic_ocean"] as const;
+export type RegionConst = (typeof REGIONS)[number];
+
+export const REGION_LABELS: Record<RegionConst, string> = {
+  neon_ruins: "Ruines de Néon",
+  ash_desert: "Désert de Cendres",
+  toxic_ocean: "Océan Toxique",
+};
+
+export const REGION_COLORS: Record<RegionConst, string> = {
+  neon_ruins: "#38BDF8",
+  ash_desert: "#F59E0B",
+  toxic_ocean: "#22D3EE",
+};
+
+export const REGION_DESCRIPTIONS: Record<RegionConst, string> = {
+  neon_ruins: "Les vestiges lumineux de l'ancien monde technologique. Les Tech Scavengers et l'Underground Resistance y rôdent.",
+  ash_desert: "Un désert hostile balayé par les tempêtes de cendres. Seuls les Surface Survivors y subsistent.",
+  toxic_ocean: "Des profondeurs contaminées où la résistance souterraine a établi ses bases secrètes.",
+};
+
+export const REGION_FACTIONS: Record<RegionConst, FactionConst[]> = {
+  neon_ruins: ["tech_scavengers", "underground_resistance"],
+  ash_desert: ["surface_survivors"],
+  toxic_ocean: ["underground_resistance"],
+};
+
 // Feature 8: Missions
 export const MISSION_TEMPLATES = {
   daily: [

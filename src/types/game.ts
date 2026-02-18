@@ -48,3 +48,58 @@ export interface MissionWithProgress extends Mission {
   claimed: boolean;
   expires_at?: string;
 }
+
+export type StoryArc = Database["public"]["Tables"]["story_arcs"]["Row"];
+export type StoryChapter = Database["public"]["Tables"]["story_chapters"]["Row"];
+export type StoryNode = Database["public"]["Tables"]["story_nodes"]["Row"];
+export type UserStoryProgress = Database["public"]["Tables"]["user_story_progress"]["Row"];
+export type UserCodex = Database["public"]["Tables"]["user_codex"]["Row"];
+
+export interface StoryNodeWithStatus extends StoryNode {
+  completed: boolean;
+  canUnlock: boolean;
+  requiredCardNames: string[];
+  requiredAnyCardNames: string[];
+}
+
+export interface StoryChapterWithNodes extends StoryChapter {
+  nodes: StoryNodeWithStatus[];
+  completedCount: number;
+  totalCount: number;
+}
+
+export interface StoryArcWithChapters extends StoryArc {
+  chapters: StoryChapterWithNodes[];
+  completedNodes: number;
+  totalNodes: number;
+  hasUnlockable: boolean;
+}
+
+export interface CodexEntry {
+  node_id: string;
+  title: string;
+  codex_entry: string;
+  arc_name: string;
+  arc_slug: string;
+  unlocked: boolean;
+  unlocked_at?: string;
+}
+
+// World Map / Exploration
+export type ExplorationMission = Database["public"]["Tables"]["exploration_missions"]["Row"];
+export type UserExplorationProgress = Database["public"]["Tables"]["user_exploration_progress"]["Row"];
+
+export type RegionSlug = "neon_ruins" | "ash_desert" | "toxic_ocean";
+
+export interface ExplorationMissionWithStatus extends ExplorationMission {
+  completed: boolean;
+  eligible: boolean;
+  current_progress: number;
+}
+
+export interface RegionData {
+  slug: RegionSlug;
+  missions: ExplorationMissionWithStatus[];
+  completedCount: number;
+  totalCount: number;
+}

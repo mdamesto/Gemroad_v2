@@ -462,6 +462,229 @@ export interface Database {
           claimed?: boolean;
         };
       };
+      story_arcs: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          description: string;
+          region: string | null;
+          faction: string | null;
+          image_url: string | null;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          description: string;
+          region?: string | null;
+          faction?: string | null;
+          image_url?: string | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          slug?: string;
+          name?: string;
+          description?: string;
+          region?: string | null;
+          faction?: string | null;
+          image_url?: string | null;
+          sort_order?: number;
+        };
+      };
+      story_chapters: {
+        Row: {
+          id: string;
+          arc_id: string;
+          slug: string;
+          name: string;
+          description: string;
+          sort_order: number;
+          reward_gems: number;
+          reward_xp: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          arc_id: string;
+          slug: string;
+          name: string;
+          description: string;
+          sort_order?: number;
+          reward_gems?: number;
+          reward_xp?: number;
+          created_at?: string;
+        };
+        Update: {
+          arc_id?: string;
+          slug?: string;
+          name?: string;
+          description?: string;
+          sort_order?: number;
+          reward_gems?: number;
+          reward_xp?: number;
+        };
+      };
+      story_nodes: {
+        Row: {
+          id: string;
+          chapter_id: string;
+          slug: string;
+          title: string;
+          narrative_text: string;
+          codex_entry: string | null;
+          required_cards: string[];
+          required_any_cards: string[];
+          parent_node_id: string | null;
+          is_choice: boolean;
+          choice_label: string | null;
+          reward_gems: number;
+          reward_xp: number;
+          sort_order: number;
+          pos_x: number;
+          pos_y: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          chapter_id: string;
+          slug: string;
+          title: string;
+          narrative_text: string;
+          codex_entry?: string | null;
+          required_cards?: string[];
+          required_any_cards?: string[];
+          parent_node_id?: string | null;
+          is_choice?: boolean;
+          choice_label?: string | null;
+          reward_gems?: number;
+          reward_xp?: number;
+          sort_order?: number;
+          pos_x?: number;
+          pos_y?: number;
+          created_at?: string;
+        };
+        Update: {
+          chapter_id?: string;
+          slug?: string;
+          title?: string;
+          narrative_text?: string;
+          codex_entry?: string | null;
+          required_cards?: string[];
+          required_any_cards?: string[];
+          parent_node_id?: string | null;
+          is_choice?: boolean;
+          choice_label?: string | null;
+          reward_gems?: number;
+          reward_xp?: number;
+          sort_order?: number;
+          pos_x?: number;
+          pos_y?: number;
+        };
+      };
+      user_story_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          node_id: string;
+          completed_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          node_id: string;
+          completed_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          node_id?: string;
+          completed_at?: string;
+        };
+      };
+      user_codex: {
+        Row: {
+          id: string;
+          user_id: string;
+          node_id: string;
+          unlocked_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          node_id: string;
+          unlocked_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          node_id?: string;
+          unlocked_at?: string;
+        };
+      };
+      exploration_missions: {
+        Row: {
+          id: string;
+          region: "neon_ruins" | "ash_desert" | "toxic_ocean";
+          title: string;
+          description: string;
+          condition_type: string;
+          condition_value: number;
+          condition_faction: string | null;
+          reward_gems: number;
+          reward_xp: number;
+          sort_order: number;
+          icon: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          region: "neon_ruins" | "ash_desert" | "toxic_ocean";
+          title: string;
+          description: string;
+          condition_type: string;
+          condition_value: number;
+          condition_faction?: string | null;
+          reward_gems?: number;
+          reward_xp?: number;
+          sort_order?: number;
+          icon?: string;
+          created_at?: string;
+        };
+        Update: {
+          region?: "neon_ruins" | "ash_desert" | "toxic_ocean";
+          title?: string;
+          description?: string;
+          condition_type?: string;
+          condition_value?: number;
+          condition_faction?: string | null;
+          reward_gems?: number;
+          reward_xp?: number;
+          sort_order?: number;
+          icon?: string;
+        };
+      };
+      user_exploration_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          mission_id: string;
+          completed: boolean;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          mission_id: string;
+          completed?: boolean;
+          completed_at?: string | null;
+        };
+        Update: {
+          completed?: boolean;
+          completed_at?: string | null;
+        };
+      };
     };
   };
 }
