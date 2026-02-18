@@ -9,14 +9,15 @@ import { useToastStore } from "@/stores/toast-store";
 import { createClient } from "@/lib/supabase/client";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { EmptyState } from "@/components/ui/empty-state";
 import { theme, alpha } from "@/lib/theme";
 import { fadeInUp } from "@/lib/animations";
 import { formatGems } from "@/lib/utils";
-import { FREE_DAILY_BOOSTERS } from "@/lib/constants";
+import { FREE_DAILY_BOOSTERS, FACTION_COLORS, FACTION_LABELS } from "@/lib/constants";
 import type { BoosterType, UserBooster } from "@/types/cards";
+import type { FactionConst } from "@/lib/constants";
 
 const Page = styled.div`
   max-width: 1200px;
@@ -48,15 +49,16 @@ const BoosterGrid = styled.div`
   gap: 20px;
 `;
 
-const BoosterCardStyled = styled(GlassCard)`
+const BoosterCardStyled = styled(GlassCard)<{ $factionColor?: string }>`
   text-align: center;
   transition: all 0.3s ease;
+  ${({ $factionColor }) => $factionColor ? `border-top: 3px solid ${$factionColor};` : ""}
 
   &:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow:
       0 4px 16px rgba(var(--shadow-base), 0.35),
-      0 0 24px ${alpha(theme.colors.primary, 0.09)};
+      0 0 24px ${({ $factionColor }) => $factionColor ? alpha($factionColor, 0.2) : alpha(theme.colors.primary, 0.09)};
   }
 `;
 
@@ -96,6 +98,21 @@ const Price = styled.div`
 const GemIconInline = styled.span`
   color: ${theme.colors.accent};
   font-size: 0.9em;
+`;
+
+const FactionBadge = styled.span<{ $color: string }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: ${theme.radii.full};
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: ${({ $color }) => $color};
+  background: ${({ $color }) => alpha($color, 0.12)};
+  margin-bottom: 12px;
 `;
 
 const UnopenedList = styled.div`
@@ -319,11 +336,6 @@ export default function BoostersPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Boosters"
-        subtitle="Ouvrez des packs pour découvrir de nouvelles cartes"
-      />
-
       <Section>
         <SectionTitle>Boosters Gratuits du Jour</SectionTitle>
         <FreeCard>
@@ -391,34 +403,48 @@ export default function BoostersPage() {
       <Section>
         <SectionTitle>Acheter avec des Gems</SectionTitle>
         <BoosterGrid>
-          {boosterTypes.map((bt) => (
-            <BoosterCardStyled key={bt.id} $padding="24px">
-              <BoosterImage
-                src={getBoosterImage(bt.name)}
-                alt={bt.name}
-              />
-              <BoosterName>{bt.name}</BoosterName>
-              <BoosterDesc>
-                {bt.description} &middot; {bt.cards_count} cartes
-              </BoosterDesc>
-              <Price>
-                <GemIconInline>&#9670;</GemIconInline>
-                {formatGems(bt.price_gems)}
-              </Price>
-              <GlowButton
-                $variant="primary"
-                $fullWidth
-                onClick={() => handlePurchase(bt.id)}
-                disabled={balance < bt.price_gems || purchasing === bt.id}
-                loading={purchasing === bt.id}
-                icon={GemBuyIcon}
-              >
-                {balance < bt.price_gems
-                  ? "Solde insuffisant"
-                  : "Acheter"}
-              </GlowButton>
-            </BoosterCardStyled>
-          ))}
+          {boosterTypes.map((bt) => {
+            const factionColor = bt.faction_filter
+              ? FACTION_COLORS[bt.faction_filter as FactionConst]
+              : undefined;
+            const factionLabel = bt.faction_filter
+              ? FACTION_LABELS[bt.faction_filter as FactionConst]
+              : undefined;
+
+            return (
+              <BoosterCardStyled key={bt.id} $padding="24px" $factionColor={factionColor}>
+                <BoosterImage
+                  src={getBoosterImage(bt.name)}
+                  alt={bt.name}
+                />
+                <BoosterName>{bt.name}</BoosterName>
+                {factionLabel && (
+                  <FactionBadge $color={factionColor!}>
+                    {factionLabel}
+                  </FactionBadge>
+                )}
+                <BoosterDesc>
+                  {bt.description} &middot; {bt.cards_count} cartes
+                </BoosterDesc>
+                <Price>
+                  <GemIconInline>&#9670;</GemIconInline>
+                  {formatGems(bt.price_gems)}
+                </Price>
+                <GlowButton
+                  $variant="primary"
+                  $fullWidth
+                  onClick={() => handlePurchase(bt.id)}
+                  disabled={balance < bt.price_gems || purchasing === bt.id}
+                  loading={purchasing === bt.id}
+                  icon={GemBuyIcon}
+                >
+                  {balance < bt.price_gems
+                    ? "Solde insuffisant"
+                    : "Acheter"}
+                </GlowButton>
+              </BoosterCardStyled>
+            );
+          })}
         </BoosterGrid>
       </Section>
     </Page>

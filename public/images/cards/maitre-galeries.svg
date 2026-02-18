@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1a0f15"/>
+      <stop offset="100%" stop-color="#100a10"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="38%" r="25%">
+      <stop offset="0%" stop-color="#DC2626" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#DC2626" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="170" rx="160" ry="130" fill="url(#glow)"/>
+  <ellipse cx="200" cy="155" rx="90" ry="70" fill="url(#glow2)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#DC2626" opacity="0.5"/>
+  <circle cx="320" cy="90" r="1" fill="#A78BFA" opacity="0.4"/>
+  <circle cx="50" cy="300" r="1.2" fill="#A78BFA" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#DC2626" opacity="0.3"/>
+  <circle cx="150" cy="350" r="1" fill="#A78BFA" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#DC2626" opacity="0.4"/>
+  <circle cx="200" cy="30" r="1" fill="#A78BFA" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- imposing figure head -->
+    <circle cx="200" cy="108" r="26" fill="none" stroke="#DC2626" stroke-width="2.5"/>
+    <!-- heavy brow/stern face -->
+    <line x1="188" y1="103" x2="195" y2="105" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+    <line x1="205" y1="105" x2="212" y2="103" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+    <!-- beard hint -->
+    <path d="M185,120 Q200,135 215,120" fill="none" stroke="#DC2626" stroke-width="1.5" opacity="0.5"/>
+    <!-- muscular body with armor -->
+    <path d="M176,134 L165,148 L155,220 L245,220 L235,148 L224,134" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <!-- chest armor plate -->
+    <polygon points="185,150 200,142 215,150 210,175 190,175" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+    <!-- crystal embedded in armor -->
+    <polygon points="197,158 200,152 203,158" fill="#ef4444" opacity="0.5"/>
+    <!-- heavy arms -->
+    <line x1="155" y1="155" x2="125" y2="200" stroke="#DC2626" stroke-width="2.5"/>
+    <line x1="245" y1="155" x2="275" y2="200" stroke="#DC2626" stroke-width="2.5"/>
+    <!-- hands holding crystal staff -->
+    <line x1="125" y1="200" x2="130" y2="270" stroke="#DC2626" stroke-width="2"/>
+    <polygon points="125,200 130,185 135,200" fill="#ef4444" opacity="0.4"/>
+    <!-- legs -->
+    <line x1="188" y1="220" x2="180" y2="275" stroke="#DC2626" stroke-width="2"/>
+    <line x1="212" y1="220" x2="220" y2="275" stroke="#DC2626" stroke-width="2"/>
+    <!-- gallery tunnels behind -->
+    <path d="M80,300 Q90,260 100,270" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.25"/>
+    <path d="M310,290 Q315,255 325,265" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.25"/>
+    <!-- crystal aura -->
+    <ellipse cx="200" cy="170" rx="70" ry="90" fill="none" stroke="#A78BFA" stroke-width="1" stroke-dasharray="4,5" opacity="0.3"/>
+    <!-- crystal fragments floating -->
+    <polygon points="110,155 115,145 120,155" fill="#ef4444" opacity="0.3"/>
+    <polygon points="280,160 286,148 292,160" fill="#ef4444" opacity="0.3"/>
+    <polygon points="95,220 99,213 103,220" fill="#A78BFA" opacity="0.2"/>
+    <polygon points="300,215 304,207 308,215" fill="#A78BFA" opacity="0.2"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-opacity="0.4"/>
+</svg>

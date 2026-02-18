@@ -85,6 +85,36 @@ export interface CodexEntry {
   unlocked_at?: string;
 }
 
+// Factions Encyclopedia
+export type Faction = Database["public"]["Tables"]["factions"]["Row"];
+
+export interface FactionWithStats extends Faction {
+  totalCards: number;
+  ownedCards: number;
+  completionPercent: number;
+  talentTreeName: string | null;
+}
+
+// Narrative Events
+export type NarrativeEvent = Database["public"]["Tables"]["narrative_events"]["Row"];
+export type EventChoice = Database["public"]["Tables"]["event_choices"]["Row"];
+export type EventParticipation = Database["public"]["Tables"]["event_participations"]["Row"];
+
+export type EventStatus = "upcoming" | "active" | "ended";
+
+export interface EventChoiceWithVotes extends EventChoice {
+  voteCount: number;
+  votePercent: number;
+  isUserChoice: boolean;
+}
+
+export interface NarrativeEventWithDetails extends NarrativeEvent {
+  status: EventStatus;
+  choices: EventChoiceWithVotes[];
+  totalVotes: number;
+  userParticipation: EventParticipation | null;
+}
+
 // World Map / Exploration
 export type ExplorationMission = Database["public"]["Tables"]["exploration_missions"]["Row"];
 export type UserExplorationProgress = Database["public"]["Tables"]["user_exploration_progress"]["Row"];

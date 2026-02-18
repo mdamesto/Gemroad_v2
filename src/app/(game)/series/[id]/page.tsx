@@ -8,7 +8,6 @@ import { useToastStore } from "@/stores/toast-store";
 import { createClient } from "@/lib/supabase/client";
 import { CardGrid } from "@/components/cards/card-grid";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { BackButton } from "@/components/ui/back-button";
@@ -186,29 +185,27 @@ export default function SeriesDetailPage() {
   return (
     <Page>
       <BackButton />
-      <PageHeader title={series.name} subtitle={series.description || undefined}>
-        <ProgressRingContainer>
-          <ProgressRingSvg viewBox="0 0 72 72">
-            <circle cx="36" cy="36" r="32" fill="none" stroke={theme.colors.border} strokeWidth="4" />
-            <circle
-              cx="36" cy="36" r="32"
-              fill="none"
-              stroke={completed ? theme.colors.accent : theme.colors.primary}
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              style={{ transition: "stroke-dashoffset 0.8s ease" }}
-            />
-          </ProgressRingSvg>
-          <div>
-            <ProgressPercent>{Math.round(percent)}%</ProgressPercent>
-            <ProgressText>
-              {collectedCount} / {series.total_cards} cartes
-            </ProgressText>
-          </div>
-        </ProgressRingContainer>
-      </PageHeader>
+      <ProgressRingContainer>
+        <ProgressRingSvg viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="32" fill="none" stroke={theme.colors.border} strokeWidth="4" />
+          <circle
+            cx="36" cy="36" r="32"
+            fill="none"
+            stroke={completed ? theme.colors.accent : theme.colors.primary}
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            style={{ transition: "stroke-dashoffset 0.8s ease" }}
+          />
+        </ProgressRingSvg>
+        <div>
+          <ProgressPercent>{Math.round(percent)}%</ProgressPercent>
+          <ProgressText>
+            {collectedCount} / {series.total_cards} cartes
+          </ProgressText>
+        </div>
+      </ProgressRingContainer>
 
       <ContentArea>
         <RewardSection>

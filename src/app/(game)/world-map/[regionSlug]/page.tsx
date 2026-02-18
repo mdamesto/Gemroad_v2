@@ -3,7 +3,6 @@
 import { use, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import { LoadingState } from "@/components/ui/skeleton-loader";
@@ -282,7 +281,7 @@ export default function RegionDetailPage({
           </svg>
           Carte du Monde
         </BackLink>
-        <PageHeader title="Région introuvable" />
+        <p style={{ textAlign: "center", color: "var(--c-text-muted)", padding: "40px 0" }}>Région introuvable</p>
       </Page>
     );
   }
@@ -310,18 +309,16 @@ export default function RegionDetailPage({
         Carte du Monde
       </BackLink>
 
-      <PageHeader title={label} subtitle={description}>
-        <HeaderMeta>
-          {factions.map((f) => (
-            <FactionBadge key={f} $color={FACTION_COLORS[f as FactionConst]}>
-              {FACTION_LABELS[f as FactionConst]}
-            </FactionBadge>
-          ))}
-          <ProgressSummary $color={color}>
-            {region.completedCount}/{region.totalCount} missions
-          </ProgressSummary>
-        </HeaderMeta>
-      </PageHeader>
+      <HeaderMeta>
+        {factions.map((f) => (
+          <FactionBadge key={f} $color={FACTION_COLORS[f as FactionConst]}>
+            {FACTION_LABELS[f as FactionConst]}
+          </FactionBadge>
+        ))}
+        <ProgressSummary $color={color}>
+          {region.completedCount}/{region.totalCount} missions
+        </ProgressSummary>
+      </HeaderMeta>
 
       <MissionList>
         {region.missions.map((mission, i) => (

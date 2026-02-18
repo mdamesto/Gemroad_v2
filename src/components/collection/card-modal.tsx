@@ -281,28 +281,6 @@ export function CardModal({ data, onClose }: CardModalProps) {
 
           {owned && card.lore && <Lore>{card.lore}</Lore>}
 
-          {owned && (card.attack !== null || card.defense !== null) && (
-            <Stats>
-              {card.attack !== null && (
-                <Stat $color="#EF4444">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14.5 3.5L12 1 9.5 3.5 7 1 4 4v5l8 8 8-8V4l-3-3-2.5 2.5zM12 14.5L5 7.5V5l2-2 1.5 1.5L12 1l3.5 3.5L17 3l2 2v2.5L12 14.5z" />
-                  </svg>
-                  {card.attack}
-                  <StatLabel>ATK</StatLabel>
-                </Stat>
-              )}
-              {card.defense !== null && (
-                <Stat $color="#60A5FA">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5-3.6-1.14-7-5.67-7-10.5V6.3l7-3.12z" />
-                  </svg>
-                  {card.defense}
-                  <StatLabel>DEF</StatLabel>
-                </Stat>
-              )}
-            </Stats>
-          )}
 
           <Quantity>
             {owned ? (

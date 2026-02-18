@@ -7,11 +7,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/stores/toast-store";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { theme, alpha } from "@/lib/theme";
 import { fadeInUp } from "@/lib/animations";
 import { formatPrice, formatGems } from "@/lib/utils";
+import { useCurrency } from "@/hooks/use-currency";
 import type { BoosterType } from "@/types/cards";
 
 const Page = styled.div`
@@ -101,6 +102,25 @@ const GemPrice = styled.div`
   gap: 4px;
 `;
 
+const DevBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  border-radius: ${theme.radii.md};
+  background: ${alpha(theme.colors.danger, 0.08)};
+  border: 1px dashed ${alpha(theme.colors.danger, 0.3)};
+`;
+
+const DevLabel = styled.span`
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: ${theme.colors.danger};
+`;
+
 const CartIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -116,10 +136,12 @@ function getBoosterImage(name: string): string {
 
 export default function ShopPage() {
   const { user, loading: userLoading } = useUser();
+  const { refresh: refreshBalance } = useCurrency(user?.id);
   const addToast = useToastStore((s) => s.addToast);
   const [boosters, setBoosters] = useState<BoosterType[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [addingGems, setAddingGems] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -161,14 +183,40 @@ export default function ShopPage() {
     setPurchasing(null);
   };
 
+  const handleAddGems = async () => {
+    setAddingGems(true);
+    try {
+      const res = await fetch("/api/dev/add-gems", { method: "POST" });
+      if (res.ok) {
+        const { added, balance } = await res.json();
+        addToast(`+${formatGems(added)} gemmes ajoutées ! (Total : ${formatGems(balance)})`, "success");
+        refreshBalance();
+      } else {
+        addToast("Erreur lors de l'ajout", "error");
+      }
+    } catch {
+      addToast("Erreur réseau", "error");
+    }
+    setAddingGems(false);
+  };
+
   if (loading || userLoading) return <LoadingState />;
 
   return (
     <Page>
-      <PageHeader
-        title="Boutique"
-        subtitle="Achetez des boosters premium pour augmenter vos chances d'obtenir des cartes rares"
-      />
+      {user && (
+        <DevBar>
+          <DevLabel>DEV</DevLabel>
+          <GlowButton
+            $variant="danger"
+            onClick={handleAddGems}
+            disabled={addingGems}
+            loading={addingGems}
+          >
+            +10 000 gemmes gratuites
+          </GlowButton>
+        </DevBar>
+      )}
 
       <Grid>
         {boosters.map((bt, i) => (

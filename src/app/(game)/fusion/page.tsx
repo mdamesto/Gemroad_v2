@@ -5,7 +5,7 @@ import styled, { keyframes, css } from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
@@ -278,11 +278,6 @@ export default function FusionPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Fusion & Recyclage"
-        subtitle="Fusionne tes doublons en cartes plus rares ou recycle-les contre des gemmes"
-      />
-
       <Tabs>
         <Tab $active={tab === "fusion"} onClick={() => setTab("fusion")}>
           Fusion

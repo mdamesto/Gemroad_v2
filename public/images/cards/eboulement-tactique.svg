@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1a0f15"/>
+      <stop offset="100%" stop-color="#100a10"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="200" rx="150" ry="120" fill="url(#glow)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#DC2626" opacity="0.4"/>
+  <circle cx="320" cy="90" r="1" fill="#ef4444" opacity="0.3"/>
+  <circle cx="50" cy="300" r="1.2" fill="#60A5FA" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#DC2626" opacity="0.25"/>
+  <circle cx="150" cy="350" r="1" fill="#ef4444" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#60A5FA" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- cave ceiling cracking -->
+    <path d="M80,80 Q120,60 160,85 Q200,55 240,80 Q280,65 320,85" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <!-- crack lines -->
+    <line x1="160" y1="85" x2="170" y2="120" stroke="#ef4444" stroke-width="2"/>
+    <line x1="170" y1="120" x2="165" y2="145" stroke="#ef4444" stroke-width="1.5"/>
+    <line x1="170" y1="120" x2="180" y2="140" stroke="#ef4444" stroke-width="1"/>
+    <line x1="240" y1="80" x2="235" y2="115" stroke="#ef4444" stroke-width="2"/>
+    <line x1="235" y1="115" x2="240" y2="135" stroke="#ef4444" stroke-width="1.5"/>
+    <line x1="200" y1="65" x2="200" y2="100" stroke="#ef4444" stroke-width="1.5"/>
+    <!-- falling rocks/crystal boulders -->
+    <polygon points="145,160 160,145 170,155 165,170 148,172" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <polygon points="200,130 215,120 225,135 215,148 202,145" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <polygon points="250,155 262,148 268,162 258,170" fill="none" stroke="#DC2626" stroke-width="1.5"/>
+    <!-- smaller debris -->
+    <rect x="175" y="175" width="8" height="8" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6" transform="rotate(25 179 179)"/>
+    <rect x="230" y="180" width="6" height="6" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.5" transform="rotate(40 233 183)"/>
+    <circle cx="190" cy="200" r="3" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
+    <!-- dust cloud -->
+    <ellipse cx="200" cy="260" rx="100" ry="30" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.2"/>
+    <ellipse cx="200" cy="250" rx="70" ry="20" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.15"/>
+    <!-- crystal fragments flying -->
+    <polygon points="120,200 125,190 130,200" fill="#ef4444" opacity="0.4"/>
+    <polygon points="270,195 276,183 282,195" fill="#ef4444" opacity="0.35"/>
+    <!-- ground level -->
+    <path d="M60,300 Q150,280 200,290 Q250,280 340,300" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.3"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#60A5FA" stroke-width="1" stroke-opacity="0.3"/>
+</svg>

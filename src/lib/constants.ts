@@ -22,7 +22,7 @@ export type CardTypeConst = (typeof CARD_TYPES)[number];
 
 export const CARD_TYPE_LABELS: Record<CardTypeConst, string> = {
   character: "Personnage",
-  artifact: "Artéfact",
+  artifact: "Cristal",
   location: "Lieu",
   event: "Événement",
 };
@@ -38,10 +38,10 @@ export const FACTIONS = ["dome_dwellers", "underground_resistance", "surface_sur
 export type FactionConst = (typeof FACTIONS)[number];
 
 export const FACTION_LABELS: Record<FactionConst, string> = {
-  dome_dwellers: "Dome Dwellers",
-  underground_resistance: "Underground Resistance",
-  surface_survivors: "Surface Survivors",
-  tech_scavengers: "Tech Scavengers",
+  dome_dwellers: "Le Consortium",
+  underground_resistance: "Les Profonds",
+  surface_survivors: "Les Gardiens du Réseau",
+  tech_scavengers: "L'Ordre Ancien",
 };
 
 export const FACTION_COLORS: Record<FactionConst, string> = {
@@ -94,9 +94,9 @@ export const REGIONS = ["neon_ruins", "ash_desert", "toxic_ocean"] as const;
 export type RegionConst = (typeof REGIONS)[number];
 
 export const REGION_LABELS: Record<RegionConst, string> = {
-  neon_ruins: "Ruines de Néon",
-  ash_desert: "Désert de Cendres",
-  toxic_ocean: "Océan Toxique",
+  neon_ruins: "Géode de Madagascar",
+  ash_desert: "Plateaux de l'Inde",
+  toxic_ocean: "Abysses de Sibérie",
 };
 
 export const REGION_COLORS: Record<RegionConst, string> = {
@@ -106,9 +106,9 @@ export const REGION_COLORS: Record<RegionConst, string> = {
 };
 
 export const REGION_DESCRIPTIONS: Record<RegionConst, string> = {
-  neon_ruins: "Les vestiges lumineux de l'ancien monde technologique. Les Tech Scavengers et l'Underground Resistance y rôdent.",
-  ash_desert: "Un désert hostile balayé par les tempêtes de cendres. Seuls les Surface Survivors y subsistent.",
-  toxic_ocean: "Des profondeurs contaminées où la résistance souterraine a établi ses bases secrètes.",
+  neon_ruins: "Site de la découverte originelle. Immenses cavernes cristallines aux reflets émeraude. L'Ordre Ancien et Les Profonds s'y affrontent.",
+  ash_desert: "Vaste réseau de filons cristallins en surface. Les Gardiens du Réseau y ont établi leurs laboratoires de terrain.",
+  toxic_ocean: "Les cristaux les plus profonds et les plus puissants. Mines dangereuses contrôlées par Les Profonds.",
 };
 
 export const REGION_FACTIONS: Record<RegionConst, FactionConst[]> = {
@@ -116,6 +116,27 @@ export const REGION_FACTIONS: Record<RegionConst, FactionConst[]> = {
   ash_desert: ["surface_survivors"],
   toxic_ocean: ["underground_resistance"],
 };
+
+// Faction Encyclopedia — slug mapping (URL ↔ DB key)
+export const FACTION_SLUGS = ["dome-dwellers", "underground-resistance", "surface-survivors", "tech-scavengers"] as const;
+export type FactionSlug = (typeof FACTION_SLUGS)[number];
+
+export const SLUG_TO_FACTION: Record<FactionSlug, FactionConst> = {
+  "dome-dwellers": "dome_dwellers",
+  "underground-resistance": "underground_resistance",
+  "surface-survivors": "surface_survivors",
+  "tech-scavengers": "tech_scavengers",
+};
+
+export const FACTION_TO_SLUG: Record<FactionConst, FactionSlug> = {
+  dome_dwellers: "dome-dwellers",
+  underground_resistance: "underground-resistance",
+  surface_survivors: "surface-survivors",
+  tech_scavengers: "tech-scavengers",
+};
+
+// Narrative Events
+export const EVENT_PARTICIPATION_REWARD_BONUS = 25; // bonus gems if winning choice
 
 // Feature 8: Missions
 export const MISSION_TEMPLATES = {

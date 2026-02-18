@@ -5,7 +5,7 @@ import styled, { keyframes, css } from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
@@ -657,11 +657,6 @@ export default function AchievementsPage() {
 
   return (
     <Page>
-      <PageHeaderUI
-        title="Achievements"
-        subtitle="Accomplis des défis pour débloquer des récompenses exclusives."
-      />
-
       {/* Stats */}
       <StatsBar>
         <StatCard>

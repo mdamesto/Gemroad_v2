@@ -6,7 +6,7 @@ import { useUser } from "@/hooks/use-user";
 import { useCurrency } from "@/hooks/use-currency";
 import { createClient } from "@/lib/supabase/client";
 import { xpToNextLevel } from "@/lib/utils";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -298,8 +298,6 @@ export default function ProfilePage() {
 
   return (
     <Page>
-      <PageHeader title="Profil" />
-
       <ContentArea>
         <HeroCard>
           <AvatarCircle>

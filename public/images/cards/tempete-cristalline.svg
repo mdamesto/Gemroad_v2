@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#0f1a20"/>
+      <stop offset="100%" stop-color="#0a1015"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="55%" r="30%">
+      <stop offset="0%" stop-color="#16A34A" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#16A34A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="190" rx="170" ry="140" fill="url(#glow)"/>
+  <ellipse cx="200" cy="220" rx="100" ry="60" fill="url(#glow2)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#16A34A" opacity="0.5"/>
+  <circle cx="320" cy="90" r="1" fill="#A78BFA" opacity="0.4"/>
+  <circle cx="50" cy="300" r="1.2" fill="#A78BFA" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#16A34A" opacity="0.3"/>
+  <circle cx="150" cy="350" r="1" fill="#A78BFA" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#16A34A" opacity="0.4"/>
+  <circle cx="200" cy="30" r="1" fill="#A78BFA" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- ground eruption -->
+    <path d="M50,320 Q100,310 150,325 Q175,290 200,300 Q225,280 250,310 Q300,295 350,320" fill="none" stroke="#16A34A" stroke-width="2"/>
+    <!-- crystal shards erupting upward -->
+    <polygon points="185,280 195,210 205,280" fill="none" stroke="#22c55e" stroke-width="2"/>
+    <polygon points="145,295 152,240 159,295" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.7"/>
+    <polygon points="240,290 250,225 260,290" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.7"/>
+    <polygon points="115,310 120,270 125,310" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.5"/>
+    <polygon points="280,300 286,258 292,300" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.5"/>
+    <!-- flying crystal debris -->
+    <polygon points="160,160 167,145 174,160" fill="#22c55e" opacity="0.4" transform="rotate(25 167 152)"/>
+    <polygon points="225,140 230,130 235,140" fill="#22c55e" opacity="0.35" transform="rotate(-15 230 135)"/>
+    <polygon points="130,180 134,172 138,180" fill="#22c55e" opacity="0.3" transform="rotate(40 134 176)"/>
+    <polygon points="270,170 275,160 280,170" fill="#22c55e" opacity="0.3" transform="rotate(-30 275 165)"/>
+    <polygon points="190,110 193,103 196,110" fill="#22c55e" opacity="0.25" transform="rotate(50 193 106)"/>
+    <polygon points="210,95 214,86 218,95" fill="#22c55e" opacity="0.2" transform="rotate(-20 214 90)"/>
+    <!-- swirling vortex above -->
+    <path d="M150,100 Q175,80 200,85 Q225,80 250,100" fill="none" stroke="#16A34A" stroke-width="1.5" opacity="0.4"/>
+    <path d="M130,120 Q165,90 200,95 Q235,90 270,120" fill="none" stroke="#16A34A" stroke-width="1" opacity="0.3"/>
+    <!-- energy discharge lines -->
+    <line x1="195" y1="210" x2="170" y2="150" stroke="#A78BFA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="205" y1="215" x2="235" y2="145" stroke="#A78BFA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="200" y1="200" x2="200" y2="120" stroke="#A78BFA" stroke-width="1" opacity="0.3"/>
+    <!-- dust/energy cloud -->
+    <ellipse cx="200" cy="290" rx="90" ry="20" fill="none" stroke="#16A34A" stroke-width="1" opacity="0.2"/>
+    <ellipse cx="200" cy="280" rx="60" ry="12" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.15"/>
+    <!-- small crystal particles everywhere -->
+    <circle cx="140" cy="130" r="2" fill="#22c55e" opacity="0.3"/>
+    <circle cx="260" cy="120" r="1.5" fill="#22c55e" opacity="0.25"/>
+    <circle cx="110" cy="200" r="1.8" fill="#A78BFA" opacity="0.2"/>
+    <circle cx="290" cy="195" r="1.5" fill="#A78BFA" opacity="0.2"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-opacity="0.4"/>
+</svg>

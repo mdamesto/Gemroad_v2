@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { RARITY_COLORS, type Rarity } from "@/lib/constants";
 import { RarityBadge } from "@/components/shared/rarity-badge";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
+
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { theme, alpha } from "@/lib/theme";
 import type { Card, Series } from "@/types/cards";
@@ -548,11 +548,6 @@ export default function SeriesPage() {
 
   return (
     <Page>
-      <PageHeaderUI
-        title="Séries"
-        subtitle="Complète des séries de cartes pour obtenir des pierres précieuses et des récompenses exclusives."
-      />
-
       <FilterBar>
         {filters.map((f) => (
           <FilterButton

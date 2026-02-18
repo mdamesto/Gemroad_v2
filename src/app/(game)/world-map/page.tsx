@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useWorldMap } from "@/hooks/use-world-map";
 import { RegionCard } from "@/components/world-map/region-card";
@@ -26,11 +26,6 @@ export default function WorldMapPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Carte du Monde"
-        subtitle="Explorez les 3 régions et accomplissez des quêtes d'exploration permanentes"
-      />
-
       <Grid>
         {regions.map((region, i) => (
           <RegionCard key={region.slug} region={region} index={i} />

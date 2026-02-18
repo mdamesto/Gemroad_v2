@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { theme, alpha } from "@/lib/theme";
@@ -209,11 +209,6 @@ export default function LeaderboardPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Classement"
-        subtitle="Compare ta progression avec les autres collectionneurs"
-      />
-
       <Tabs>
         {Object.entries(TAB_LABELS).map(([key, { label }]) => (
           <Tab key={key} $active={tab === key} onClick={() => setTab(key)}>

@@ -4,24 +4,19 @@ import { useEffect, useState, useCallback } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useUser } from "@/hooks/use-user";
 import { createClient } from "@/lib/supabase/client";
-import { xpToNextLevel, formatGems } from "@/lib/utils";
-import { FACTION_COLORS, type FactionConst } from "@/lib/constants";
+import { xpToNextLevel } from "@/lib/utils";
+import { FACTION_COLORS, FACTION_LABELS as GLOBAL_FACTION_LABELS, type FactionConst } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { GlowButton } from "@/components/ui/glow-button";
 import { useToastStore } from "@/stores/toast-store";
-import { PageHeader as PageHeaderUI } from "@/components/ui/page-header";
-import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { theme, alpha } from "@/lib/theme";
-import type {
-  TalentTree,
-  Talent,
-} from "@/types/game";
+import type { TalentTree, Talent } from "@/types/game";
 
 // ─── Types ────────────────────────────────────────────────────────
 interface TalentWithStatus extends Talent {
   unlocked: boolean;
-  available: boolean; // prerequisite met + has points
+  available: boolean;
 }
 
 interface TreeWithTalents extends TalentTree {
@@ -31,30 +26,37 @@ interface TreeWithTalents extends TalentTree {
 // ─── Talent Icons by effect_type ──────────────────────────────────
 const EFFECT_ICONS: Record<string, string> = {
   drop_rate_boost: "🎲",
+  drop_rate_bonus: "🎲",
   xp_boost: "⚡",
+  xp_bonus: "⚡",
   gem_boost: "💎",
+  gem_bonus: "💎",
+  gem_on_open: "💎",
   daily_bonus: "📅",
+  daily_bonus_gems: "📅",
   booster_discount: "🏷️",
+  booster_preview: "👁️",
   extra_card: "🃏",
+  extra_cards: "🃏",
+  extra_free_booster: "🎁",
   rare_guarantee: "✨",
+  guaranteed_rarity: "✨",
   series_bonus: "📚",
+  series_bonus_gems: "📚",
   duplicate_bonus: "🔄",
   shop_discount: "🛒",
   talent_discount: "🧠",
   luck_boost: "🍀",
+  discount: "🏷️",
+  reveal_missing: "🔍",
+  new_card_xp_bonus: "⚡",
+  achievement_reward_multiplier: "🏆",
+  unlock_quest: "🗝️",
 };
 
 function getTalentIcon(effectType: string): string {
   return EFFECT_ICONS[effectType] || "⚙️";
 }
-
-// ─── Faction labels ───────────────────────────────────────────────
-const FACTION_LABELS: Record<string, string> = {
-  dome_dwellers: "Dome Dwellers",
-  underground_resistance: "Underground Resistance",
-  surface_survivors: "Surface Survivors",
-  tech_scavengers: "Tech Scavengers",
-};
 
 // ─── Animations ───────────────────────────────────────────────────
 const fadeIn = keyframes`
@@ -73,82 +75,113 @@ const confirmFadeIn = keyframes`
   to { opacity: 1; transform: scale(1); }
 `;
 
-// ─── Page Layout ──────────────────────────────────────────────────
+// ─── Page Layout: Sidebar + Content ──────────────────────────────
 const Page = styled.div`
+  display: flex;
+  gap: 24px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px 40px;
+  min-height: calc(100vh - 120px);
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
 `;
 
-// ─── Stats Section ────────────────────────────────────────────────
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-bottom: 36px;
+// ─── Left Sidebar (sticky) ───────────────────────────────────────
+const Sidebar = styled.aside`
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    position: static;
+    width: 100%;
+  }
 `;
 
-const StatCard = styled(GlassCard)<{ $highlight?: boolean }>`
+const SidebarCard = styled.div`
+  background: ${theme.colors.bgCard};
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow:
+    0 2px 8px rgba(var(--shadow-base), 0.3),
+    0 4px 16px rgba(var(--shadow-base), 0.15);
+`;
+
+const SidebarTitle = styled.h3`
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: ${theme.colors.textMuted};
+  margin-bottom: 14px;
+`;
+
+// ─── Compact Stats ───────────────────────────────────────────────
+const StatRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
+  gap: 12px;
+  padding: 8px 0;
 
-  ${(p) =>
-    p.$highlight &&
-    css`
-    border-color: ${alpha(theme.colors.accent, 0.25)};
-    box-shadow: 0 0 20px ${alpha(theme.colors.accent, 0.06)};
-  `}
+  & + & {
+    border-top: 1px solid ${alpha(theme.colors.border, 0.3)};
+  }
 `;
 
-const StatIconBox = styled.div<{ $color: string }>`
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+const StatIcon = styled.div<{ $color: string }>`
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: ${(p) => alpha(p.$color, 0.08)};
-  border: none;
-  box-shadow: inset 0 0 0 1px ${(p) => alpha(p.$color, 0.08)};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1rem;
   flex-shrink: 0;
 `;
 
 const StatInfo = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 const StatValue = styled.div<{ $color?: string }>`
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: ${(p) => p.$color || theme.colors.text};
+  line-height: 1.2;
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   color: ${theme.colors.textMuted};
-  margin-top: 2px;
 `;
 
-// ─── XP Progress Bar ─────────────────────────────────────────────
-const XpBarSection = styled.div`
-  flex: 1;
+// ─── XP Bar (compact) ────────────────────────────────────────────
+const XpBarWrap = styled.div`
+  margin-top: 4px;
 `;
 
 const XpLabels = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: ${theme.colors.textMuted};
+  margin-bottom: 4px;
 `;
 
 const XpTrack = styled.div`
-  height: 10px;
+  height: 6px;
   background: ${theme.colors.bgHover};
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
 `;
 
@@ -156,39 +189,98 @@ const XpFill = styled.div<{ $percent: number }>`
   height: 100%;
   width: ${(p) => p.$percent}%;
   background: linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.accent});
-  border-radius: 5px;
+  border-radius: 3px;
   transition: width 0.5s ease-out;
 `;
 
-// ─── Talent Trees Section ─────────────────────────────────────────
-const TreesContainer = styled.div`
+// ─── Tree Selector ───────────────────────────────────────────────
+const TreeList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 6px;
+`;
+
+const TreeItem = styled.button<{ $color: string; $active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background: ${(p) => (p.$active ? alpha(p.$color, 0.12) : "transparent")};
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+
+  ${(p) =>
+    p.$active &&
+    css`
+    box-shadow: inset 0 0 0 1px ${alpha(p.$color, 0.2)};
+  `}
+
+  &:hover {
+    background: ${(p) => alpha(p.$color, p.$active ? 0.12 : 0.06)};
+  }
+`;
+
+const TreeItemDot = styled.div<{ $color: string }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${(p) => p.$color};
+  flex-shrink: 0;
+`;
+
+const TreeItemInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const TreeItemName = styled.div`
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: ${theme.colors.text};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const TreeItemProgress = styled.div`
+  font-size: 0.7rem;
+  color: ${theme.colors.textMuted};
+`;
+
+const TreeItemBadge = styled.span<{ $color: string }>`
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: ${(p) => p.$color};
+  flex-shrink: 0;
+`;
+
+// ─── Main Content Area ───────────────────────────────────────────
+const Content = styled.div`
+  flex: 1;
+  min-width: 0;
+  animation: ${fadeIn} 0.3s ease-out;
 `;
 
 const TreeCard = styled.div<{ $color: string }>`
   background: ${theme.colors.bgCard};
-  border: none;
   border-radius: 20px;
   box-shadow:
     0 2px 8px rgba(var(--shadow-base), 0.3),
     0 8px 24px rgba(var(--shadow-base), 0.2),
     inset 0 0 30px ${(p) => alpha(p.$color, 0.02)};
   overflow: hidden;
-  animation: ${fadeIn} 0.3s ease-out;
 `;
 
 const TreeHeader = styled.div<{ $color: string }>`
-  padding: 20px 24px;
-  border-bottom: none;
+  padding: 24px 28px;
   background-image: linear-gradient(90deg, transparent, ${(p) => alpha(p.$color, 0.12)}, transparent);
   background-size: 100% 1px;
   background-repeat: no-repeat;
   background-position: bottom;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: relative;
 
   &::before {
@@ -202,12 +294,10 @@ const TreeHeader = styled.div<{ $color: string }>`
   }
 `;
 
-const TreeTitleArea = styled.div``;
-
 const TreeName = styled.h2`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 `;
 
 const TreeDesc = styled.p`
@@ -215,17 +305,11 @@ const TreeDesc = styled.p`
   color: ${theme.colors.textMuted};
 `;
 
-const TreeProgress = styled.div<{ $color: string }>`
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: ${(p) => p.$color};
-`;
-
 const TreeBody = styled.div`
-  padding: 24px;
+  padding: 28px;
 `;
 
-// ─── Talent Tiers (horizontal rows per tier) ──────────────────────
+// ─── Talent Tiers ────────────────────────────────────────────────
 const TierRow = styled.div`
   display: flex;
   align-items: center;
@@ -255,7 +339,7 @@ const TierNodes = styled.div`
   flex: 1;
 `;
 
-// ─── Connection Line between tiers ────────────────────────────────
+// ─── Connectors ──────────────────────────────────────────────────
 const ConnectorRow = styled.div`
   display: flex;
   align-items: center;
@@ -278,7 +362,7 @@ const ConnectorLine = styled.div<{ $color: string; $active: boolean }>`
   ${(p) => p.$active && `box-shadow: 0 0 8px ${alpha(p.$color, 0.25)};`}
 `;
 
-// ─── Talent Node ──────────────────────────────────────────────────
+// ─── Talent Node ─────────────────────────────────────────────────
 const NodeWrapper = styled.div`
   position: relative;
 `;
@@ -312,7 +396,6 @@ const Node = styled.button<{
   font-size: 1.5rem;
   cursor: ${(p) => (p.$available && !p.$unlocked ? "pointer" : "default")};
   transition: all 0.3s;
-  --glow-color: ${(p) => alpha(p.$color, 0.38)};
   position: relative;
 
   ${(p) =>
@@ -341,7 +424,6 @@ const Node = styled.button<{
     !p.$unlocked &&
     css`
     &:hover {
-      border-color: ${p.$color};
       background: ${alpha(p.$color, 0.08)};
       transform: scale(1.08);
       box-shadow: 0 0 20px ${alpha(p.$color, 0.12)};
@@ -379,14 +461,13 @@ const UnlockedCheck = styled.span`
   font-weight: 700;
 `;
 
-// ─── Tooltip ──────────────────────────────────────────────────────
+// ─── Tooltip ─────────────────────────────────────────────────────
 const TooltipContainer = styled.div<{ $visible: boolean; $color: string }>`
   position: absolute;
   bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
   background: ${theme.colors.bgHover};
-  border: none;
   border-radius: 12px;
   padding: 14px 18px;
   min-width: 220px;
@@ -443,7 +524,7 @@ const TooltipStatus = styled.div<{ $color: string }>`
   color: ${(p) => p.$color};
 `;
 
-// ─── Confirmation Modal ───────────────────────────────────────────
+// ─── Confirmation Modal ──────────────────────────────────────────
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -457,7 +538,6 @@ const ModalOverlay = styled.div`
 
 const ModalCard = styled.div<{ $color: string }>`
   background: ${theme.colors.bgCard};
-  border: none;
   border-radius: 20px;
   box-shadow: 0 0 40px ${(p) => alpha(p.$color, 0.12)}, 0 16px 48px rgba(var(--shadow-base), 0.5);
   padding: 32px;
@@ -498,18 +578,16 @@ const ModalButtons = styled.div`
   justify-content: center;
 `;
 
-// ─── Unlock Success Feedback ──────────────────────────────────────
+// ─── Success Banner ──────────────────────────────────────────────
 const SuccessBanner = styled.div<{ $color: string }>`
   position: fixed;
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
   background: ${(p) => alpha(p.$color, 0.12)};
-  border: none;
   border-radius: 12px;
   padding: 14px 28px;
   z-index: 200;
-  box-shadow: 0 0 20px ${(p) => alpha(p.$color, 0.15)};
   display: flex;
   align-items: center;
   gap: 10px;
@@ -523,7 +601,15 @@ const SuccessText = styled.span`
   color: ${theme.colors.text};
 `;
 
-// (LoadingState imported from skeleton-loader)
+// ─── Empty state ─────────────────────────────────────────────────
+const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: ${theme.colors.textMuted};
+  font-size: 0.9rem;
+`;
 
 // ─── Component ────────────────────────────────────────────────────
 export default function ProgressionPage() {
@@ -532,6 +618,7 @@ export default function ProgressionPage() {
   const [trees, setTrees] = useState<TreeWithTalents[]>([]);
   const [talentPoints, setTalentPoints] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [selectedTreeId, setSelectedTreeId] = useState<string | null>(null);
   const [hoveredTalent, setHoveredTalent] = useState<string | null>(null);
   const [confirmTalent, setConfirmTalent] = useState<TalentWithStatus | null>(null);
   const [confirmTreeColor, setConfirmTreeColor] = useState(theme.colors.primary);
@@ -546,7 +633,6 @@ export default function ProgressionPage() {
     if (!user) return;
     const supabase = createClient();
 
-    // Fetch talent trees
     const { data: treesData } = await supabase
       .from("talent_trees")
       .select("*")
@@ -557,13 +643,11 @@ export default function ProgressionPage() {
       return;
     }
 
-    // Fetch all talents
     const { data: talentsData } = await supabase
       .from("talents")
       .select("*")
       .order("tier");
 
-    // Fetch user's unlocked talents
     const { data: userTalents } = await supabase
       .from("user_talents")
       .select("talent_id")
@@ -573,7 +657,6 @@ export default function ProgressionPage() {
       (userTalents || []).map((ut: { talent_id: string }) => ut.talent_id)
     );
 
-    // Fetch current talent points
     const { data: prof } = await supabase
       .from("profiles")
       .select("talent_points")
@@ -583,7 +666,6 @@ export default function ProgressionPage() {
     const points = prof?.talent_points ?? 0;
     setTalentPoints(points);
 
-    // Combine trees with talents
     const combined: TreeWithTalents[] = (treesData as TalentTree[]).map(
       (tree) => {
         const treeTalents = ((talentsData as Talent[]) || [])
@@ -602,15 +684,17 @@ export default function ProgressionPage() {
     );
 
     setTrees(combined);
+    if (!selectedTreeId && combined.length > 0) {
+      setSelectedTreeId(combined[0].id);
+    }
     setLoading(false);
-  }, [user]);
+  }, [user, selectedTreeId]);
 
   useEffect(() => {
     if (!userLoading && user) fetchData();
     if (!userLoading && !user) setLoading(false);
   }, [user, userLoading, fetchData]);
 
-  // ─── Unlock handler ─────────────────────────────────────────────
   const handleUnlock = async () => {
     if (!confirmTalent) return;
     setUnlocking(true);
@@ -629,16 +713,13 @@ export default function ProgressionPage() {
 
       addToast(`${confirmTalent.name} débloqué !`, "success");
 
-      // Show success
       setSuccessMsg({
         text: `${confirmTalent.name} débloqué !`,
         color: confirmTreeColor,
       });
 
-      // Refresh data
       await fetchData();
 
-      // Clear animations
       setTimeout(() => setJustUnlockedId(null), 1500);
       setTimeout(() => setSuccessMsg(null), 3000);
     } else {
@@ -649,7 +730,6 @@ export default function ProgressionPage() {
     setUnlocking(false);
   };
 
-  // ─── Render ─────────────────────────────────────────────────────
   if (loading || userLoading)
     return <LoadingState text="Chargement de la progression..." />;
 
@@ -665,206 +745,217 @@ export default function ProgressionPage() {
     0
   );
 
+  const activeTree = trees.find((t) => t.id === selectedTreeId);
+  const activeColor = activeTree
+    ? FACTION_COLORS[activeTree.faction as FactionConst] || theme.colors.primary
+    : theme.colors.primary;
+
+  // Group talents of active tree by tier
+  const activeTiers = new Map<number, TalentWithStatus[]>();
+  if (activeTree) {
+    for (const t of activeTree.talents) {
+      const list = activeTiers.get(t.tier) || [];
+      list.push(t);
+      activeTiers.set(t.tier, list);
+    }
+  }
+  const sortedTiers = [...activeTiers.entries()].sort(([a], [b]) => a - b);
+
   return (
     <Page>
-      <PageHeaderUI
-        title="Progression"
-        subtitle="Monte en niveau, débloque des talents et renforce ton jeu."
-      />
+      {/* ─── Left Sidebar ─── */}
+      <Sidebar>
+        {/* Stats */}
+        <SidebarCard>
+          <SidebarTitle>Progression</SidebarTitle>
+          <StatRow>
+            <StatIcon $color={theme.colors.primary}>⚔</StatIcon>
+            <StatInfo>
+              <StatValue $color={theme.colors.primary}>Niveau {profile.level}</StatValue>
+              <XpBarWrap>
+                <XpLabels>
+                  <span>{xpInLevel}/100 XP</span>
+                  <span>{xpNeeded} restants</span>
+                </XpLabels>
+                <XpTrack>
+                  <XpFill $percent={xpPercent} />
+                </XpTrack>
+              </XpBarWrap>
+            </StatInfo>
+          </StatRow>
+          <StatRow>
+            <StatIcon $color={theme.colors.accent}>🧠</StatIcon>
+            <StatInfo>
+              <StatValue $color={talentPoints > 0 ? theme.colors.accent : theme.colors.text}>
+                {talentPoints}
+              </StatValue>
+              <StatLabel>
+                {talentPoints > 0 ? "Points disponibles !" : "Points de talent"}
+              </StatLabel>
+            </StatInfo>
+          </StatRow>
+          <StatRow>
+            <StatIcon $color={theme.colors.success}>🌟</StatIcon>
+            <StatInfo>
+              <StatValue>{unlockedTalents}/{totalTalents}</StatValue>
+              <StatLabel>Talents débloqués</StatLabel>
+            </StatInfo>
+          </StatRow>
+        </SidebarCard>
 
-      {/* Stats Row */}
-      <StatsRow>
-        <StatCard>
-          <StatIconBox $color={theme.colors.primary}>⚔</StatIconBox>
-          <StatInfo>
-            <StatValue $color={theme.colors.primary}>Niveau {profile.level}</StatValue>
-            <StatLabel>
-              {profile.xp} XP total
-            </StatLabel>
-          </StatInfo>
-        </StatCard>
+        {/* Tree Selector */}
+        <SidebarCard>
+          <SidebarTitle>Arbres de talents</SidebarTitle>
+          <TreeList>
+            {trees.map((tree) => {
+              const factionKey = tree.faction as FactionConst;
+              const color = FACTION_COLORS[factionKey] || theme.colors.primary;
+              const treeUnlocked = tree.talents.filter((t) => t.unlocked).length;
+              const label = GLOBAL_FACTION_LABELS[factionKey] || tree.faction;
 
-        <StatCard $highlight={talentPoints > 0}>
-          <StatIconBox $color={theme.colors.accent}>🧠</StatIconBox>
-          <StatInfo>
-            <StatValue $color={talentPoints > 0 ? theme.colors.accent : theme.colors.text}>
-              {talentPoints}
-            </StatValue>
-            <StatLabel>
-              {talentPoints > 0
-                ? "Points disponibles !"
-                : "Points de talent"}
-            </StatLabel>
-          </StatInfo>
-        </StatCard>
+              return (
+                <TreeItem
+                  key={tree.id}
+                  $color={color}
+                  $active={selectedTreeId === tree.id}
+                  onClick={() => setSelectedTreeId(tree.id)}
+                >
+                  <TreeItemDot $color={color} />
+                  <TreeItemInfo>
+                    <TreeItemName>{tree.name}</TreeItemName>
+                    <TreeItemProgress>
+                      {tree.faction !== "all" ? label : "Universel"}
+                    </TreeItemProgress>
+                  </TreeItemInfo>
+                  <TreeItemBadge $color={color}>
+                    {treeUnlocked}/{tree.talents.length}
+                  </TreeItemBadge>
+                </TreeItem>
+              );
+            })}
+          </TreeList>
+        </SidebarCard>
+      </Sidebar>
 
-        <StatCard>
-          <StatIconBox $color={theme.colors.success}>🌟</StatIconBox>
-          <StatInfo>
-            <StatValue>
-              {unlockedTalents}/{totalTalents}
-            </StatValue>
-            <StatLabel>Talents débloqués</StatLabel>
-          </StatInfo>
-        </StatCard>
+      {/* ─── Main Content: Selected Tree ─── */}
+      <Content key={selectedTreeId}>
+        {activeTree ? (
+          <TreeCard $color={activeColor}>
+            <TreeHeader $color={activeColor}>
+              <TreeName>{activeTree.name}</TreeName>
+              <TreeDesc>
+                {activeTree.description ||
+                  GLOBAL_FACTION_LABELS[activeTree.faction as FactionConst] ||
+                  activeTree.faction}
+              </TreeDesc>
+            </TreeHeader>
 
-        <StatCard>
-          <StatIconBox $color={theme.colors.primary}>📈</StatIconBox>
-          <XpBarSection>
-            <XpLabels>
-              <span>Niveau {profile.level}</span>
-              <span>
-                {xpInLevel}/100 XP ({xpNeeded} restants)
-              </span>
-            </XpLabels>
-            <XpTrack>
-              <XpFill $percent={xpPercent} />
-            </XpTrack>
-          </XpBarSection>
-        </StatCard>
-      </StatsRow>
+            <TreeBody>
+              {sortedTiers.map(([tier, talents], tierIndex) => (
+                <div key={tier}>
+                  {tierIndex > 0 && (
+                    <ConnectorRow>
+                      <ConnectorSpacer />
+                      {talents.map((t) => {
+                        const prereqUnlocked =
+                          !t.prerequisite_talent_id ||
+                          activeTree.talents.find(
+                            (pt) => pt.id === t.prerequisite_talent_id
+                          )?.unlocked;
+                        return (
+                          <ConnectorLine
+                            key={`conn-${t.id}`}
+                            $color={activeColor}
+                            $active={!!prereqUnlocked}
+                          />
+                        );
+                      })}
+                    </ConnectorRow>
+                  )}
 
-      {/* Talent Trees */}
-      <TreesContainer>
-        {trees.map((tree) => {
-          const factionKey = tree.faction as FactionConst;
-          const color = FACTION_COLORS[factionKey] || theme.colors.primary;
-          const treeUnlocked = tree.talents.filter((t) => t.unlocked).length;
-
-          // Group talents by tier
-          const tiers = new Map<number, TalentWithStatus[]>();
-          for (const t of tree.talents) {
-            const list = tiers.get(t.tier) || [];
-            list.push(t);
-            tiers.set(t.tier, list);
-          }
-          const sortedTiers = [...tiers.entries()].sort(
-            ([a], [b]) => a - b
-          );
-
-          return (
-            <TreeCard key={tree.id} $color={color}>
-              <TreeHeader $color={color}>
-                <TreeTitleArea>
-                  <TreeName>
-                    {tree.name}
-                  </TreeName>
-                  <TreeDesc>
-                    {tree.description || FACTION_LABELS[tree.faction] || tree.faction}
-                  </TreeDesc>
-                </TreeTitleArea>
-                <TreeProgress $color={color}>
-                  {treeUnlocked}/{tree.talents.length}
-                </TreeProgress>
-              </TreeHeader>
-
-              <TreeBody>
-                {sortedTiers.map(([tier, talents], tierIndex) => (
-                  <div key={tier}>
-                    {/* Connector line between tiers */}
-                    {tierIndex > 0 && (
-                      <ConnectorRow>
-                        <ConnectorSpacer />
-                        {talents.map((t) => {
-                          const prereqUnlocked = !t.prerequisite_talent_id ||
-                            tree.talents.find((pt) => pt.id === t.prerequisite_talent_id)?.unlocked;
-                          return (
-                            <ConnectorLine
-                              key={`conn-${t.id}`}
-                              $color={color}
-                              $active={!!prereqUnlocked}
-                            />
-                          );
-                        })}
-                      </ConnectorRow>
-                    )}
-
-                    <TierRow>
-                      <TierLabel>Tier {tier}</TierLabel>
-                      <TierNodes>
-                        {talents.map((talent) => (
-                          <NodeWrapper
-                            key={talent.id}
-                            onMouseEnter={() => setHoveredTalent(talent.id)}
-                            onMouseLeave={() => setHoveredTalent(null)}
+                  <TierRow>
+                    <TierLabel>Tier {tier}</TierLabel>
+                    <TierNodes>
+                      {talents.map((talent) => (
+                        <NodeWrapper
+                          key={talent.id}
+                          onMouseEnter={() => setHoveredTalent(talent.id)}
+                          onMouseLeave={() => setHoveredTalent(null)}
+                        >
+                          <Node
+                            $unlocked={talent.unlocked}
+                            $available={talent.available}
+                            $color={activeColor}
+                            $justUnlocked={justUnlockedId === talent.id}
+                            onClick={() => {
+                              if (talent.available && !talent.unlocked) {
+                                setConfirmTalent(talent);
+                                setConfirmTreeColor(activeColor);
+                              }
+                            }}
                           >
-                            <Node
-                              $unlocked={talent.unlocked}
-                              $available={talent.available}
-                              $color={color}
-                              $justUnlocked={justUnlockedId === talent.id}
-                              onClick={() => {
-                                if (talent.available && !talent.unlocked) {
-                                  setConfirmTalent(talent);
-                                  setConfirmTreeColor(color);
-                                }
-                              }}
-                            >
-                              {getTalentIcon(talent.effect_type)}
-                              {talent.unlocked && <UnlockedCheck>✓</UnlockedCheck>}
-                              {!talent.unlocked && (
-                                <NodeCostBadge
-                                  $color={color}
-                                  $affordable={talentPoints >= talent.cost}
-                                >
-                                  {talent.cost}
-                                </NodeCostBadge>
-                              )}
-                            </Node>
-
-                            {/* Tooltip */}
-                            <TooltipContainer
-                              $visible={hoveredTalent === talent.id}
-                              $color={color}
-                            >
-                              <TooltipName>{talent.name}</TooltipName>
-                              <TooltipDesc>
-                                {talent.description || "Aucune description"}
-                              </TooltipDesc>
-                              <TooltipMeta>
-                                <TooltipTag $color={color}>
-                                  Tier {talent.tier}
-                                </TooltipTag>
-                                <TooltipTag $color={theme.colors.accent}>
-                                  Coût: {talent.cost}
-                                </TooltipTag>
-                              </TooltipMeta>
-                              <TooltipStatus
-                                $color={
-                                  talent.unlocked
-                                    ? theme.colors.success
-                                    : talent.available
-                                      ? color
-                                      : theme.colors.textMuted
-                                }
+                            {getTalentIcon(talent.effect_type)}
+                            {talent.unlocked && <UnlockedCheck>✓</UnlockedCheck>}
+                            {!talent.unlocked && (
+                              <NodeCostBadge
+                                $color={activeColor}
+                                $affordable={talentPoints >= talent.cost}
                               >
-                                {talent.unlocked
-                                  ? "✓ Débloqué"
-                                  : talent.available
-                                    ? "Cliquer pour débloquer"
-                                    : talent.prerequisite_talent_id &&
-                                      !tree.talents.find(
-                                        (pt) => pt.id === talent.prerequisite_talent_id
-                                      )?.unlocked
-                                      ? "🔒 Prérequis manquant"
-                                      : "Points insuffisants"}
-                              </TooltipStatus>
-                            </TooltipContainer>
-                          </NodeWrapper>
-                        ))}
-                      </TierNodes>
-                    </TierRow>
-                  </div>
-                ))}
-              </TreeBody>
-            </TreeCard>
-          );
-        })}
+                                {talent.cost}
+                              </NodeCostBadge>
+                            )}
+                          </Node>
 
-        {trees.length === 0 && (
-          <LoadingState text="Aucun arbre de talents disponible." />
+                          <TooltipContainer
+                            $visible={hoveredTalent === talent.id}
+                            $color={activeColor}
+                          >
+                            <TooltipName>{talent.name}</TooltipName>
+                            <TooltipDesc>
+                              {talent.description || "Aucune description"}
+                            </TooltipDesc>
+                            <TooltipMeta>
+                              <TooltipTag $color={activeColor}>
+                                Tier {talent.tier}
+                              </TooltipTag>
+                              <TooltipTag $color={theme.colors.accent}>
+                                Coût: {talent.cost}
+                              </TooltipTag>
+                            </TooltipMeta>
+                            <TooltipStatus
+                              $color={
+                                talent.unlocked
+                                  ? theme.colors.success
+                                  : talent.available
+                                    ? activeColor
+                                    : theme.colors.textMuted
+                              }
+                            >
+                              {talent.unlocked
+                                ? "✓ Débloqué"
+                                : talent.available
+                                  ? "Cliquer pour débloquer"
+                                  : talent.prerequisite_talent_id &&
+                                    !activeTree.talents.find(
+                                      (pt) =>
+                                        pt.id === talent.prerequisite_talent_id
+                                    )?.unlocked
+                                    ? "🔒 Prérequis manquant"
+                                    : "Points insuffisants"}
+                            </TooltipStatus>
+                          </TooltipContainer>
+                        </NodeWrapper>
+                      ))}
+                    </TierNodes>
+                  </TierRow>
+                </div>
+              ))}
+            </TreeBody>
+          </TreeCard>
+        ) : (
+          <EmptyState>Sélectionnez un arbre de talents.</EmptyState>
         )}
-      </TreesContainer>
+      </Content>
 
       {/* Confirmation Modal */}
       {confirmTalent && (

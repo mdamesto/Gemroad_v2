@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#0f1a30"/>
+      <stop offset="100%" stop-color="#0a1020"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="170" rx="160" ry="120" fill="url(#glow)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#3B82F6" opacity="0.4"/>
+  <circle cx="320" cy="90" r="1" fill="#60a5fa" opacity="0.3"/>
+  <circle cx="50" cy="300" r="1.2" fill="#60A5FA" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#3B82F6" opacity="0.25"/>
+  <circle cx="150" cy="350" r="1" fill="#60a5fa" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#60A5FA" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- grand dome ceiling -->
+    <path d="M80,200 Q200,60 320,200" fill="none" stroke="#3B82F6" stroke-width="2"/>
+    <!-- pillars -->
+    <rect x="95" y="200" width="10" height="80" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect x="295" y="200" width="10" height="80" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+    <!-- floor -->
+    <line x1="80" y1="280" x2="320" y2="280" stroke="#3B82F6" stroke-width="1.5"/>
+    <!-- central table (oval) -->
+    <ellipse cx="200" cy="245" rx="60" ry="15" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+    <!-- crystal display above table -->
+    <polygon points="195,180 200,160 205,180" fill="#60a5fa" opacity="0.4"/>
+    <polygon points="185,185 200,155 215,185" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+    <!-- holographic displays on sides -->
+    <rect x="120" y="170" width="30" height="45" rx="2" fill="#3B82F6" opacity="0.08" stroke="#60a5fa" stroke-width="1" opacity="0.4"/>
+    <rect x="250" y="170" width="30" height="45" rx="2" fill="#3B82F6" opacity="0.08" stroke="#60a5fa" stroke-width="1" opacity="0.4"/>
+    <!-- seats around table -->
+    <circle cx="155" cy="240" r="4" fill="#3B82F6" opacity="0.3"/>
+    <circle cx="245" cy="240" r="4" fill="#3B82F6" opacity="0.3"/>
+    <circle cx="200" cy="225" r="4" fill="#3B82F6" opacity="0.3"/>
+    <circle cx="200" cy="265" r="4" fill="#3B82F6" opacity="0.3"/>
+    <!-- crystal chandelier -->
+    <line x1="200" y1="80" x2="200" y2="120" stroke="#60a5fa" stroke-width="1"/>
+    <polygon points="190,120 200,110 210,120 205,130 195,130" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.6"/>
+    <circle cx="200" cy="120" r="4" fill="#60a5fa" opacity="0.2"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#60A5FA" stroke-width="1" stroke-opacity="0.3"/>
+</svg>

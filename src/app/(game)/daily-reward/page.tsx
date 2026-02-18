@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useDailyReward } from "@/hooks/use-daily-reward";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
@@ -207,11 +207,6 @@ export default function DailyRewardPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Récompense Quotidienne"
-        subtitle="Connecte-toi chaque jour pour gagner des gemmes bonus !"
-      />
-
       <StreakInfo>
         <div>
           <StreakValue>

@@ -9,7 +9,7 @@ import { useDailyReward } from "@/hooks/use-daily-reward";
 import { useMissions } from "@/hooks/use-missions";
 import { createClient } from "@/lib/supabase/client";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
@@ -371,11 +371,6 @@ export default function DashboardPage() {
 
   return (
     <Page>
-      <PageHeader
-        title={`Bienvenue, ${profile.username} !`}
-        subtitle="Voici un aperçu de ta progression"
-      />
-
       <StatsRow>
         <StatCard>
           <StatIcon style={{ background: alpha(theme.colors.accent, 0.08) }}>💎</StatIcon>

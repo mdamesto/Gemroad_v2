@@ -685,6 +685,138 @@ export interface Database {
           completed_at?: string | null;
         };
       };
+      factions: {
+        Row: {
+          slug: string;
+          name: string;
+          description: string;
+          lore: string;
+          motto: string | null;
+          leader_name: string | null;
+          leader_title: string | null;
+          color: string;
+          icon: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          slug: string;
+          name: string;
+          description: string;
+          lore: string;
+          motto?: string | null;
+          leader_name?: string | null;
+          leader_title?: string | null;
+          color: string;
+          icon?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          description?: string;
+          lore?: string;
+          motto?: string | null;
+          leader_name?: string | null;
+          leader_title?: string | null;
+          color?: string;
+          icon?: string;
+          sort_order?: number;
+        };
+      };
+      narrative_events: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          description: string;
+          narrative_text: string;
+          image_url: string | null;
+          starts_at: string;
+          ends_at: string;
+          reward_gems: number;
+          reward_xp: number;
+          is_active: boolean;
+          winning_choice_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          description: string;
+          narrative_text: string;
+          image_url?: string | null;
+          starts_at: string;
+          ends_at: string;
+          reward_gems?: number;
+          reward_xp?: number;
+          is_active?: boolean;
+          winning_choice_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          slug?: string;
+          title?: string;
+          description?: string;
+          narrative_text?: string;
+          image_url?: string | null;
+          starts_at?: string;
+          ends_at?: string;
+          reward_gems?: number;
+          reward_xp?: number;
+          is_active?: boolean;
+          winning_choice_id?: string | null;
+        };
+      };
+      event_choices: {
+        Row: {
+          id: string;
+          event_id: string;
+          faction: string | null;
+          label: string;
+          description: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          faction?: string | null;
+          label: string;
+          description: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          event_id?: string;
+          faction?: string | null;
+          label?: string;
+          description?: string;
+          sort_order?: number;
+        };
+      };
+      event_participations: {
+        Row: {
+          id: string;
+          user_id: string;
+          event_id: string;
+          choice_id: string;
+          reward_claimed: boolean;
+          participated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          event_id: string;
+          choice_id: string;
+          reward_claimed?: boolean;
+          participated_at?: string;
+        };
+        Update: {
+          reward_claimed?: boolean;
+        };
+      };
     };
   };
 }

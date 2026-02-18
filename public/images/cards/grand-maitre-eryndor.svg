@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1a150f"/>
+      <stop offset="100%" stop-color="#100d0a"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="35%" r="28%">
+      <stop offset="0%" stop-color="#D97706" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#D97706" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="168" rx="165" ry="135" fill="url(#glow)"/>
+  <ellipse cx="200" cy="155" rx="90" ry="75" fill="url(#glow2)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#D97706" opacity="0.5"/>
+  <circle cx="320" cy="90" r="1" fill="#A78BFA" opacity="0.4"/>
+  <circle cx="50" cy="300" r="1.2" fill="#A78BFA" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#D97706" opacity="0.3"/>
+  <circle cx="150" cy="350" r="1" fill="#A78BFA" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#D97706" opacity="0.4"/>
+  <circle cx="200" cy="30" r="1" fill="#A78BFA" opacity="0.3"/>
+  <g opacity="0.95">
+    <!-- grand master head -->
+    <circle cx="200" cy="100" r="26" fill="none" stroke="#D97706" stroke-width="2.5"/>
+    <!-- elaborate headdress/hood -->
+    <path d="M176,90 Q170,70 180,55 Q195,45 200,42 Q205,45 220,55 Q230,70 224,90" fill="none" stroke="#D97706" stroke-width="2"/>
+    <!-- third eye crystal on forehead -->
+    <polygon points="197,86 200,78 203,86" fill="#f59e0b" opacity="0.6"/>
+    <circle cx="200" cy="83" r="3" fill="#f59e0b" opacity="0.2"/>
+    <!-- serene eyes -->
+    <circle cx="192" cy="98" r="2" fill="#f59e0b" opacity="0.5"/>
+    <circle cx="208" cy="98" r="2" fill="#f59e0b" opacity="0.5"/>
+    <!-- long beard -->
+    <path d="M188,112 Q200,140 212,112" fill="none" stroke="#D97706" stroke-width="1.5" opacity="0.5"/>
+    <!-- grand ceremonial robes (wide) -->
+    <path d="M176,126 L155,145 L130,260 L270,260 L245,145 L224,126" fill="none" stroke="#D97706" stroke-width="2"/>
+    <!-- robe ornate patterns -->
+    <path d="M155,180 L165,175 L175,180 L185,175 L195,180 L205,175 L215,180 L225,175 L235,180 L245,175" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.35"/>
+    <!-- crystal medallion -->
+    <polygon points="195,145 200,135 205,145 200,152" fill="#f59e0b" opacity="0.4"/>
+    <circle cx="200" cy="145" r="5" fill="#f59e0b" opacity="0.1"/>
+    <!-- arms raised in resonance singing -->
+    <line x1="130" y1="170" x2="100" y2="140" stroke="#D97706" stroke-width="2"/>
+    <line x1="270" y1="170" x2="300" y2="140" stroke="#D97706" stroke-width="2"/>
+    <!-- resonance waves from hands -->
+    <path d="M95,135 Q80,125 85,110" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+    <path d="M305,135 Q320,125 315,110" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.4"/>
+    <!-- singing resonance waves from mouth -->
+    <path d="M210,108 Q225,105 235,110" fill="none" stroke="#A78BFA" stroke-width="1" opacity="0.35"/>
+    <path d="M215,112 Q235,108 248,115" fill="none" stroke="#A78BFA" stroke-width="0.8" opacity="0.25"/>
+    <path d="M218,116 Q240,112 258,120" fill="none" stroke="#A78BFA" stroke-width="0.6" opacity="0.15"/>
+    <!-- crystal energy flowing around -->
+    <polygon points="90,155 96,142 102,155" fill="#f59e0b" opacity="0.3"/>
+    <polygon points="298,150 304,137 310,150" fill="#f59e0b" opacity="0.3"/>
+    <polygon points="110,220 114,212 118,220" fill="#A78BFA" opacity="0.25"/>
+    <polygon points="284,215 288,207 292,215" fill="#A78BFA" opacity="0.25"/>
+    <!-- power aura -->
+    <ellipse cx="200" cy="170" rx="80" ry="100" fill="none" stroke="#A78BFA" stroke-width="1" stroke-dasharray="4,5" opacity="0.3"/>
+    <ellipse cx="200" cy="170" rx="100" ry="120" fill="none" stroke="#A78BFA" stroke-width="0.5" stroke-dasharray="2,8" opacity="0.15"/>
+    <!-- feet -->
+    <line x1="185" y1="260" x2="180" y2="280" stroke="#D97706" stroke-width="2"/>
+    <line x1="215" y1="260" x2="220" y2="280" stroke="#D97706" stroke-width="2"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-opacity="0.4"/>
+</svg>

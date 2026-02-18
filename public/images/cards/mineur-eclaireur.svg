@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1a0f15"/>
+      <stop offset="100%" stop-color="#100a10"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#9CA3AF" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#9CA3AF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="180" rx="150" ry="120" fill="url(#glow)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#DC2626" opacity="0.4"/>
+  <circle cx="320" cy="90" r="1" fill="#ef4444" opacity="0.3"/>
+  <circle cx="50" cy="300" r="1.2" fill="#9CA3AF" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#DC2626" opacity="0.25"/>
+  <circle cx="150" cy="350" r="1" fill="#ef4444" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#9CA3AF" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- cave walls -->
+    <path d="M60,350 Q80,280 100,300 Q130,250 160,280 Q180,260 200,270 Q220,250 240,275 Q270,255 300,290 Q320,270 340,350" fill="none" stroke="#DC2626" stroke-width="1" opacity="0.3"/>
+    <!-- miner figure -->
+    <circle cx="200" cy="130" r="22" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <!-- helmet/headlamp -->
+    <path d="M182,120 Q200,105 218,120" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <circle cx="200" cy="112" r="4" fill="#ef4444" opacity="0.6"/>
+    <!-- headlamp beam -->
+    <path d="M198,108 L180,70 L220,70 L202,108" fill="#ef4444" opacity="0.08"/>
+    <!-- body -->
+    <rect x="182" y="152" width="36" height="55" rx="5" fill="none" stroke="#DC2626" stroke-width="2"/>
+    <!-- arms -->
+    <line x1="182" y1="165" x2="155" y2="195" stroke="#DC2626" stroke-width="2"/>
+    <line x1="218" y1="165" x2="245" y2="195" stroke="#DC2626" stroke-width="2"/>
+    <!-- legs -->
+    <line x1="192" y1="207" x2="186" y2="250" stroke="#DC2626" stroke-width="2"/>
+    <line x1="208" y1="207" x2="214" y2="250" stroke="#DC2626" stroke-width="2"/>
+    <!-- small crystals on cave walls -->
+    <polygon points="90,275 95,265 100,275" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
+    <polygon points="300,265 306,252 312,265" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>
+    <polygon points="330,300 334,292 338,300" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.3"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-opacity="0.3"/>
+</svg>

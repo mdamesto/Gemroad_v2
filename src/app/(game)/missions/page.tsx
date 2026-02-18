@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { useMissions } from "@/hooks/use-missions";
 import { GlowButton } from "@/components/ui/glow-button";
-import { PageHeader } from "@/components/ui/page-header";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { useToastStore } from "@/stores/toast-store";
@@ -230,11 +230,6 @@ export default function MissionsPage() {
 
   return (
     <Page>
-      <PageHeader
-        title="Missions"
-        subtitle="Accomplis des missions quotidiennes et hebdomadaires pour gagner des récompenses"
-      />
-
       <Section>
         <SectionHeader>
           <SectionTitle>

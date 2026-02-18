@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/client";
 import { FilterPanel, type FilterState } from "@/components/collection/filter-panel";
 import { CollectionGrid } from "@/components/collection/collection-grid";
 import { CardModal } from "@/components/collection/card-modal";
-import { PageHeader } from "@/components/ui/page-header";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/skeleton-loader";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -204,8 +203,7 @@ export default function CollectionPage() {
 
   return (
     <Page>
-      <PageHeader title="Ma Collection" subtitle="Collectionnez toutes les cartes du monde post-apocalyptique">
-        <StatsRow>
+      <StatsRow>
           <StatCard>
             <StatValue>
               <AnimatedCounter value={ownedCount} color={theme.colors.primary} />
@@ -226,7 +224,6 @@ export default function CollectionPage() {
             </ProgressBarOuter>
           </StatCard>
         </StatsRow>
-      </PageHeader>
 
       <ContentArea>
         <FilterPanel filters={filters} onChange={setFilters} />

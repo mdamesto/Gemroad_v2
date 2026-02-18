@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#0f1a20"/>
+      <stop offset="100%" stop-color="#0a1015"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="230" rx="150" ry="100" fill="url(#glow)"/>
+  <circle cx="80" cy="60" r="1.5" fill="#16A34A" opacity="0.4"/>
+  <circle cx="320" cy="90" r="1" fill="#22c55e" opacity="0.3"/>
+  <circle cx="50" cy="300" r="1.2" fill="#34D399" opacity="0.35"/>
+  <circle cx="350" cy="280" r="1.8" fill="#16A34A" opacity="0.25"/>
+  <circle cx="150" cy="350" r="1" fill="#22c55e" opacity="0.3"/>
+  <circle cx="300" cy="40" r="1.3" fill="#34D399" opacity="0.3"/>
+  <g opacity="0.9">
+    <!-- cracking ground -->
+    <path d="M60,250 Q100,240 140,255 Q170,230 200,250 Q230,235 260,250 Q300,240 340,255" fill="none" stroke="#16A34A" stroke-width="2"/>
+    <!-- crack lines spreading -->
+    <line x1="200" y1="250" x2="195" y2="290" stroke="#22c55e" stroke-width="2"/>
+    <line x1="195" y1="290" x2="185" y2="320" stroke="#22c55e" stroke-width="1.5"/>
+    <line x1="195" y1="290" x2="210" y2="315" stroke="#22c55e" stroke-width="1"/>
+    <line x1="140" y1="255" x2="135" y2="285" stroke="#22c55e" stroke-width="1.5"/>
+    <line x1="260" y1="250" x2="265" y2="280" stroke="#22c55e" stroke-width="1.5"/>
+    <!-- seismic waves (concentric arcs from epicenter) -->
+    <path d="M160,250 Q200,220 240,250" fill="none" stroke="#16A34A" stroke-width="1.5" opacity="0.5"/>
+    <path d="M130,250 Q200,200 270,250" fill="none" stroke="#16A34A" stroke-width="1.2" opacity="0.35"/>
+    <path d="M100,250 Q200,180 300,250" fill="none" stroke="#16A34A" stroke-width="1" opacity="0.2"/>
+    <!-- warning triangle -->
+    <polygon points="200,90 240,150 160,150" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+    <line x1="200" y1="110" x2="200" y2="132" stroke="#22c55e" stroke-width="2.5"/>
+    <circle cx="200" cy="141" r="2.5" fill="#22c55e" opacity="0.7"/>
+    <!-- crystal shards rising from ground -->
+    <polygon points="155,245 160,225 165,245" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="230,240 236,218 242,240" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="100,252 104,240 108,252" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.3"/>
+    <polygon points="290,248 295,235 300,248" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.3"/>
+    <!-- dust particles -->
+    <circle cx="180" cy="235" r="1.5" fill="#22c55e" opacity="0.3"/>
+    <circle cx="220" cy="232" r="1.2" fill="#22c55e" opacity="0.25"/>
+    <circle cx="150" cy="240" r="1" fill="#22c55e" opacity="0.2"/>
+    <circle cx="250" cy="238" r="1.3" fill="#22c55e" opacity="0.2"/>
+  </g>
+  <rect x="2" y="2" width="396" height="396" fill="none" stroke="#34D399" stroke-width="1" stroke-opacity="0.3"/>
+</svg>
